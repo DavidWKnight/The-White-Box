@@ -18,3 +18,10 @@ _autosave-*
 # Exported BOM files
 *.xml
 *.csv
+
+# For projects created in Code Composer Studio: http://www.ti.com/tool/CCSTUDIO
+*.xdchelp
+Debug/
+Release/
+.config/
+.launches/
