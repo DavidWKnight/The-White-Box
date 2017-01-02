@@ -4,9 +4,13 @@
 *.000
 *.bak
 *.bck
+*.raw
+*.log
+*.bcm
 *.kicad_pcb-bak
 *~
-_autosave-*
+*autosave*
+*cache*
 *.tmp
 
 # Netlist files (exported from Eeschema)
