@@ -1,13 +1,12 @@
 EESchema-DOCLIB  Version 2.0
 #
-$CMP LCD-016N002L
-D 16 x 2 Character LCD
-F http://www.vishay.com/docs/37299/37299.pdf
+$CMP LCD-4x20
+D 4 x 20Character LCD
 $ENDCMP
 #
-$CMP LCD-20x4
-D 16 x 2 Character LCD
-F http://www.vishay.com/docs/37299/37299.pdf
+$CMP MSP430FR4133
+D 16KB FRAM, 2KB SRAM, 16-bit, 16Mhz, TI, texas Instruments
+K TMS320, C55, 16-bit, 16Mhz, TI, texas Instruments
 $ENDCMP
 #
 #End Doc Library
