@@ -29,14 +29,15 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:Main Board
+LIBS:Main Board-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 3
 Title ""
-Date ""
-Rev ""
+Date "2017-02-23"
+Rev "1.1"
 Comp ""
 Comment1 ""
 Comment2 ""
