@@ -324,7 +324,7 @@ L R R2
 U 1 1 586E2E6B
 P 6000 1400
 F 0 "R2" V 6080 1400 50  0000 C CNN
-F 1 "R" V 6000 1400 50  0000 C CNN
+F 1 "10k" V 6000 1400 50  0000 C CNN
 F 2 "" V 5930 1400 50  0000 C CNN
 F 3 "" H 6000 1400 50  0000 C CNN
 	1    6000 1400
@@ -373,117 +373,6 @@ F 3 "" H 8600 3850 60  0000 C CNN
 	1    4500 2450
 	1    0    0    -1  
 $EndComp
-$Comp
-L CONN_02X17 P2
-U 1 1 586E3520
-P 8250 2850
-F 0 "P2" H 8250 3750 50  0000 C CNN
-F 1 "CONN_02X17" V 8250 2850 50  0000 C CNN
-F 2 "" H 8250 1750 50  0000 C CNN
-F 3 "" H 8250 1750 50  0000 C CNN
-	1    8250 2850
-	1    0    0    -1  
-$EndComp
-Text Label 8000 2050 2    60   ~ 0
-FX_Data0
-Text Label 8000 2150 2    60   ~ 0
-FX_Data1
-Text Label 8000 2250 2    60   ~ 0
-FX_Data2
-Text Label 8000 2350 2    60   ~ 0
-FX_Data3
-Text Label 8000 2450 2    60   ~ 0
-FX_Data4
-Text Label 8000 2550 2    60   ~ 0
-FX_Data5
-Text Label 8000 2650 2    60   ~ 0
-FX_Data6
-Text Label 8000 2750 2    60   ~ 0
-FX_Data7
-Text Label 8500 2050 0    60   ~ 0
-FX_Pot_Sel0
-Text Label 8500 2150 0    60   ~ 0
-FX_Pot_Sel1
-Text Label 8500 2250 0    60   ~ 0
-FX_effect_Sel0
-Text Label 8500 2350 0    60   ~ 0
-FX_effect_Sel1
-Text Label 8500 2450 0    60   ~ 0
-FX_effect_Sel2
-Text Label 8500 2550 0    60   ~ 0
-~DSP_FX_DATA_SEND
-Text Label 8500 2650 0    60   ~ 0
-DSP_RDY
-Wire Wire Line
-	8000 3550 7950 3550
-Wire Wire Line
-	7950 3550 7950 3650
-Wire Wire Line
-	7950 3650 8000 3650
-Wire Wire Line
-	8500 3550 8550 3550
-Wire Wire Line
-	8550 3550 8550 3650
-Wire Wire Line
-	8550 3650 8500 3650
-$Comp
-L +3.3V #PWR08
-U 1 1 586E3F5F
-P 7850 3550
-F 0 "#PWR08" H 7850 3400 50  0001 C CNN
-F 1 "+3.3V" H 7850 3690 50  0000 C CNN
-F 2 "" H 7850 3550 50  0000 C CNN
-F 3 "" H 7850 3550 50  0000 C CNN
-	1    7850 3550
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7950 3600 7850 3600
-Wire Wire Line
-	7850 3600 7850 3550
-Connection ~ 7950 3600
-$Comp
-L GNDD #PWR09
-U 1 1 586E3FE0
-P 8650 3650
-F 0 "#PWR09" H 8650 3400 50  0001 C CNN
-F 1 "GNDD" H 8650 3500 50  0000 C CNN
-F 2 "" H 8650 3650 50  0000 C CNN
-F 3 "" H 8650 3650 50  0000 C CNN
-	1    8650 3650
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	8550 3600 8650 3600
-Wire Wire Line
-	8650 3600 8650 3650
-Connection ~ 8550 3600
-Text Label 5750 1850 0    60   ~ 0
-FX_Data0
-Text Label 5750 1950 0    60   ~ 0
-FX_Data1
-Text Label 5750 2050 0    60   ~ 0
-FX_Data2
-Text Label 5750 2150 0    60   ~ 0
-FX_Data3
-Text Label 5750 2250 0    60   ~ 0
-FX_Data4
-Text Label 5750 2350 0    60   ~ 0
-FX_Data5
-Text Label 5750 2600 0    60   ~ 0
-FX_Data6
-Text Label 5750 2700 0    60   ~ 0
-FX_Data7
-Text Label 5750 3500 0    60   ~ 0
-FX_Pot_Sel0
-Text Label 5750 3600 0    60   ~ 0
-FX_Pot_Sel1
-Text Label 5750 2800 0    60   ~ 0
-FX_effect_Sel0
-Text Label 5750 2900 0    60   ~ 0
-FX_effect_Sel1
-Text Label 5750 3000 0    60   ~ 0
-FX_effect_Sel2
 Text Label 5750 3300 0    60   ~ 0
 SPI_RX
 Text Label 5750 3400 0    60   ~ 0
@@ -573,21 +462,6 @@ Wire Wire Line
 Wire Wire Line
 	3250 4600 3250 4700
 Connection ~ 3250 4700
-NoConn ~ 8500 2750
-NoConn ~ 8500 2850
-NoConn ~ 8500 2950
-NoConn ~ 8500 3050
-NoConn ~ 8500 3150
-NoConn ~ 8500 3250
-NoConn ~ 8500 3350
-NoConn ~ 8500 3450
-NoConn ~ 8000 2850
-NoConn ~ 8000 2950
-NoConn ~ 8000 3050
-NoConn ~ 8000 3150
-NoConn ~ 8000 3250
-NoConn ~ 8000 3350
-NoConn ~ 8000 3450
 NoConn ~ 5750 4200
 NoConn ~ 5750 4300
 NoConn ~ 5750 4400
@@ -708,4 +582,66 @@ Wire Wire Line
 NoConn ~ 3300 1250
 Wire Wire Line
 	2000 4400 2000 4350
+$Comp
+L CONN_02X07 P?
+U 1 1 58C4F88D
+P 8400 2900
+F 0 "P?" H 8400 3300 50  0000 C CNN
+F 1 "CONN_02X07" V 8400 2900 50  0000 C CNN
+F 2 "" H 8400 1700 50  0000 C CNN
+F 3 "" H 8400 1700 50  0000 C CNN
+	1    8400 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDD #PWR?
+U 1 1 58C4FB73
+P 8700 3250
+F 0 "#PWR?" H 8700 3000 50  0001 C CNN
+F 1 "GNDD" H 8700 3100 50  0000 C CNN
+F 2 "" H 8700 3250 50  0000 C CNN
+F 3 "" H 8700 3250 50  0000 C CNN
+	1    8700 3250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8650 3200 8700 3200
+Wire Wire Line
+	8700 3200 8700 3250
+$Comp
+L +3.3V #PWR?
+U 1 1 58C4FDC7
+P 8100 3250
+F 0 "#PWR?" H 8100 3100 50  0001 C CNN
+F 1 "+3.3V" H 8100 3390 50  0000 C CNN
+F 2 "" H 8100 3250 50  0000 C CNN
+F 3 "" H 8100 3250 50  0000 C CNN
+	1    8100 3250
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8100 3250 8100 3200
+Wire Wire Line
+	8100 3200 8150 3200
+Text Label 8150 2600 2    60   ~ 0
+SPI_RX
+Text Label 8150 2700 2    60   ~ 0
+SPI_TX
+Text Label 8150 2800 2    60   ~ 0
+SPI_CLK
+Text Label 8150 2900 2    60   ~ 0
+SPI_CS3
+NoConn ~ 5750 3500
+NoConn ~ 5750 3600
+NoConn ~ 5750 3000
+NoConn ~ 5750 2900
+NoConn ~ 5750 2800
+NoConn ~ 5750 2700
+NoConn ~ 5750 2600
+NoConn ~ 5750 1850
+NoConn ~ 5750 1950
+NoConn ~ 5750 2050
+NoConn ~ 5750 2150
+NoConn ~ 5750 2250
+NoConn ~ 5750 2350
 $EndSCHEMATC
