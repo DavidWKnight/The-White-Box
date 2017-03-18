@@ -24,7 +24,8 @@ void port2_debounce();
 void lcd_write_effects(unsigned int);
 void delay_ms(unsigned int);
 
-unsigned int port_state_last;
+unsigned char port1_state;
+unsigned char port2_state;
 unsigned char port1_mask;
 unsigned char port2_mask;
 extern volatile bool new_user_input;

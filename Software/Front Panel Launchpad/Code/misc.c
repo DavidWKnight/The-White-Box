@@ -7,7 +7,9 @@
 
 #include "misc.h"
 
-unsigned int port_state = 0xFFFF;
+//unsigned int port_state = 0xFFFF;
+unsigned char P1_check = 0xFF;
+unsigned char P2_check = 0xFF;
 
 void init_ports(){
 	/*Port 1*/
@@ -65,7 +67,8 @@ void init_misc(){
 	volatile bool new_user_input = false;
 
 	/*init other variables*/
-	port_state_last = 0x0000; //I will split this into two char's soon to simplify decoding inputs
+	port1_state = 0x00;
+	port2_state = 0x00;
 	port1_mask = 0xFF;
 	port2_mask = 0xFF;
 
@@ -88,17 +91,17 @@ void port1_debounce(){
 	static int i = 0;
 	char temp = P1IN;
 	temp ^= port1_mask;
-	port_state = (port_state & (temp | 0xFF00));
+	P1_check = (P1_check & temp);
 	i++;
 	if (i >= P1_max_checks){
 		i = 0;
-		port_state &= 0xFFFE;//This is because pin 1 is always low in the launchpad; change on prototype board
-		if ((port_state & 0x00FF) > 0){
-			port_state_last |= (port_state & 0x00FF);
+		P1_check &= 0xFE;//This is because pin 1 is always low in the launchpad; change on prototype board
+		if (P1_check > 0){
+			port1_state |= P1_check;
 			new_user_input = true;
 		}
 
-		port_state |= 0x00FF;
+		P1_check = 0xFF;
 		TA0CTL &= 0xFFCF;
 	}
 }
@@ -108,17 +111,16 @@ void port2_debounce(){
 	static int i = 0;
 	char temp = P2IN;
 	temp ^= port2_mask;
-	port_state = (port_state & ((temp << 8) | 0x00FF));
+	P2_check = (P2_check & temp);
 	i++;
 	if (i >= P2_max_checks){
 		i = 0;
-		port_state &= 0xFFFE;//This is because pin 1 is always low in the launchpad; change on prototype board
-		if ((port_state & 0xFF00) > 0){
-			port_state_last |= (port_state & 0xFF00);
+		if (P2_check > 0){
+			port2_state |= P2_check;
 			new_user_input = true;
 		}
 
-		port_state |= 0xFF00;
+		P2_check = 0xFF;
 		TA1CTL &= 0xFFCF;
 	}
 }

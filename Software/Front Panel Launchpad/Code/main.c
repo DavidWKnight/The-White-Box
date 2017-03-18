@@ -79,6 +79,10 @@ char menu_effect_select(){
 			case 0x0004:
 				break;
 			case 0x0008:
+				if (effects[1] > 0){
+					effects[1]--;
+					lcd_write_effects(1);
+				}
 				break;
 			case 0x0010:
 				break;

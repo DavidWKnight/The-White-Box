@@ -34,47 +34,54 @@ struct current_effect{
 	int effect_value[8][4];
 };
 
-/*takes debounced inputs and runs them through state machines*/ //This will be refactored soon to allow holding down a button for something to happen
+/*takes debounced inputs and runs them through state machines*/
 unsigned int user_input_decode(){
-	switch(port_state_last){
+	if (port1_state > 0){
 		/*port 1*/
-		case 0x0001:
-			return port1_statemachine(0x0001);
-		case 0x0002:
-			return port1_statemachine(0x0002);
-		case 0x0004:
-			return port1_statemachine(0x0004);
-		case 0x0008:
-			return port1_statemachine(0x0008);
-		case 0x0010:
-			return port1_statemachine(0x0010);
-		case 0x0020:
-			return port1_statemachine(0x0020);
-		case 0x0040:
-			return port1_statemachine(0x0040);
-		case 0x0080:
-			return port1_statemachine(0x0080);
-		/*port 2*/
-		case 0x0100:
-			return port2_statemachine(0x01, 0x01);
-		case 0x0200:
-			return port2_statemachine(0x02, 0x01);
-		case 0x0400:
-			return port2_statemachine(0x04, 0x02);
-		case 0x0800:
-			return port2_statemachine(0x08, 0x02);
-		case 0x1000:
-			return port2_statemachine(0x10, 0x03);
-		case 0x2000:
-			return port2_statemachine(0x20, 0x03);
-		case 0x4000:
-			return port2_statemachine(0x40, 0x04);
-		case 0x8000:
-			return port2_statemachine(0x80, 0x04);
-		/*port 1 or no action*/
-		default:
-			port_state_last = 0x0000;
+		switch (port1_state){
+			case 0x0001:
+				return port1_statemachine(0x0001);
+			case 0x02:
+				return port1_statemachine(0x0002);
+			case 0x04:
+				return port1_statemachine(0x0004);
+			case 0x08:
+				return port1_statemachine(0x0008);
+			case 0x10:
+				return port1_statemachine(0x0010);
+			case 0x20:
+				return port1_statemachine(0x0020);
+			case 0x40:
+				return port1_statemachine(0x0040);
+			case 0x80:
+				return port1_statemachine(0x0080);
+			default:
+				break;
 		}
+	}
+	else if (port2_state > 0){
+		/*port 2*/
+		switch (port2_state){
+			case 0x01:
+				return port2_statemachine(0x01, 0x01);
+			case 0x02:
+				return port2_statemachine(0x02, 0x01);
+			case 0x04:
+				return port2_statemachine(0x04, 0x02);
+			case 0x08:
+				return port2_statemachine(0x08, 0x02);
+			case 0x10:
+				return port2_statemachine(0x10, 0x03);
+			case 0x20:
+				return port2_statemachine(0x20, 0x03);
+			case 0x40:
+				return port2_statemachine(0x40, 0x04);
+			case 0x80:
+				return port2_statemachine(0x80, 0x04);
+			default:
+				break;
+		}
+	}
 
 	return 0;
 }
@@ -82,7 +89,7 @@ unsigned int user_input_decode(){
 /*state machine for pushbutton*/
 unsigned int port1_statemachine(unsigned int pin){
 	__disable_interrupt();
-	port_state_last &= ~pin;
+	port1_state &= ~pin;
 	if ((port1_mask & pin) == pin){
 		port1_mask &= ~pin;
 		P1IES &= ~pin;
@@ -107,11 +114,11 @@ unsigned int port1_statemachine(unsigned int pin){
 /*state machine for rotary encoders with A on even numbered pins and B on odd numbered pins*/ //This will be rafactored to simplify some parts
 unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_number){
 	__disable_interrupt();
-	port_state_last &= ~pin << 8;
+	port2_state &= ~pin;
 	unsigned char encoder_mask = (0x03 << (encoder_number - 1));//used to mask values from other encoders
 
 	unsigned char encoder_state_temp;
-	encoder_state_temp = encoder_state_machine[(encoder_state & encoder_mask) << (encoder_rotation & encoder_mask)][((encoder_state & encoder_mask) ^ pin) >> (encoder_number-1 >> 2)];
+	encoder_state_temp = encoder_state_machine[(encoder_state & encoder_mask) << (encoder_rotation & encoder_mask)][((encoder_state & encoder_mask) ^ pin)];
 
 	if (encoder_state_temp == 0x00){//invalid state, reset everything
 		encoder_state &= ~encoder_mask;
@@ -133,14 +140,7 @@ unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_number){
 	else if (encoder_state_temp == 0x08){//when the encoder turns CW
 		encoder_rotation |= (0x02 << ((encoder_number - 1) << 1));//put a 1 in the leading bit for the respective encoder_rotation place, ie encoder_number = 2 -> encoder_rotation = 0x00001000
 	}
-
-	if ((encoder_rotation & encoder_mask) == 0){//encoder state needs to be shifted right if moving CW
-		encoder_state = (encoder_state_temp << ((encoder_number - 1) << 1));//depends on encoder; << 2 for enc2, << 4 for enc 3
-	}
-	else{
-		encoder_state = (encoder_state_temp << ((encoder_number - 1) << 1)) >> 2;
-	}
-
+	encoder_state ^= pin;
 	port2_mask ^= pin;
 	P2IES ^= pin;
 	P2IFG &= ~pin;

@@ -20,7 +20,8 @@ void wait_for_input();
 void menu_effect_select_setup();
 void menu_settings_setup();
 
-extern unsigned int port_state_last;
+extern unsigned char port1_state;
+extern unsigned char port2_state;
 volatile bool port1_check;
 volatile bool port2_check;
 volatile bool new_user_input;
