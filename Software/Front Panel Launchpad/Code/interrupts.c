@@ -11,7 +11,7 @@
 #pragma vector=PORT1_VECTOR
 __interrupt void port1_ISR(void){
 	_BIC_SR(LPM4_EXIT);
-	port1_check = true;
+	port1_interrupt = true;
 	P1IFG &= 0x00;
 }
 
@@ -19,7 +19,7 @@ __interrupt void port1_ISR(void){
 #pragma vector=PORT2_VECTOR
 __interrupt void port2_ISR(void){
 	_BIC_SR(LPM4_EXIT);
-	port2_check = true;
+	port2_interrupt = true;
 	P2IFG &= 0x00;
 }
 

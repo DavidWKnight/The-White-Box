@@ -9,9 +9,8 @@
 #include "menu.h"
 
 
-unsigned char encoder_state = 0x00;
-unsigned char encoder_rotation = 0x00;
-unsigned char encoder_state_machine[13][4] = {
+unsigned int encoder_state = 0x00;
+unsigned char encoder_state_decoder[13][4] = {
 		{0x00,0x01,0x08,0x00},//0x00
 		//CCW
 		{0x00,0x01,0x00,0x03},//0x01
@@ -56,6 +55,7 @@ unsigned int user_input_decode(){
 			case 0x80:
 				return port1_statemachine(0x0080);
 			default:
+				port1_state = 0x00;
 				break;
 		}
 	}
@@ -63,22 +63,23 @@ unsigned int user_input_decode(){
 		/*port 2*/
 		switch (port2_state){
 			case 0x01:
-				return port2_statemachine(0x01, 0x01);
+				return port2_statemachine(0x01, 0x00);
 			case 0x02:
-				return port2_statemachine(0x02, 0x01);
+				return port2_statemachine(0x02, 0x00);
 			case 0x04:
-				return port2_statemachine(0x04, 0x02);
+				return port2_statemachine(0x04, 0x04);
 			case 0x08:
-				return port2_statemachine(0x08, 0x02);
+				return port2_statemachine(0x08, 0x04);
 			case 0x10:
-				return port2_statemachine(0x10, 0x03);
+				return port2_statemachine(0x10, 0x08);
 			case 0x20:
-				return port2_statemachine(0x20, 0x03);
+				return port2_statemachine(0x20, 0x08);
 			case 0x40:
-				return port2_statemachine(0x40, 0x04);
+				return port2_statemachine(0x40, 0x0C);
 			case 0x80:
-				return port2_statemachine(0x80, 0x04);
+				return port2_statemachine(0x80, 0x0C);
 			default:
+				port2_state = 0x00;
 				break;
 		}
 	}
@@ -111,41 +112,50 @@ unsigned int port1_statemachine(unsigned int pin){
 }
 
 /*This function is untested for encoders 2,3 and 4 because I don't have access to them on the MSP430FR4133 Launchpad*/
-/*state machine for rotary encoders with A on even numbered pins and B on odd numbered pins*/ //This will be rafactored to simplify some parts
-unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_number){
+unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_shift){
 	__disable_interrupt();
 	port2_state &= ~pin;
-	unsigned char encoder_mask = (0x03 << (encoder_number - 1));//used to mask values from other encoders
 
-	unsigned char encoder_state_temp;
-	encoder_state_temp = encoder_state_machine[(encoder_state & encoder_mask) << (encoder_rotation & encoder_mask)][((encoder_state & encoder_mask) ^ pin)];
+	unsigned char encoder_number2 = (encoder_shift >> 1);//encoder number multiplied by 2
+	unsigned int encoder_state_last = (encoder_state  >> encoder_shift) & 0x000F;//previous state for encoder being processed
+	unsigned int encoder_state_new = 0x00;
 
-	if (encoder_state_temp == 0x00){//invalid state, reset everything
-		encoder_state &= ~encoder_mask;
-		encoder_rotation &= ~encoder_mask;
-		P2IES |= encoder_mask;
-		port2_mask |= encoder_mask;
-		__enable_interrupt();
-		return 0;
+	/*calculate new encoder state*/
+	if (encoder_state_last > 3){//right adjust encoder_state_new
+		encoder_state_new = encoder_state_last >> 2;
 	}
-	else if (encoder_state_temp == 0xF0 || encoder_state_temp == 0x0F){//encoder turned successfully, reset everything
-		encoder_state &= ~encoder_mask;
-		encoder_rotation &= ~encoder_mask;
-		port2_mask |= encoder_mask;
-		P2IES |= encoder_mask;
-		P2IFG &= ~pin;
+	else{
+		encoder_state_new = encoder_state_last;
+	}
+	encoder_state_new ^= (pin >> encoder_number2);
+
+	unsigned int encoder_state_temp = encoder_state_decoder[encoder_state_last][encoder_state_new];//process new state
+
+	if(encoder_state_temp == 0x00){//invalid state/reset: reset encoder, return 0
+		encoder_state &= ~(0x000F << encoder_shift);
+		port2_mask |= (0x03 << encoder_number2);
+		P2IES |= (0x03 << encoder_number2);
+		P2IFG &= ~(0x03 << encoder_number2);
+		__enable_interrupt();
+		return 0x0000;
+	}
+
+	else if(encoder_state_temp == 0xF0 || encoder_state_temp == 0x0F){//successful rotation: reset encoder, return pin
+		encoder_state &= ~(0x000F << encoder_shift);
+		port2_mask |= (0x03 << encoder_number2);
+		P2IES |= (0x03 << encoder_number2);
+		P2IFG &= ~(0x03 << encoder_number2);
 		__enable_interrupt();
 		return (pin << 8);
 	}
-	else if (encoder_state_temp == 0x08){//when the encoder turns CW
-		encoder_rotation |= (0x02 << ((encoder_number - 1) << 1));//put a 1 in the leading bit for the respective encoder_rotation place, ie encoder_number = 2 -> encoder_rotation = 0x00001000
-	}
-	encoder_state ^= pin;
+
+	//between states: save updated encoder state, toggle mask and edge select, return 0
+	encoder_state = (encoder_state_temp << encoder_shift);
 	port2_mask ^= pin;
 	P2IES ^= pin;
 	P2IFG &= ~pin;
 	__enable_interrupt();
-	return 0x00;
+	return 0x0000;
 }
 
 /*waits for user input on port 1 or port 2; goes into low power mode if there is no input*/
@@ -153,15 +163,15 @@ void wait_for_input(){
 	bool waiting = true;
 	while(1){
 		waiting = true;
-		if(port1_check){
+		if(port1_interrupt){
 			waiting = false;
 			TA0CTL |= MC_1;//start timer for debouncing
-			port1_check = false;
+			port1_interrupt = false;
 		}
-		if (port2_check){
+		if (port2_interrupt){
 			waiting = false;
 			TA1CTL |= MC_1;//start timer for debouncing
-			port2_check = false;
+			port2_interrupt = false;
 		}
 		if(new_user_input){
 			waiting = false;

@@ -13,7 +13,7 @@
 
 #include "misc.h"
 
-extern volatile bool port1_check;
-extern volatile bool port2_check;
+extern volatile bool port1_interrupt;
+extern volatile bool port2_interrupt;
 
 #endif /* INTERRUPTS_H_ */

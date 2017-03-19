@@ -62,8 +62,8 @@ void init_ports(){
 
 void init_misc(){
 	/*init flags*/
-	volatile bool port1_check = false;
-	volatile bool port2_check = false;
+	volatile bool port1_interrupt = false;
+	volatile bool port2_interrupt = false;
 	volatile bool new_user_input = false;
 
 	/*init other variables*/
