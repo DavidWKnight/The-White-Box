@@ -28,8 +28,9 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:Main Board
 LIBS:switches
+LIBS:Main Board
+LIBS:Main Board-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -1313,5 +1314,4 @@ F 3 "" H 8650 2600 50  0000 C CNN
 	1    8650 2600
 	-1   0    0    1   
 $EndComp
-NoConn ~ 2500 2100
 $EndSCHEMATC

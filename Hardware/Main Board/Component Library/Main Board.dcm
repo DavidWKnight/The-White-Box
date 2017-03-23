@@ -5,4 +5,9 @@ D DC Barrel Jack
 K DC power barrel jack connector
 $ENDCMP
 #
+$CMP TLV320AIC3204
+D Low Power Stereo Audio Codec
+K Audio Codec, Stereo, Powertune
+$ENDCMP
+#
 #End Doc Library

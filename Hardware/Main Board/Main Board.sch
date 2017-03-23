@@ -28,8 +28,9 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:Main Board
 LIBS:switches
+LIBS:Main Board
+LIBS:Main Board-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -657,19 +658,6 @@ F 3 "" H 1700 4300 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	1700 4350 1700 4300
-$Sheet
-S 9650 4650 1000 1600
-U 586E795B
-F0 "Peripherals" 60
-F1 "Peripherals.sch" 60
-F2 "SPI_RX" I L 9650 4850 60 
-F3 "SPI_TX" I L 9650 4950 60 
-F4 "SPI_CLK" I L 9650 5100 60 
-F5 "SPI_CS0" I L 9650 5200 60 
-F6 "SPI_CS1" I L 9650 5300 60 
-F7 "SPI_CS2" I L 9650 5400 60 
-F8 "Bypass_en" I L 9650 5800 60 
-$EndSheet
 NoConn ~ 3300 5500
 NoConn ~ 3300 5300
 NoConn ~ 8650 2600
@@ -691,4 +679,17 @@ F 3 "" H 1000 5550 50  0001 C CNN
 	1    1000 5350
 	0    1    1    0   
 $EndComp
+$Sheet
+S 9650 4650 1000 1600
+U 586E795B
+F0 "Peripherals" 60
+F1 "Peripherals.sch" 60
+F2 "SPI_RX" I L 9650 4850 60 
+F3 "SPI_TX" I L 9650 4950 60 
+F4 "SPI_CLK" I L 9650 5100 60 
+F5 "SPI_CS0" I L 9650 5200 60 
+F6 "SPI_CS1" I L 9650 5300 60 
+F7 "SPI_CS2" I L 9650 5400 60 
+F8 "Bypass_en" I L 9650 5800 60 
+$EndSheet
 $EndSCHEMATC
