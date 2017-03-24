@@ -5,6 +5,11 @@ D DC Barrel Jack
 K DC power barrel jack connector
 $ENDCMP
 #
+$CMP LMR16010
+D 60V, 1A Step-Down Converter
+K switching voltage regulator,
+$ENDCMP
+#
 $CMP TLV320AIC3204
 D Low Power Stereo Audio Codec
 K Audio Codec, Stereo, Powertune
