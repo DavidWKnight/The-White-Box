@@ -9,38 +9,16 @@
 #define MENU_H_
 
 #include <msp430.h>
-#include <string.h>
-#include "misc.h"
-#include "lcd.h"
-
-#define number_of_settings 3 /*number of settings in settings menu*/
-#define non_bool_settings 1 /*point in settings menu where settings are not boolean values*/
-#define setting_max_value 100 /*highest value a setting can have*/
+#include "menu_support.h"
 
 /*prototypes for functions in menu.c*/
-unsigned int user_input_decode();
-unsigned int port1_statemachine(unsigned int);
-unsigned int port2_statemachine(unsigned int, unsigned char);
-void wait_for_input();
-void menu_effect_select_setup();
-void menu_settings_setup();
+char menu_effect_select();
+char menu_effect_edit();
+void menu_settings();
+void menu_effect_name_edit();
 
-/*declarations for variables defined in menu.c*/
-struct effect_data{
-	const int preset_number;
-	char name[LCD_line_length];
-	int effect_value[max_effect_types][4];
-};
-
-volatile bool port1_interrupt;
-volatile bool port2_interrupt;
-volatile bool new_user_input;
-
-/*external varaibles*/
-extern unsigned char port1_state;
-extern unsigned char port2_state;
-extern unsigned char port1_mask;
-extern unsigned char port2_mask;
-
+/*external variables*/
+extern char menu_settings_values[number_of_settings];
+extern struct effect_data all_effect_data;
 
 #endif /* MENU_H_ */
