@@ -30,6 +30,7 @@ LIBS:contrib
 LIBS:valves
 LIBS:Front Panel
 LIBS:switches
+LIBS:Front Panel-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -1218,7 +1219,6 @@ Text Label 1850 3250 2    60   ~ 0
 settings
 Text Label 3650 6600 2    60   ~ 0
 SPI_SIMO
-NoConn ~ 4750 3900
 NoConn ~ 4750 4100
 $Comp
 L Q_NPN_BCE Q2
@@ -1492,4 +1492,7 @@ F 3 "" H 1050 7550 50  0001 C CNN
 	1    1050 7550
 	0    -1   -1   0   
 $EndComp
+NoConn ~ 4750 3900
+Text Notes 5150 3700 0    30   ~ 0
+need to change this to I2C\nI don't have access to all of UCB0
 $EndSCHEMATC
