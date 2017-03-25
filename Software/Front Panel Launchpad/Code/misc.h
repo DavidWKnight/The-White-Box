@@ -13,13 +13,13 @@
 #include <string.h>
 #include "lcd.h"
 
-#define P1_max_checks 6
-//#define P2_max_checks 6//I need to know how long is takes to switch
-#define P2_max_checks 3
+#define P1_max_checks 6 /*how many times to check port 1 during debounce*/
+#define P2_max_checks 3	/*how many times to check port 2 during debounce*/
 
-#define max_effect_presets 250
-#define max_effect_types 8
+#define max_effect_presets 250 /*number of presets available to user*/
+#define max_effect_types 8 /*number of effect types available to user*/
 
+/*prototypes for functions in misc.c*/
 void init_ports();
 void init_misc();
 void port1_debounce();

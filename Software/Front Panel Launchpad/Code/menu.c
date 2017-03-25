@@ -10,7 +10,7 @@
 
 
 unsigned int encoder_state = 0x00;
-unsigned char encoder_state_decoder[13][4] = {
+const unsigned char encoder_state_decoder[13][4] = {
 		{0x00,0x01,0x08,0x00},//0x00
 		//CCW
 		{0x00,0x01,0x00,0x03},//0x01
@@ -23,27 +23,21 @@ unsigned char encoder_state_decoder[13][4] = {
 };
 
 /*effect select menu*/
-const char menu_effect_select_header[2][20] = {" Effect Select Menu ","   Effect Select    "};
+const char menu_effect_select_header[2][LCD_line_length] = {" Effect Select Menu ","   Effect Select    "};
 
 /*effect edit menu*/
 const char effects_available[8][20] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
 		"     Drive/Fuzz     ", "       Flange       ", "    Pitch Shift     ", "       Delay        ", "    Trem/Vibrato    "};
 
-struct effect_data{
-	const int preset_number;
-	char name[20];
-	int effect_value[max_effect_types][4];
-};
-
 #pragma PERSISTENT(all_effect_data)
 struct effect_data all_effect_data[2] = {
 		{.preset_number = 0, .name = "Preset 1"},
 		{.preset_number = 1, .name = "Preset 2"}
-		/*can declare all effect presets like this, use strcpy to change name*/
+		/*can declare all effect presets like this, use memcpy to change name*/
 };
 
 /*settings menu*/
-const char menu_settings_header[1][20] = {"   Settings Menu    "};
+const char menu_settings_header[1][LCD_line_length] = {"   Settings Menu    "};
 const char menu_settings_names[number_of_settings][14] = {"setting 1", "LED brightness", "LCD Brightness"};
 char menu_settings_values[number_of_settings] = {0,0,0};
 
@@ -224,3 +218,4 @@ void menu_settings_setup(){
 
 	return;
 }
+

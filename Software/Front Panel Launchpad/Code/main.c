@@ -15,19 +15,25 @@
 #include <stdbool.h>
 #include <string.h>
 
+/*prototypes for functions in main.c*/
 char menu_effect_select();
 char menu_effect_edit();
 void menu_settings();
+void menu_effect_name_edit();
 
+/*variables defined in main.c*/
 unsigned int effects[4] = {0,0,0,0};
-int current_effect = 0;
+int current_preset = 0;
 
+/*my .h files*/
 #include "misc.h"
 #include "menu.h"
 #include "lcd.h"
 #include "interrupts.h"
 
+/*external variables*/
 extern char menu_settings_values[number_of_settings];
+extern struct effect_data all_effect_data;
 
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
@@ -38,8 +44,6 @@ int main(void) {
 	init_misc();
 	init_LCD();
 
-	P1IFG = 0x00;
-	P2IFG = 0x00;
 	__enable_interrupt();
 	char menu_select = 1;
 	while (1){
@@ -63,20 +67,19 @@ char menu_effect_select(){
 
 	/*in menu actions*/
 	while(1){
-		wait_for_input();
+		wait_for_input(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
 		user_input = user_input_decode();//send input to state machines
-		//do actions for this menu relative to user input
 		switch(user_input){
 			/*port 1*/
 			case 0x0001:/*enc1 sw*/
-				if (current_effect > 0){
-					current_effect--;
+				if (current_preset > 0){
+					current_preset--;
 					//write effect summary
 				}
 				break;
 			case 0x0002:/*enc2 sw*/
-				if (current_effect < max_effect_presets){
-					current_effect++;
+				if (current_preset < max_effect_presets){
+					current_preset++;
 					//write effect summary
 				}
 				break;
@@ -87,14 +90,14 @@ char menu_effect_select(){
 				break;
 
 			case 0x0010:/*sw left*/
-				if (current_effect > 0){
-					current_effect--;
+				if (current_preset > 0){
+					current_preset--;
 					//write effect summary
 				}
 				break;
 			case 0x0020:/*sw right*/
-				if (current_effect < max_effect_presets){
-					current_effect++;
+				if (current_preset < max_effect_presets){
+					current_preset++;
 					//write effect summary
 				}
 				break;
@@ -103,17 +106,18 @@ char menu_effect_select(){
 				break;
 			case 0x0080:/*sw settings*/
 				menu_settings();/*enter settings menu*/
+				/*setup menu again*/
 				break;
 			/*port 2*/
 			case 0x0100:
-				if (current_effect > 0){
-					current_effect--;
+				if (current_preset > 0){
+					current_preset--;
 					//write effect summary
 				}
 				break;
 			case 0x0200:
-				if (current_effect < max_effect_presets){
-					current_effect++;
+				if (current_preset < max_effect_presets){
+					current_preset++;
 					//write effect summary
 				}
 				break;
@@ -141,7 +145,7 @@ char menu_effect_edit(){
 	unsigned int user_input = 0;
 
 	/*setup menu*/
-	menu_settings_setup();
+	menu_settings_setup(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
 	unsigned char active_effect;/*effect currently being edited*/
 
 	/*in menu actions*/
@@ -181,7 +185,8 @@ char menu_effect_edit(){
 			case 0x0040:/*sw select*/
 				return 1;/*go back to effect menu select*/
 			case 0x0080:/*sw settings*/
-				menu_settings();/*go to settings menu*/
+				menu_effect_name_edit();/*edit name of effect*/
+				/*setup menu again*/
 				break;
 			/*port 2*/
 			case 0x0100:
@@ -245,7 +250,7 @@ void menu_settings(){
 	unsigned int user_input = 0;
 
 	/*setup menu*/
-	menu_settings_setup();
+	menu_settings_setup(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
 	unsigned char current_setting = 0;/*current effect being edited*/
 
 	/*in menu actions*/
@@ -337,4 +342,87 @@ void menu_settings(){
 	}
 }
 
+void menu_effect_name_edit(){
+	unsigned int user_input = 0;
 
+	/*setup menu*/
+	struct effect_data *current_effect_ptr;
+	current_effect_ptr = (&all_effect_data + (sizeof(struct effect_data) * current_preset));
+	char name_temp[LCD_line_length];
+	memcpy(name_temp, current_effect_ptr->name, LCD_line_length);
+
+	unsigned char current_char = 0;/*current letter being changed*/
+
+	/*in menu actions*/
+	while(1){
+		wait_for_input(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
+		user_input = user_input_decode();//send input to state machines
+		switch(user_input){
+			/*port 1*/
+			case 0x0001:/*enc1 sw*/
+				if (current_char > 0){
+					current_char--;
+				}
+				break;
+			case 0x0002:/*enc2 sw*/
+				if (current_char < 19){
+					current_char++;
+				}
+				break;
+			case 0x0004:/*enc3 sw*/
+				if (name_temp[current_char] > 0x20){
+					name_temp[current_char]++;
+				}
+				break;
+			case 0x0008:/*enc4 sw*/
+				if (name_temp[current_char] < 0x78){
+					name_temp[current_char]--;
+				}
+				break;
+			case 0x0010:/*sw left*/
+				break;
+			case 0x0020:/*sw right*/
+				break;
+			case 0x0040:/*sw select*/
+				/*save new effect name*/
+				memcpy(current_effect_ptr->name, name_temp, 20);
+				return;
+			case 0x0080:/*sw settings*/
+				/*dont save new effect name*/
+				return;
+			/*port 2*/
+			case 0x0100:
+				if (current_char > 0){
+					current_char--;
+				}
+				break;
+			case 0x0200:
+				if (current_char < 19){
+					current_char++;
+				}
+				break;
+			case 0x0400:
+				if (name_temp[current_char] > 0x20){
+					name_temp[current_char]++;
+				}
+				break;
+			case 0x0800:
+				if (name_temp[current_char] < 0x78){
+					name_temp[current_char]--;
+				}
+				break;
+			case 0x1000:
+				break;
+			case 0x2000:
+				break;
+			case 0x4000:
+				break;
+			case 0x8000:
+				break;
+			/*no action*/
+			default:
+				user_input = 0x0000;
+			}
+		user_input = 0;
+	}
+}

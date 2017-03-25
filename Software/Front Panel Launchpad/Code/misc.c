@@ -19,6 +19,7 @@ void init_ports(){
 	P1OUT = 0xFF; //Pull up resistors
 	P1IE  = 0xFF; //Interrupts on all ports
 	P1IES = 0xFF; //Interrupt on high to low transition
+	P1IFG = 0x00;
 
 	/*Port 2*/
 	P2DIR = 0x00;
@@ -27,6 +28,7 @@ void init_ports(){
 	P2OUT = 0xFF; //Pull up resistors
 	P2IE  = 0xFF; //Interrupts on all ports
 	P2IES = 0xFF; //Interrupt on high to low transition
+	P2IFG = 0x00;
 
 	/*Port 3*/
 	P3DIR = 0xFF;
