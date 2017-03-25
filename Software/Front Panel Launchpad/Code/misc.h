@@ -17,6 +17,9 @@
 //#define P2_max_checks 6//I need to know how long is takes to switch
 #define P2_max_checks 3
 
+#define max_effect_presets 250
+#define max_effect_types 8
+
 void init_ports();
 void init_misc();
 void port1_debounce();

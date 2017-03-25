@@ -266,7 +266,7 @@ SW_right
 Text Label 7350 4850 2    60   ~ 0
 SW_select
 Text Label 7350 5100 2    60   ~ 0
-Reset
+settings
 Text Label 7100 3600 2    60   ~ 0
 ENC4B
 Text Label 7100 3400 2    60   ~ 0
@@ -1215,7 +1215,7 @@ SW_right
 Text Label 1850 3350 2    60   ~ 0
 SW_select
 Text Label 1850 3250 2    60   ~ 0
-Reset
+settings
 Text Label 3650 6600 2    60   ~ 0
 SPI_SIMO
 NoConn ~ 4750 3900

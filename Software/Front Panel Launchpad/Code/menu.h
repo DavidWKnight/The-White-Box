@@ -13,6 +13,10 @@
 #include "misc.h"
 #include "lcd.h"
 
+#define number_of_settings 3
+#define non_bool_settings 1 /*point in settings menu where settings are not boolean values*/
+#define setting_max_value 100
+
 unsigned int user_input_decode();
 unsigned int port1_statemachine(unsigned int);
 unsigned int port2_statemachine(unsigned int, unsigned char);
