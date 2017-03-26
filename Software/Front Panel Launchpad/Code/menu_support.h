@@ -10,7 +10,6 @@
 
 #include <msp430.h>
 #include <stdbool.h>
-#include <string.h>
 #include "misc.h"
 #include "lcd.h"
 

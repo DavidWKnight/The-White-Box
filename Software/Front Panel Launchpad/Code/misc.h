@@ -10,7 +10,6 @@
 
 #include <msp430.h>
 #include <stdbool.h>
-#include <string.h>
 #include "lcd.h"
 
 #define P1_max_checks 6 /*how many times to check port 1 during debounce*/

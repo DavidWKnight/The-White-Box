@@ -22,9 +22,6 @@ const unsigned char encoder_state_decoder[13][4] = {
 		{0x00,0x04,0x08,0x0C} /*0x0C*/
 };
 
-/*effect select menu*/
-const char menu_effect_select_header[2][LCD_line_length] = {" Effect Select Menu ","   Effect Select    "};
-
 /*effect edit menu*/
 const char effects_available[8][LCD_line_length] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
 		"     Drive/Fuzz     ", "       Flange       ", "    Pitch Shift     ", "       Delay        ", "    Trem/Vibrato    "};
@@ -32,8 +29,20 @@ const char effects_available[8][LCD_line_length] = {"        Wah         ", "   
 #pragma PERSISTENT(all_effect_data)
 struct effect_data all_effect_data[max_effect_presets] = {
 		{.preset_number = 0, .name = "Preset 1"},
-		{.preset_number = 1, .name = "Preset 2"}
-		/*can declare all effect presets like this, use memcpy to change name*/
+		{.preset_number = 1, .name = "Preset 2"},
+		{.preset_number = 2, .name = "Preset 3"},
+		{.preset_number = 3, .name = "Preset 4"},
+		{.preset_number = 4, .name = "Preset 5"},
+		{.preset_number = 5, .name = "Preset 6"},
+		{.preset_number = 6, .name = "Preset 7"},
+		{.preset_number = 7, .name = "Preset 8"},
+		{.preset_number = 8, .name = "Preset 9"},
+		{.preset_number = 9, .name = "Preset 10"}
+		/*use memcpy to change name in program*/
+		/* Python script to generate above:
+		 * for i in range (0,10,1):
+		 * 	   print("{.preset_number = " + str(i) + ", .name = \"Preset " + str(i+1) + "\"},")
+		 */
 };
 
 /*settings menu*/
@@ -196,6 +205,8 @@ void wait_for_input(){
 }
 
 void menu_effect_select_setup(){
+	/*effect select menu*/
+	const char menu_effect_select_header[2][LCD_line_length] = {" Effect Select Menu ","   Effect Select    "};
 	unsigned int i;
 	unsigned int j;
 	for (i = 0, j = 2; j > 0; j--){
@@ -204,6 +215,16 @@ void menu_effect_select_setup(){
 			LCD_write_data(menu_effect_select_header[j-1][i]);
 		}
 	}
+
+	/*put | on bottom 2 lines*/
+	LCD_cursor_pos(3,6);
+	LCD_write_data('|');
+	LCD_cursor_pos(3,15);
+	LCD_write_data('|');
+	LCD_cursor_pos(4,6);
+	LCD_write_data('|');
+	LCD_cursor_pos(4,15);
+	LCD_write_data('|');
 
 	return;
 }

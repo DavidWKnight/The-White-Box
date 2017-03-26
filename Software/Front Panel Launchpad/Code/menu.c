@@ -338,7 +338,7 @@ void menu_effect_name_edit(){
 				break;
 			case 0x0040:/*sw select*/
 				/*save new effect name*/
-				memcpy(current_effect_ptr->name, name_temp, 20);
+				memcpy(current_effect_ptr->name, name_temp, LCD_line_length);
 				return;
 			case 0x0080:/*sw settings*/
 				/*dont save new effect name*/

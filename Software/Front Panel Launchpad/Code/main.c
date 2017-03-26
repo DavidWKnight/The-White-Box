@@ -12,7 +12,6 @@
 
 
 #include <msp430.h> 
-#include <string.h>
 
 /*my .h files*/
 #include "misc.h"
