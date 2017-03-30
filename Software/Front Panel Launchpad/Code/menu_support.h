@@ -24,8 +24,8 @@ unsigned int user_input_decode();
 unsigned int port1_statemachine(unsigned int);
 unsigned int port2_statemachine(unsigned int, unsigned char);
 void wait_for_input();
-void menu_effect_select_setup();
-void menu_settings_setup();
+void effect_select_setup();
+void settings_setup();
 
 /*declarations for variables defined in menu.c*/
 struct effect_data{

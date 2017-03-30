@@ -16,7 +16,7 @@ char menu_effect_select(){
 	unsigned int user_input = 0;
 
 	/*setup menu*/
-	menu_effect_select_setup();
+	effect_select_setup();
 
 	/*in menu actions*/
 	while(1){
@@ -98,7 +98,7 @@ char menu_effect_edit(){
 	unsigned int user_input = 0;
 
 	/*setup menu*/
-	menu_settings_setup(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
+	settings_setup(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
 	unsigned char active_effect;/*effect currently being edited*/
 
 	/*in menu actions*/
@@ -203,7 +203,7 @@ void menu_settings(){
 	unsigned int user_input = 0;
 
 	/*setup menu*/
-	menu_settings_setup(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
+	settings_setup(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
 	unsigned char current_setting = 0;/*current effect being edited*/
 
 	/*in menu actions*/

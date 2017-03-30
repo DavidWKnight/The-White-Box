@@ -204,7 +204,7 @@ void wait_for_input(){
 	}
 }
 
-void menu_effect_select_setup(){
+void effect_select_setup(){
 	/*effect select menu*/
 	const char menu_effect_select_header[2][LCD_line_length] = {" Effect Select Menu ","   Effect Select    "};
 	unsigned int i;
@@ -229,7 +229,7 @@ void menu_effect_select_setup(){
 	return;
 }
 
-void menu_settings_setup(){
+void settings_setup(){
 	unsigned int i;
 	LCD_cursor_pos(1,1);
 	for (i = 0; i < LCD_line_length; i++){
