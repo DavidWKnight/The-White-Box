@@ -10,13 +10,13 @@
 
 /*variables defined in menu.c*/
 unsigned int effects[4] = {0,0,0,0};
-int current_preset = 0;
 
 char menu_effect_select(){
 	unsigned int user_input = 0;
 
 	/*setup menu*/
 	effect_select_setup();
+	effect_select_write_effects();
 
 	/*in menu actions*/
 	while(1){
@@ -295,6 +295,7 @@ void menu_settings(){
 	}
 }
 
+/*need to add supprot to edit name_short in this menu, can be just done on another line*/
 void menu_effect_name_edit(){
 	unsigned int user_input = 0;
 

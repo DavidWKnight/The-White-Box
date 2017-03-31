@@ -25,18 +25,21 @@ unsigned int port1_statemachine(unsigned int);
 unsigned int port2_statemachine(unsigned int, unsigned char);
 void wait_for_input();
 void effect_select_setup();
+void effect_select_write_effects();
 void settings_setup();
 
 /*declarations for variables defined in menu.c*/
 struct effect_data{
 	const int preset_number;
 	char name[LCD_line_length];
+	char name_short[5];
 	int effect_value[max_effect_types][4];
 };
 
 volatile bool port1_interrupt;
 volatile bool port2_interrupt;
 volatile bool new_user_input;
+unsigned int current_preset;
 
 /*external varaibles*/
 extern unsigned char port1_state;
