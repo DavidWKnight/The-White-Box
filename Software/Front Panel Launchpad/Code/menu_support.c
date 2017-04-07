@@ -28,16 +28,16 @@ const char effects_available[8][LCD_line_length] = {"        Wah         ", "   
 
 #pragma PERSISTENT(all_effect_data)
 struct effect_data all_effect_data[max_effect_presets] = {
-		{.preset_number = 0, .name = "Preset 1", .name_short = "Pre 1"},
-		{.preset_number = 1, .name = "Preset 2", .name_short = "Pre 2"},
-		{.preset_number = 2, .name = "Preset 3", .name_short = "Pre 3"},
-		{.preset_number = 3, .name = "Preset 4", .name_short = "Pre 4"},
-		{.preset_number = 4, .name = "Preset 5", .name_short = "Pre 5"},
-		{.preset_number = 5, .name = "Preset 6"},
-		{.preset_number = 6, .name = "Preset 7"},
-		{.preset_number = 7, .name = "Preset 8"},
-		{.preset_number = 8, .name = "Preset 9"},
-		{.preset_number = 9, .name = "Preset 10"}
+		{.preset_number = 0, .name = "Preset 1", .name_short = "Pr 1"},
+		{.preset_number = 1, .name = "Preset 2", .name_short = "Pr 2"},
+		{.preset_number = 2, .name = "Preset 3", .name_short = "Pr 3"},
+		{.preset_number = 3, .name = "Preset 4", .name_short = "Pr 4"},
+		{.preset_number = 4, .name = "Preset 5", .name_short = "Pr 5"},
+		{.preset_number = 5, .name = "Preset 6", .name_short = "Pr 6"},
+		{.preset_number = 6, .name = "Preset 7", .name_short = "Pr 7"},
+		{.preset_number = 7, .name = "Preset 8", .name_short = "Pr 8"},
+		{.preset_number = 8, .name = "Preset 9", .name_short = "Pr 9"},
+		{.preset_number = 9, .name = "Preset 10", .name_short = "Pr 10"}
 		/*use memcpy to change name in program*/
 		/* Python script to generate above:
 		 * for i in range (0,10,1):
@@ -205,7 +205,7 @@ void wait_for_input(){
 }
 
 void effect_select_setup(){
-	current_preset = 0;
+	current_preset = 2;
 
 	/*effect select menu*/
 	const char menu_effect_select_header[2][LCD_line_length] = {" Effect Select Menu ","   Effect Select    "};
@@ -232,35 +232,41 @@ void effect_select_setup(){
 }
 
 /*writes the summary of current effect preset in menu_effect_select*/
-/*can be dome much better... redo later*/
 void effect_select_write_effects(){
-	/*this variable section should be redone*/
-	const unsigned int name_length[3] = {5,8,5};
-	const unsigned int name_start[3] = {1,7,16};
+	const unsigned int start[4] = {1,8,16};
+	const unsigned int length[4] = {5,6,5};
+	unsigned int i;
+	unsigned int j;
 
-	int i = current_preset - 1;
-	unsigned int j = 0;
-	unsigned int k = 0;
+	/*write to line 3, string*/
+	for (i = 0; i < 3; i++){
+		LCD_cursor_pos(3,start[i]);
 
-	for (; j < 3; j++, i++){
-		LCD_cursor_pos(3,name_start[j]);
-		if (i < 0 || i == max_effect_presets){
-			for (k = 5; k > 0; k--){
-				LCD_write_data(' ');
-			}
-			LCD_cursor_pos(4,name_start[j]);
-			for (k = 5; k > 0; k--){
+		if (current_preset+i == 0 || current_preset+i == max_effect_presets+1){
+			for (j = 0; j < length[i]; j++){
 				LCD_write_data(' ');
 			}
 		}
 		else{
-			LCD_write_data(current_preset);
-
-			LCD_cursor_pos(4,name_start[j]);
-			for (k = 0; k < name_length[j]; k++){
-				LCD_write_data(all_effect_data[i].name_short[k]);
+			for (j = 0; j < length[i]; j++){
+				LCD_write_data(all_effect_data[current_preset+i-1].name_short[j]);
 			}
+		}
+	}
 
+	/*write to line 4, string*/
+	for (i = 0; i < 3; i++){
+		LCD_cursor_pos(4,start[i]);
+
+		if (current_preset+i == 0 || current_preset+i == max_effect_presets+1){
+			for (j = 0; j < length[i]; j++){
+				LCD_write_data(' ');
+			}
+		}
+		else{
+			for (j = 0; j < length[i]; j++){
+				LCD_write_data(all_effect_data[current_preset+i-1].name_short[j]);
+			}
 		}
 	}
 

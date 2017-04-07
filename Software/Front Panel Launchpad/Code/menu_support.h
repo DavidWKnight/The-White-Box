@@ -32,14 +32,14 @@ void settings_setup();
 struct effect_data{
 	const int preset_number;
 	char name[LCD_line_length];
-	char name_short[5];
+	char name_short[6];
 	int effect_value[max_effect_types][4];
 };
 
 volatile bool port1_interrupt;
 volatile bool port2_interrupt;
 volatile bool new_user_input;
-unsigned int current_preset;
+static unsigned int current_preset;
 
 /*external varaibles*/
 extern unsigned char port1_state;
