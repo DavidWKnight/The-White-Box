@@ -325,7 +325,7 @@ void effect_select_write_effects(){
 
 /*sets up every line for menu_effect_edit*/
 void effect_edit_setup(unsigned char active_effect){
-	const char line_3[LCD_line_length] = " FX1 | FX2| FX3| FX4";
+	const char line_3[LCD_line_length] = "  FX1| FX2| FX3| FX4";
 	unsigned int i;
 
 	/*line 1*/
@@ -375,7 +375,7 @@ void effect_edit_load_params(unsigned char active_effect){
 
 /*writes the value of a give parameter of the current active effect onto the bottom row of the LCD*/
 void effect_edit_write_FX(unsigned int effect_param){
-	LCD_cursor_pos(LCD_line_count,(effect_param*(LCD_line_length/4)) + 1);
+	LCD_cursor_pos(LCD_line_count,(effect_param*(LCD_line_length/4)) + 2);
 	unsigned int temp = effects[effect_param];
 	unsigned int temp2 = 0;
 	const unsigned int remove_zeros[(LCD_line_length/4) - 2] = {999,99,9};

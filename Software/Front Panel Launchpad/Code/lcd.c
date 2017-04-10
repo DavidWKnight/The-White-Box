@@ -29,20 +29,22 @@ void init_LCD(){
 
 /*send data to LCD screen*/
 void LCD_write_data(char buffer){
+	char temp = POUT_LED;
 	LCD_data_out = 0x00;
 	LCD_data_out |= buffer;
 	LCD_cmd_out = 0x00;
 	LCD_cmd_out |= LCD_RS;
 	LCD_cmd_out &= ~LCD_RW;
 	LCD_cmd_out |= LCD_E;
-	delay_us(100);/*change this to 100us*/
+	delay_us(100);
 	LCD_cmd_out &= ~LCD_E;
-
+	POUT_LED = temp;
 	return;
 }
 
 /*send command to LCD screen*/
 void LCD_write_cmd(char buffer){
+	char temp = POUT_LED;
 	LCD_data_out = 0x00;
 	LCD_data_out |= buffer;
 	LCD_cmd_out = 0x00;
@@ -51,7 +53,7 @@ void LCD_write_cmd(char buffer){
 	LCD_cmd_out |= LCD_E;
 	delay_us(100);
 	LCD_cmd_out &= ~LCD_E;
-
+	POUT_LED = temp;
 	return;
 }
 

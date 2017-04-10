@@ -29,7 +29,7 @@ int main(void) {
 	init_LCD();
 
 	__enable_interrupt();
-	char menu_select = 1;
+	char menu_select = 2;
 	while (1){
 		switch (menu_select){
 		case 1:
