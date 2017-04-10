@@ -51,7 +51,12 @@ void LCD_write_cmd(char buffer){
 	LCD_cmd_out &= ~LCD_RS;
 	LCD_cmd_out &= ~LCD_RW;
 	LCD_cmd_out |= LCD_E;
-	delay_us(100);
+	if (buffer & 0x80 > 0){
+		delay_us(100);
+	}
+	else{
+	delay_ms(2);
+	}
 	LCD_cmd_out &= ~LCD_E;
 	POUT_LED = temp;
 	return;

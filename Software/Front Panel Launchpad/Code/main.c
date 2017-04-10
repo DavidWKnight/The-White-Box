@@ -11,7 +11,7 @@
  */
 
 
-#include <msp430.h> 
+#include <msp430.h>
 
 /*my .h files*/
 #include "misc.h"

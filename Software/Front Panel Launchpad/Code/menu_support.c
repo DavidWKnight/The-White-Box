@@ -212,7 +212,14 @@ void full_update_DSP(){
 
 /*updates the DSP with a single effect and a single parameter*/
 void update_DSP(unsigned int effect, unsigned int param){
-	/*write data to SPI TX then return*/
+	unsigned int temp = 0;
+	temp |= (effect << 10) + (param << 8) + (all_effect_data[active_preset].effect_value[effect][param]);
+	/*write temp to SPI TX then return*/
+
+	/* 3 bits - effect #
+	 * 2 bits - parameter #
+	 * 8 bits - parameter value
+	 */
 	return;
 }
 
@@ -239,6 +246,8 @@ void update_LED(){
 void effect_select_setup(){
 	const char menu_effect_select_header[LCD_line_length] = {" Effect Select Menu "};
 	unsigned int i;
+
+	LCD_write_cmd(0x01);//clear display
 
 	/*line 1*/
 	LCD_cursor_pos(1,1);
@@ -322,6 +331,8 @@ void effect_edit_setup(unsigned char active_effect){
 	const char line_3[LCD_line_length] = "  FX1| FX2| FX3| FX4";
 	unsigned int i;
 
+	LCD_write_cmd(0x01);//clear display
+
 	/*line 1*/
 	LCD_cursor_pos(1,1);
 	for (i = 0; i < LCD_line_length; i++){
@@ -350,6 +361,9 @@ void effect_edit_setup(unsigned char active_effect){
 }
 
 /*saves the data currently in effects[]*/
+/*
+ * DOES NOT PROPERLY SAVE RIGHT NOW, all_effect_data not changing -> figure out why
+ */
 void effect_edit_save_params(unsigned char active_effect){
 	unsigned int i = 0;
 	for (i = 0; i < max_effect_param; i++){
@@ -397,6 +411,9 @@ void effect_edit_write_FX(unsigned int effect_param){
 
 void settings_setup(){
 	unsigned int i;
+
+	LCD_write_cmd(0x01);//clear display
+
 	LCD_cursor_pos(1,1);
 	for (i = 0; i < LCD_line_length; i++){
 		LCD_write_data(menu_settings_header[0][i]);

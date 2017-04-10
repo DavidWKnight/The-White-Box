@@ -22,6 +22,7 @@
 #define non_bool_settings 1 /*point in settings menu where settings are not boolean values*/
 
 /*prototypes for functions in menu_support.c*/
+
 /*generic menu functions*/
 unsigned int user_input_decode();
 unsigned int port1_statemachine(unsigned int);
@@ -30,15 +31,18 @@ void wait_for_input();
 void full_update_DSP();
 void update_DSP(unsigned int, unsigned int);
 void update_LED();
+
 /*effect select functions*/
 void effect_select_setup();
 void effect_select_update_active();
 void effect_select_write_effects();
+
 /*effect edit functions*/
 void effect_edit_setup(unsigned char);
 void effect_edit_save_params(unsigned char);
 void effect_edit_load_params(unsigned char);
 void effect_edit_write_FX(unsigned int);
+
 /*settings functions*/
 void settings_setup();
 
