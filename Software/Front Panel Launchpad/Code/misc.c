@@ -73,8 +73,8 @@ void init_misc(){
 	port2_state = 0x00;
 	port1_mask = 0xFF;
 	port2_mask = 0xFF;
-	current_preset = 7;
-	active_preset = 3;
+	current_preset = 0;
+	active_preset = 0;
 
 	/*Port 1 debounce routine timer*/
 	TA0R = 0x00;//start counter at 0

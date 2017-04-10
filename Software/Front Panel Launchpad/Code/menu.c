@@ -24,7 +24,7 @@ char menu_effect_select(){
 		switch(user_input){
 			/*port 1*/
 			case 0x0001:/*enc1 sw*/
-				if (current_preset > 0){
+				if (current_preset > 1){
 					current_preset--;
 					effect_select_write_effects();
 				}
@@ -43,7 +43,7 @@ char menu_effect_select(){
 				break;
 
 			case 0x0010:/*sw left*/
-				if (current_preset > 0){
+				if (current_preset > 1){
 					current_preset--;
 					effect_select_write_effects();
 				}
@@ -67,7 +67,7 @@ char menu_effect_select(){
 				break;
 			/*port 2*/
 			case 0x0100:
-				if (current_preset > 0){
+				if (current_preset > 1){
 					current_preset--;
 					effect_select_write_effects();
 				}

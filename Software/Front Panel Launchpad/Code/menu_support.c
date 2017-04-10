@@ -22,27 +22,19 @@ const unsigned char encoder_state_decoder[13][4] = {
 		{0x00,0x04,0x08,0x0C} /*0x0C*/
 };
 
-/*effect edit menu*/
-const char effects_available[max_effect_types][LCD_line_length] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
-		"     Drive/Fuzz     ", "       Flange       ", "    Pitch Shift     ", "       Delay        ", "    Trem/Vibrato    "};
-
 #pragma PERSISTENT(all_effect_data)
 struct effect_data all_effect_data[max_effect_presets] = {
-		{.preset_number = 0, .name = "      Preset 1      ", .name_short = "Pr 1  "},
-		{.preset_number = 1, .name = "      Preset 2      ", .name_short = "Pr 2  "},
-		{.preset_number = 2, .name = "      Preset 3      ", .name_short = "Pr 3  "},
-		{.preset_number = 3, .name = "      Preset 4      ", .name_short = "Pr 4  "},
-		{.preset_number = 4, .name = "      Preset 5      ", .name_short = "Pr 5  "},
-		{.preset_number = 5, .name = "      Preset 6      ", .name_short = "Pr 6  "},
-		{.preset_number = 6, .name = "      Preset 7      ", .name_short = "Pr 7  "},
-		{.preset_number = 7, .name = "      Preset 8      ", .name_short = "Pr 8  "},
-		{.preset_number = 8, .name = "      Preset 9      ", .name_short = "Pr 9  "},
-		{.preset_number = 9, .name = "      Preset 10     ", .name_short = "Pr 10 "}
+		{.preset_number = 0, .name = "      No Effect     ", .name_short = "No FX "},/*Preset 0 is reserved as the default no effect preset*/
+		{.preset_number = 1, .name = "      Preset 1      ", .name_short = "Pr 1  "},
+		{.preset_number = 2, .name = "      Preset 2      ", .name_short = "Pr 2  "},
+		{.preset_number = 3, .name = "      Preset 3      ", .name_short = "Pr 3  "},
+		{.preset_number = 4, .name = "      Preset 4      ", .name_short = "Pr 4  "},
+		{.preset_number = 5, .name = "      Preset 5      ", .name_short = "Pr 5  "},
+		{.preset_number = 6, .name = "      Preset 6      ", .name_short = "Pr 6  "},
+		{.preset_number = 7, .name = "      Preset 7      ", .name_short = "Pr 7  "},
+		{.preset_number = 8, .name = "      Preset 8      ", .name_short = "Pr 8  "},
+		{.preset_number = 9, .name = "      Preset 9      ", .name_short = "Pr 9  "}
 		/*use memcpy to change name in program*/
-		/* Python script to generate above:
-		 * for i in range (0,10,1):
-		 * 	   print("{.preset_number = " + str(i) + ", .name = \"Preset " + str(i+1) + "\"},")
-		 */
 };
 
 /*settings menu*/
@@ -325,6 +317,8 @@ void effect_select_write_effects(){
 
 /*sets up every line for menu_effect_edit*/
 void effect_edit_setup(unsigned char active_effect){
+	const char effects_available[max_effect_types][LCD_line_length] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
+			"     Drive/Fuzz     ", "       Flange       ", "    Pitch Shift     ", "       Delay        ", "    Trem/Vibrato    "};
 	const char line_3[LCD_line_length] = "  FX1| FX2| FX3| FX4";
 	unsigned int i;
 
