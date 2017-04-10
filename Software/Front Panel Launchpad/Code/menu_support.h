@@ -59,6 +59,8 @@ extern unsigned char port1_state;
 extern unsigned char port2_state;
 extern unsigned char port1_mask;
 extern unsigned char port2_mask;
+extern unsigned int current_preset;
+extern unsigned int active_preset;
 extern unsigned char effects[max_effect_param];
 
 #endif /* MENU_SUPPORT_H_ */

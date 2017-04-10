@@ -23,5 +23,6 @@ unsigned char effects[max_effect_param];
 extern char menu_settings_values[number_of_settings];
 extern struct effect_data all_effect_data;
 extern unsigned int current_preset;
+extern unsigned int active_preset;
 
 #endif /* MENU_H_ */

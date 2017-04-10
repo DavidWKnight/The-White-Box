@@ -22,13 +22,15 @@ void init_misc();
 void port1_debounce();
 void port2_debounce();
 void delay_ms(unsigned int);
+void delay_us(unsigned int);
 
 unsigned char port1_state;
 unsigned char port2_state;
 unsigned char port1_mask;
 unsigned char port2_mask;
-static unsigned int current_preset;
-static unsigned int active_preset;
+unsigned int current_preset;
+unsigned int active_preset;
+
 extern volatile bool new_user_input;
 
 #endif /* MISC_H_ */

@@ -28,16 +28,16 @@ const char effects_available[max_effect_types][LCD_line_length] = {"        Wah 
 
 #pragma PERSISTENT(all_effect_data)
 struct effect_data all_effect_data[max_effect_presets] = {
-		{.preset_number = 0, .name = "Preset 1", .name_short = "Pr 1"},
-		{.preset_number = 1, .name = "Preset 2", .name_short = "Pr 2"},
-		{.preset_number = 2, .name = "Preset 3", .name_short = "Pr 3"},
-		{.preset_number = 3, .name = "Preset 4", .name_short = "Pr 4"},
-		{.preset_number = 4, .name = "Preset 5", .name_short = "Pr 5"},
-		{.preset_number = 5, .name = "Preset 6", .name_short = "Pr 6"},
-		{.preset_number = 6, .name = "Preset 7", .name_short = "Pr 7"},
-		{.preset_number = 7, .name = "Preset 8", .name_short = "Pr 8"},
-		{.preset_number = 8, .name = "Preset 9", .name_short = "Pr 9"},
-		{.preset_number = 9, .name = "Preset 10", .name_short = "Pr 10"}
+		{.preset_number = 0, .name = "      Preset 1      ", .name_short = "Pr 1  "},
+		{.preset_number = 1, .name = "      Preset 2      ", .name_short = "Pr 2  "},
+		{.preset_number = 2, .name = "      Preset 3      ", .name_short = "Pr 3  "},
+		{.preset_number = 3, .name = "      Preset 4      ", .name_short = "Pr 4  "},
+		{.preset_number = 4, .name = "      Preset 5      ", .name_short = "Pr 5  "},
+		{.preset_number = 5, .name = "      Preset 6      ", .name_short = "Pr 6  "},
+		{.preset_number = 6, .name = "      Preset 7      ", .name_short = "Pr 7  "},
+		{.preset_number = 7, .name = "      Preset 8      ", .name_short = "Pr 8  "},
+		{.preset_number = 8, .name = "      Preset 9      ", .name_short = "Pr 9  "},
+		{.preset_number = 9, .name = "      Preset 10     ", .name_short = "Pr 10 "}
 		/*use memcpy to change name in program*/
 		/* Python script to generate above:
 		 * for i in range (0,10,1):
