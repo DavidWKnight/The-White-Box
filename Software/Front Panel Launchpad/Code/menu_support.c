@@ -362,7 +362,7 @@ void effect_edit_setup(unsigned char active_effect){
 
 /*saves the data currently in effects[]*/
 /*
- * DOES NOT PROPERLY SAVE RIGHT NOW, all_effect_data not changing -> figure out why
+ * IT REMEMBERS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 void effect_edit_save_params(unsigned char active_effect){
 	unsigned int i = 0;

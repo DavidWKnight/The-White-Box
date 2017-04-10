@@ -5,13 +5,15 @@
  */
 
 /* Things to change for prototype
- * misc.c remove line port_state &= 0xFFFE; in port1_debounce and port2_debounce
+ * misc.c remove line port1_check &= 0xFFFE; in port1_debounce
  * edit #define's in lcd.h for the bits and ports used for the lcd
  *
  */
 
 
 #include <msp430.h>
+
+#define launchpad
 
 /*my .h files*/
 #include "misc.h"

@@ -76,6 +76,10 @@ void init_misc(){
 	current_preset = 0;
 	active_preset = 0;
 
+	/*FRAM write protection*/
+	SYSCFG0 &= ~DFWP;
+	SYSCFG0 &= ~PFWP;
+
 	/*Port 1 debounce routine timer*/
 	TA0R = 0x00;//start counter at 0
 	TA0CCR0 = 0x3E8;//trigger interrupt every .5ms
@@ -99,7 +103,9 @@ void port1_debounce(){
 	i++;
 	if (i >= P1_max_checks){
 		i = 0;
+#ifdef launchpad
 		P1_check &= 0xFE;//This is because pin 1 is always low in the launchpad; change on prototype board
+#endif
 		if (P1_check > 0){
 			port1_state |= P1_check;
 			new_user_input = true;

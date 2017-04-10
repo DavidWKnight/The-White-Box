@@ -39,6 +39,12 @@ char menu_effect_select(){
 					return 2;/*enter menu effect edit*/
 				}
 			case 0x0008:/*enc4 sw*/
+#ifdef launchpad
+				if (current_preset != 0){ /*Preset 0 is reserved*/
+					active_preset = current_preset;
+					return 2;/*enter menu effect edit*/
+				}
+#endif
 				/*do nothing*/
 				break;
 
@@ -137,6 +143,10 @@ char menu_effect_edit(){
 				return 1;
 
 			case 0x0008:/*enc4 sw*/
+#ifdef launchpad
+				effect_edit_save_params(active_effect);
+				return 1;
+#endif
 				break;
 
 			case 0x0010:/*sw left*/
