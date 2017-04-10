@@ -7,6 +7,7 @@
 
 #include "lcd.h"
 
+/*this doesn't save any time, it actually wastes time, remove it*/
 char on_screen[LCD_line_count][LCD_line_length];
 unsigned int on_screen_row_iterator = 0;
 unsigned int on_screen_col_iterator = 0;
@@ -32,6 +33,7 @@ void init_LCD(){
 
 /*send data to LCD screen*/
 void LCD_write_data(char buffer){
+	/*prevents writing data to screen if the correct char is already there*/
 	if (buffer == on_screen[on_screen_row_iterator][on_screen_col_iterator]){
 		LCD_cursor_pos(on_screen_row_iterator+1, on_screen_col_iterator+2);
 	}
@@ -42,7 +44,7 @@ void LCD_write_data(char buffer){
 		LCD_cmd_out |= LCD_RS;
 		LCD_cmd_out &= ~LCD_RW;
 		LCD_cmd_out |= LCD_E;
-		delay_ms(1);
+		delay_ms(1);/*change this to 50us*/
 		LCD_cmd_out &= ~LCD_E;
 
 		on_screen[on_screen_row_iterator][on_screen_col_iterator] = buffer;

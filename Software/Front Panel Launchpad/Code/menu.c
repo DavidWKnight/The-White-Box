@@ -8,8 +8,7 @@
 
 #include "menu.h"
 
-/*variables defined in menu.c*/
-unsigned int effects[4] = {0,0,0,0};
+
 
 char menu_effect_select(){
 	unsigned int user_input = 0;
@@ -37,6 +36,7 @@ char menu_effect_select(){
 				}
 				break;
 			case 0x0004:/*enc3 sw*/
+				active_preset = current_preset;
 				return 2;/*enter menu effect edit*/
 			case 0x0008:/*enc4 sw*/
 				/*do nothing*/
@@ -55,11 +55,15 @@ char menu_effect_select(){
 				}
 				break;
 			case 0x0040:/*sw select*/
-				/*enable effect*/
+				full_update_DSP();
+				update_LED();
+				active_preset = current_preset;
+				effect_select_update_active();
 				break;
 			case 0x0080:/*sw settings*/
 				menu_settings();/*enter settings menu*/
-				/*setup menu again*/
+				effect_select_setup();
+				effect_select_write_effects();
 				break;
 			/*port 2*/
 			case 0x0100:
@@ -96,29 +100,37 @@ char menu_effect_select(){
 
 char menu_effect_edit(){
 	unsigned int user_input = 0;
+	unsigned int temp = 0;
+	unsigned int i = 0;
+	unsigned char active_effect = 0;/*effect currently being edited*/
 
 	/*setup menu*/
-	settings_setup(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
-	unsigned char active_effect;/*effect currently being edited*/
+	effect_edit_load_params(active_effect);
+	full_update_DSP();
+	update_LED();
+	effect_edit_setup(active_effect);
 
 	/*in menu actions*/
 	while(1){
 		wait_for_input();
 		user_input = user_input_decode();
 		switch(user_input){
-
 			/*port 1*/
 			case 0x0001:/*enc1 sw*/
 				if (active_effect > 0){
+					effect_edit_save_params(active_effect);
 					active_effect--;
-					/*write new effect data to DSP*/
+					effect_edit_load_params(active_effect);
+					effect_edit_setup(active_effect);
 				}
 				break;
 
 			case 0x0002:/*enc2 sw*/
 				if (active_effect < max_effect_types){
+					effect_edit_save_params(active_effect);
 					active_effect++;
-					/*write new effect data to DSP*/
+					effect_edit_load_params(active_effect);
+					effect_edit_setup(active_effect);
 				}
 				break;
 
@@ -130,15 +142,19 @@ char menu_effect_edit(){
 
 			case 0x0010:/*sw left*/
 				if (active_effect > 0){
+					effect_edit_save_params(active_effect);
 					active_effect--;
-					/*write new effect data to DSP*/
+					effect_edit_load_params(active_effect);
+					effect_edit_setup(active_effect);
 				}
 				break;
 
 			case 0x0020:/*sw right*/
 				if (active_effect < max_effect_types){
+					effect_edit_save_params(active_effect);
 					active_effect++;
-					/*write new effect data to DSP*/
+					effect_edit_load_params(active_effect);
+					effect_edit_setup(active_effect);
 				}
 				break;
 
@@ -154,56 +170,64 @@ char menu_effect_edit(){
 			case 0x0100:
 				if (effects[0] < 100){
 					effects[0]++;
-					lcd_write_effects(0);
+					effect_edit_write_FX(0);
+					update_DSP(active_effect, 0);
 				}
 				break;
 
 			case 0x0200:
 				if (effects[0] > 0){
 					effects[0]--;
-					lcd_write_effects(0);
+					effect_edit_write_FX(0);
+					update_DSP(active_effect, 0);
 				}
 				break;
 
 			case 0x0400:
 				if (effects[1] < 100){
 					effects[1]++;
-					lcd_write_effects(1);
+					effect_edit_write_FX(1);
+					update_DSP(active_effect, 1);
 				}
 				break;
 
 			case 0x0800:
 				if (effects[1] > 0){
 					effects[1]--;
-					lcd_write_effects(1);
+					effect_edit_write_FX(1);
+					update_DSP(active_effect, 1);
 				}
 				break;
 
 			case 0x1000:
 				if (effects[2] < 100){
 					effects[2]++;
-					lcd_write_effects(2);
+					effect_edit_write_FX(2);
+					update_DSP(active_effect, 2);
 				}
 				break;
 
 			case 0x2000:
 				if (effects[2] > 0){
 					effects[2]--;
-					lcd_write_effects(2);
+					effect_edit_write_FX(2);
+					update_DSP(active_effect, 2);
 				}
 				break;
 
 			case 0x4000:
 				if (effects[3] > 0){
 					effects[3]--;
-					lcd_write_effects(3);
+					effect_edit_write_FX(3);
+					update_DSP(active_effect, 3);
 				}
 				break;
 
 			case 0x8000:
 				if (effects[3] > 0){
 					effects[3]--;
-					lcd_write_effects(3);
+					effect_edit_write_FX(3);
+					update_DSP(active_effect, 3);
 				}
 				break;
 
@@ -211,6 +235,16 @@ char menu_effect_edit(){
 			default:
 				user_input = 0x0000;
 			}
+		/*update leds*/
+		for (i = 0; i < max_effect_param; i++){
+			temp += effects[i];
+		}
+		if (temp > 0){
+			POUT_LED |= (1 << active_effect);
+		}
+		else {
+			POUT_LED &= ~(1 << active_effect);
+		}
 
 		user_input = 0;
 	}
@@ -229,7 +263,6 @@ void menu_settings(){
 		wait_for_input();
 		user_input = user_input_decode();
 		switch(user_input){
-
 			/*port 1*/
 			case 0x0001:/*enc1 sw*/
 				if (current_setting > 0){
@@ -331,7 +364,7 @@ void menu_settings(){
 	}
 }
 
-/*need to add supprot to edit name_short in this menu, can be just done on another line*/
+/*need to add support to edit name_short in this menu, can be just done on another line*/
 void menu_effect_name_edit(){
 	unsigned int user_input = 0;
 
@@ -348,7 +381,6 @@ void menu_effect_name_edit(){
 		wait_for_input(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
 		user_input = user_input_decode();//send input to state machines
 		switch(user_input){
-
 			/*port 1*/
 			case 0x0001:/*enc1 sw*/
 				if (current_char > 0){

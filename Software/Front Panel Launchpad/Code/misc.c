@@ -73,6 +73,8 @@ void init_misc(){
 	port2_state = 0x00;
 	port1_mask = 0xFF;
 	port2_mask = 0xFF;
+	current_preset = 0;
+	active_preset = 0;
 
 	/*Port 1 debounce routine timer*/
 	TA0R = 0x00;//start counter at 0
@@ -125,34 +127,6 @@ void port2_debounce(){
 		P2_check = 0xFF;
 		TA1CTL &= 0xFFCF;
 	}
-}
-
-/*writes a number onto the bottom row of the LCD screen in the pattern < FX1|FX2|FX3|FX4> */
-void lcd_write_effects(unsigned int effect_num){
-	LCD_cursor_pos(LCD_line_count,(effect_num*(LCD_line_length/4)) + 1);
-	unsigned int temp = effects[effect_num];
-	unsigned int temp2 = 0;
-	const unsigned int remove_zeros[(LCD_line_length/4) - 2] = {999,99,9};
-	const unsigned int power_ten[LCD_line_length/4-1] = {1000,100,10,1};
-	unsigned int i = 0;
-
-	/*remove leading zeros*/
-	for (temp2 = remove_zeros[i]; i < 3; temp2 = remove_zeros[i]){
-		if (temp > temp2){
-			break;
-		}
-		else {
-			LCD_write_data(' ');
-			i++;
-		}
-	}
-
-	for (temp2 = 0; i < (LCD_line_length/4) - 1; i++){
-		temp2 = temp / power_ten[i];
-		LCD_write_data(temp2+48);
-		temp -= temp2 * power_ten[i];
-	}
-
 }
 
 void delay_ms(unsigned int delay){

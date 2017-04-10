@@ -17,7 +17,7 @@ char menu_effect_edit();
 void menu_settings();
 void menu_effect_name_edit();
 
-
+unsigned char effects[max_effect_param];
 
 /*external variables*/
 extern char menu_settings_values[number_of_settings];

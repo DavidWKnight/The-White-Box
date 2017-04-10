@@ -23,7 +23,7 @@ const unsigned char encoder_state_decoder[13][4] = {
 };
 
 /*effect edit menu*/
-const char effects_available[8][LCD_line_length] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
+const char effects_available[max_effect_types][LCD_line_length] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
 		"     Drive/Fuzz     ", "       Flange       ", "    Pitch Shift     ", "       Delay        ", "    Trem/Vibrato    "};
 
 #pragma PERSISTENT(all_effect_data)
@@ -204,19 +204,57 @@ void wait_for_input(){
 	}
 }
 
-void effect_select_setup(){
-	current_preset = 2;
+/*does a full update of the DSP*/
+void full_update_DSP(){
+	unsigned int i, j;
 
-	/*effect select menu*/
-	const char menu_effect_select_header[2][LCD_line_length] = {" Effect Select Menu ","   Effect Select    "};
-	unsigned int i;
-	unsigned int j;
-	for (i = 0, j = 2; j > 0; j--){
-		LCD_cursor_pos(j,1);
-		for (i = 0; i < LCD_line_length; i++){
-			LCD_write_data(menu_effect_select_header[j-1][i]);
+	for (i = 0; i < max_effect_types; i++){
+		for (j = 0; j < max_effect_param; j++){
+			update_DSP(i,j);
+			/*wait for SPI to finish transmitting*/
 		}
 	}
+
+	return;
+}
+
+/*updates the DSP with a single effect and a single parameter*/
+void update_DSP(unsigned int effect, unsigned int param){
+	/*write data to SPI TX then return*/
+	return;
+}
+
+/*does a full update of the LED's*/
+void update_LED(){
+	unsigned int i, j;
+	unsigned int temp;
+	unsigned char leds = 0x00;
+	for (i = 0; i < max_effect_types; i++){
+		temp = 0x00;
+		for (j = 0; j < max_effect_param; j++){
+			temp |= all_effect_data[current_preset].effect_value[i][j];
+		}
+		/*set bit i if that effect is active*/
+		if (temp > 0){
+			leds |= (1 << i);
+		}
+	}
+	POUT_LED = leds;
+	return;
+}
+
+/*write the parts of menu_effect_select that don't change*/
+void effect_select_setup(){
+	const char menu_effect_select_header[LCD_line_length] = {" Effect Select Menu "};
+	unsigned int i;
+
+	/*line 1*/
+	LCD_cursor_pos(1,1);
+	for (i = 0; i < LCD_line_length; i++){
+		LCD_write_data(menu_effect_select_header[i]);
+	}
+	/*line 2*/
+	effect_select_update_active();
 
 	/*put | on bottom 2 lines*/
 	LCD_cursor_pos(3,6);
@@ -227,6 +265,18 @@ void effect_select_setup(){
 	LCD_write_data('|');
 	LCD_cursor_pos(4,15);
 	LCD_write_data('|');
+
+	return;
+}
+
+/*write the name of the active effect to line 2*/
+void effect_select_update_active(){
+	unsigned int i;
+
+	LCD_cursor_pos(2,1);
+	for (i = 0; i < LCD_line_length; i++){
+		LCD_write_data(all_effect_data[active_preset].name[i]);
+	}
 
 	return;
 }
@@ -271,6 +321,84 @@ void effect_select_write_effects(){
 	}
 
 	return;
+}
+
+/*sets up every line for menu_effect_edit*/
+void effect_edit_setup(unsigned char active_effect){
+	const char line_3[LCD_line_length] = " FX1 | FX2| FX3| FX4";
+	unsigned int i;
+
+	/*line 1*/
+	LCD_cursor_pos(1,1);
+	for (i = 0; i < LCD_line_length; i++){
+		LCD_write_data(all_effect_data[current_preset].name[i]);
+	}
+	/*line 2*/
+	LCD_cursor_pos(2,1);
+	for (i = 0; i < LCD_line_length; i++){
+		LCD_write_data(effects_available[active_effect][i]);
+	}
+	/*line 3*/
+	LCD_cursor_pos(3,1);
+	for (i = 0; i < LCD_line_length; i++){
+		LCD_write_data(line_3[i]);
+	}
+	/*line 4*/
+	for (i = 0; i < max_effect_param; i++){
+		effect_edit_write_FX(i);
+		if(i < 3){
+			LCD_write_data('|');
+		}
+	}
+
+
+	return;
+}
+
+/*saves the data currently in effects[]*/
+void effect_edit_save_params(unsigned char active_effect){
+	unsigned int i = 0;
+	for (i = 0; i < max_effect_param; i++){
+		all_effect_data[current_preset].effect_value[active_effect][i] = effects[i];
+	}
+	return;
+}
+
+/*loads the parameters of the current effect being edited*/
+void effect_edit_load_params(unsigned char active_effect){
+	unsigned int i = 0;
+	for (i = 0; i < max_effect_param; i++){
+		effects[i] = all_effect_data[current_preset].effect_value[active_effect][i];
+	}
+	return;
+}
+
+/*writes the value of a give parameter of the current active effect onto the bottom row of the LCD*/
+void effect_edit_write_FX(unsigned int effect_param){
+	LCD_cursor_pos(LCD_line_count,(effect_param*(LCD_line_length/4)) + 1);
+	unsigned int temp = effects[effect_param];
+	unsigned int temp2 = 0;
+	const unsigned int remove_zeros[(LCD_line_length/4) - 2] = {999,99,9};
+	const unsigned int power_ten[LCD_line_length/4-1] = {1000,100,10,1};
+	unsigned int i = 0;
+
+	/*remove leading zeros*/
+	for (temp2 = remove_zeros[i]; i < 3; temp2 = remove_zeros[i]){
+		if (temp > temp2){
+			break;
+		}
+		else {
+			LCD_write_data(' ');
+			i++;
+		}
+	}
+
+	for (temp2 = 0; i < (LCD_line_length/4) - 1; i++){
+		temp2 = temp / power_ten[i];
+		LCD_write_data(temp2+48);
+		temp -= temp2 * power_ten[i];
+	}
+
 }
 
 void settings_setup(){
