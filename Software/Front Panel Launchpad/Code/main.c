@@ -13,8 +13,6 @@
 
 #include <msp430.h>
 
-#define launchpad
-
 /*my .h files*/
 #include "misc.h"
 #include "menu.h"

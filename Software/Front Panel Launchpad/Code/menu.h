@@ -11,6 +11,8 @@
 #include <msp430.h>
 #include "menu_support.h"
 
+#define launchpad
+
 /*prototypes for functions in menu.c*/
 char menu_effect_select();
 char menu_effect_edit();

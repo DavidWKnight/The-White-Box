@@ -126,7 +126,7 @@ unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_shift){
 	port2_state &= ~pin;
 
 	unsigned char encoder_number2 = (encoder_shift >> 1);//encoder number multiplied by 2
-	unsigned int encoder_state_last = (encoder_state  >> encoder_shift) & 0x000F;//previous state for encoder being processed
+	unsigned int encoder_state_last = (encoder_state >> encoder_shift) & 0x000F;//previous state for encoder being processed
 	unsigned int encoder_state_new = 0x00;
 
 	/*calculate new encoder state*/
@@ -158,7 +158,7 @@ unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_shift){
 		return (pin << 8);
 	}
 
-	//between states: save updated encoder state, toggle mask and edge select, return 0
+	/*between states: save updated encoder state, toggle mask and edge select, return 0*/
 	encoder_state = (encoder_state_temp << encoder_shift);
 	port2_mask ^= pin;
 	P2IES ^= pin;
@@ -216,7 +216,8 @@ void update_DSP(unsigned int effect, unsigned int param){
 	temp |= (effect << 10) + (param << 8) + (all_effect_data[active_preset].effect_value[effect][param]);
 	/*write temp to SPI TX then return*/
 
-	/* 3 bits - effect #
+	/* add a small pattern of 1's that show a new effect is being sent; 3 bits like 101
+	 * 3 bits - effect #
 	 * 2 bits - parameter #
 	 * 8 bits - parameter value
 	 */

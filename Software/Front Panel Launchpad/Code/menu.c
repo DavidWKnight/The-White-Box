@@ -172,7 +172,7 @@ char menu_effect_edit(){
 
 			case 0x0080:/*sw settings*/
 				menu_effect_name_edit();/*edit name of effect*/
-				/*setup menu again*/
+				effect_edit_setup(active_effect);
 				break;
 
 			/*port 2*/
@@ -368,7 +368,9 @@ void menu_settings(){
 	}
 }
 
-/*need to add support to edit name_short in this menu, can be just done on another line*/
+/*
+ * Need to add support functions that display menu and display recent changes to characters
+ * need to add support to edit name_short in this menu, can be just done on another line*/
 void menu_effect_name_edit(){
 	/*setup menu*/
 	struct effect_data *current_effect_ptr;
