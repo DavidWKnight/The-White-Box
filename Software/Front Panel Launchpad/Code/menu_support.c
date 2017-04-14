@@ -187,8 +187,11 @@ void wait_for_input(){
 			new_user_input = false;
 			return;
 		}
-
-
+		if(RTC_interrupt){
+			waiting = false;
+			new_user_input = false;
+			return;
+		}
 		if (waiting){
 			//go into sleep mode
 			_BIS_SR(LPM4_bits + GIE);
@@ -419,6 +422,30 @@ void settings_setup(){
 	for (i = 0; i < LCD_line_length; i++){
 		LCD_write_data(menu_settings_header[0][i]);
 	}
+
+	return;
+}
+
+void effect_edit_name_setup(char name[2][LCD_line_length]){
+	const char edit_name_header[2][LCD_line_length] = {"Edit Effect Name:   ", "Effect Nickname:    "};
+	unsigned int i,j;
+
+	LCD_write_cmd(0x01);//clear display
+
+	for (i = 0; i < 2; i++){
+		LCD_cursor_pos(i * 2 + 1,1);
+		for (j = 0; j < LCD_line_length; j++){
+			LCD_write_data(edit_name_header[i][j]);
+		}
+	}
+	for (i = 0; i < 2; i++){
+		LCD_cursor_pos(i * 2 + 2,1);
+		for (j = 0; j < LCD_line_length; j++){
+			LCD_write_data(name[i][j]);
+		}
+	}
+	LCD_cursor_pos(4,7);
+	LCD_write_data('|');
 
 	return;
 }

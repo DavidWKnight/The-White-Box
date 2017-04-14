@@ -368,17 +368,27 @@ void menu_settings(){
 	}
 }
 
-/*
- * Need to add support functions that display menu and display recent changes to characters
- * need to add support to edit name_short in this menu, can be just done on another line*/
 void menu_effect_name_edit(){
+	unsigned char current_char = 0;/*current letter being changed*/
+	unsigned char current_name = 0;/*0 for name_temp, 1 for name_short_temp*/
+	unsigned char flashing = 0;
+	int flash_delay = flash_delay_short;/*number of times to skip flash*/
+
 	/*setup menu*/
 	struct effect_data *current_effect_ptr;
-	current_effect_ptr = (&all_effect_data + (sizeof(struct effect_data) * current_preset));
-	char name_temp[LCD_line_length];
-	memcpy(name_temp, current_effect_ptr->name, LCD_line_length);
 
-	unsigned char current_char = 0;/*current letter being changed*/
+	current_effect_ptr = &all_effect_data + current_preset;
+
+	char name_temp[2][LCD_line_length] = {"                    ","                    "};/*0 is name, 1 is name_short*/
+	char name_temp_length[2] = {LCD_line_length-1,max_length_name_short-1};
+
+	memcpy(name_temp[0], current_effect_ptr->name, LCD_line_length);
+	memcpy(name_temp[1], current_effect_ptr->name_short, max_length_name_short);
+
+	effect_edit_name_setup(name_temp);
+
+	RTCIV;
+	RTCCTL |= RTCIE;
 
 	/*in menu actions*/
 	while(1){
@@ -386,27 +396,41 @@ void menu_effect_name_edit(){
 		switch(user_input_decode()){
 			/*port 1*/
 			case 0x0001:/*enc1 sw*/
+				/*move cursor left*/
 				if (current_char > 0){
+					flash_delay = flash_delay_short;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
 					current_char--;
 				}
 				break;
 
 			case 0x0002:/*enc2 sw*/
-				if (current_char < 19){
+				/*move cursor right*/
+				if (current_char < name_temp_length[current_name]){
+					flash_delay = flash_delay_short;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
 					current_char++;
 				}
 				break;
 
 			case 0x0004:/*enc3 sw*/
-				if (name_temp[current_char] > 0x20){
-					name_temp[current_char]++;
-				}
+				/*toggle selected name*/
+				flash_delay = flash_delay_short;
+				LCD_cursor_pos(2*current_name+2,current_char+1);
+				LCD_write_data(name_temp[current_name][current_char]);
+				current_char = 0;
+				current_name ^= 0x01;
 				break;
 
 			case 0x0008:/*enc4 sw*/
-				if (name_temp[current_char] < 0x78){
-					name_temp[current_char]--;
-				}
+				/*toggle selected name*/
+				flash_delay = flash_delay_short;
+				LCD_cursor_pos(2*current_name+2,current_char+1);
+				LCD_write_data(name_temp[current_name][current_char]);
+				current_char = 0;
+				current_name ^= 0x01;
 				break;
 
 			case 0x0010:/*sw left*/
@@ -417,38 +441,56 @@ void menu_effect_name_edit(){
 
 			case 0x0040:/*sw select*/
 				/*save new effect name*/
-				memcpy(current_effect_ptr->name, name_temp, LCD_line_length);
+				RTCCTL &= ~RTCIE;
+				memcpy(current_effect_ptr->name, name_temp[0], LCD_line_length);
+				memcpy(current_effect_ptr->name_short, name_temp[1], max_length_name_short);
 				return;
 
 			case 0x0080:/*sw settings*/
 				/*dont save new effect name*/
+				RTCCTL &= ~RTCIE;
 				return;
 
 			/*port 2*/
 			case 0x0100:
+				/*move cursor left*/
 				if (current_char > 0){
+					flash_delay = flash_delay_short;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
 					current_char--;
 				}
 				break;
 
 			case 0x0200:
-				if (current_char < 19){
+				/*move cursor right*/
+				if (current_char < name_temp_length[current_name]){
+					flash_delay = flash_delay_short;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
 					current_char++;
 				}
 				break;
 
 			case 0x0400:
-				if (name_temp[current_char] > 0x20){
-					name_temp[current_char]++;
+				if (name_temp[current_name][current_char] > 0x20){
+					/*decrement selected character*/
+					flash_delay = flash_delay_reset;
+					name_temp[current_name][current_char]--;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
 				}
 				break;
 
 			case 0x0800:
-				if (name_temp[current_char] < 0x78){
-					name_temp[current_char]--;
+				/*increment selected character*/
+				if (name_temp[current_name][current_char] < 0x7F){
+					flash_delay = flash_delay_reset;
+					name_temp[current_name][current_char]++;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
 				}
 				break;
-
 			case 0x1000:
 				break;
 
@@ -464,7 +506,26 @@ void menu_effect_name_edit(){
 			/*no action*/
 			default:
 				break;
+		}
+		if (RTC_interrupt){
+			if (flashing == 0x00){
+				if (flash_delay > flash_delay_max) {
+					flash_delay = flash_delay_short;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(0xFF);
+					flashing ^= 0xFF;
+				}
+				else{
+					flash_delay++;
+				}
 			}
+			else {
+				LCD_cursor_pos(2*current_name+2,current_char+1);
+				LCD_write_data(name_temp[current_name][current_char]);
+				flashing ^= 0xFF;
+			}
+			RTC_interrupt = false;
+		}
 
 	}
 }

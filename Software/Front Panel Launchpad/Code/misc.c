@@ -67,6 +67,7 @@ void init_misc(){
 	volatile bool port1_interrupt = false;
 	volatile bool port2_interrupt = false;
 	volatile bool new_user_input = false;
+	volatile bool RTC_interrupt = false;
 
 	/*init other variables*/
 	port1_state = 0x00;
@@ -92,6 +93,13 @@ void init_misc(){
 	TA1CCTL0 |= CCIE;
 	//SMCLK might be 1MHz not 16MHz
 	TA1CTL |= TASSEL_2|ID_0|MC_0;//SMCLK, divide clock by 1, stop mode
+
+	/*RTC counter*/
+	RTCIV;
+	RTCCTL &= ~RTCIE;
+	RTCCTL |= (RTCSS_2);
+	RTCMOD = 0x1000;
+	RTCCTL |= RTCSR;
 }
 
 /*debounces pushbutton interrupts on port 1*/

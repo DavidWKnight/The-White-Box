@@ -46,6 +46,9 @@ void effect_edit_write_FX(unsigned int);
 /*settings functions*/
 void settings_setup();
 
+/*effect name edit functions*/
+void effect_edit_name_setup(char name[2][LCD_line_length]);
+
 /*declarations for variables defined in menu.c*/
 struct effect_data{
 	const int preset_number;
@@ -56,6 +59,7 @@ struct effect_data{
 
 volatile bool port1_interrupt;
 volatile bool port2_interrupt;
+volatile bool RTC_interrupt;
 volatile bool new_user_input;
 
 /*external varaibles*/
