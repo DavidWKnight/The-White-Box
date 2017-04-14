@@ -7,10 +7,6 @@
 
 #include "lcd.h"
 
-char on_screen[LCD_line_count][LCD_line_length];
-unsigned int on_screen_row_iterator = 0;
-unsigned int on_screen_col_iterator = 0;
-
 void init_LCD(){
 	LCD_cmd_out = 0x00;
 	delay_ms(100);
@@ -28,38 +24,42 @@ void init_LCD(){
 	LCD_write_cmd(0x01);//clear display
 	LCD_write_cmd(0x02);//return cursor to home
 
+	return;
 }
 
 /*send data to LCD screen*/
 void LCD_write_data(char buffer){
-	if (buffer == on_screen[on_screen_row_iterator][on_screen_col_iterator]){
-		LCD_cursor_pos(on_screen_row_iterator+1, on_screen_col_iterator+2);
-	}
-	else{
-		LCD_data_out = 0x00;
-		LCD_data_out |= buffer;
-		LCD_cmd_out = 0x00;
-		LCD_cmd_out |= LCD_RS;
-		LCD_cmd_out &= ~LCD_RW;
-		LCD_cmd_out |= LCD_E;
-		delay_ms(1);
-		LCD_cmd_out &= ~LCD_E;
-
-		on_screen[on_screen_row_iterator][on_screen_col_iterator] = buffer;
-		on_screen_col_iterator++;
-	}
+	char temp = POUT_LED;
+	LCD_data_out = 0x00;
+	LCD_data_out |= buffer;
+	LCD_cmd_out = 0x00;
+	LCD_cmd_out |= LCD_RS;
+	LCD_cmd_out &= ~LCD_RW;
+	LCD_cmd_out |= LCD_E;
+	delay_us(100);
+	LCD_cmd_out &= ~LCD_E;
+	POUT_LED = temp;
+	return;
 }
 
 /*send command to LCD screen*/
 void LCD_write_cmd(char buffer){
+	char temp = POUT_LED;
 	LCD_data_out = 0x00;
 	LCD_data_out |= buffer;
 	LCD_cmd_out = 0x00;
 	LCD_cmd_out &= ~LCD_RS;
 	LCD_cmd_out &= ~LCD_RW;
 	LCD_cmd_out |= LCD_E;
-	delay_ms(1);
+	if (buffer & 0x80 > 0){
+		delay_us(100);
+	}
+	else{
+	delay_ms(2);
+	}
 	LCD_cmd_out &= ~LCD_E;
+	POUT_LED = temp;
+	return;
 }
 
 /*set cursor position for LCD, 1 indexed*/
@@ -83,6 +83,5 @@ void LCD_cursor_pos(int row, int column){
 	pos += (column - 1);
 
 	LCD_write_cmd(pos);//write DDRAM address
-	on_screen_col_iterator = column-1;
-	on_screen_row_iterator = row-1;
+	return;
 }

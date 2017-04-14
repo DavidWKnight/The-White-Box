@@ -29,7 +29,6 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:Digital FX pedal symbols
-LIBS:front panel-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -127,17 +126,6 @@ NoConn ~ 5750 4550
 NoConn ~ 3150 4550
 NoConn ~ 3150 4650
 NoConn ~ 3150 4750
-$Comp
-L SW_PUSH SW?
-U 1 1 58C70B56
-P 6350 4650
-F 0 "SW?" H 6500 4760 50  0000 C CNN
-F 1 "SW_PUSH" H 6350 4570 50  0000 C CNN
-F 2 "" H 6350 4650 50  0000 C CNN
-F 3 "" H 6350 4650 50  0000 C CNN
-	1    6350 4650
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	5750 4650 6050 4650
 $Comp

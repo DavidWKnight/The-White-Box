@@ -33,8 +33,15 @@ __interrupt void TIMER0_A0_ISR(void){
 
 /*rotary encoder/port2 debounce routine interrupt*/
 #pragma vector=TIMER1_A0_VECTOR
-__interrupt void TIMER0_A1_ISR(void){
+__interrupt void TIMER1_A0_ISR(void){
 	_BIC_SR(LPM4_EXIT);
 	port2_debounce();
 	TA1CTL &= ~TAIFG;
+}
+
+#pragma vector=RTC_VECTOR
+__interrupt void RTC_ISR(void){
+	_BIC_SR(LPM4_EXIT);
+	RTC_interrupt = true;
+	RTCIV;
 }

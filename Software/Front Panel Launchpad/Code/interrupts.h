@@ -15,5 +15,6 @@
 
 extern volatile bool port1_interrupt;
 extern volatile bool port2_interrupt;
+extern volatile bool RTC_interrupt;
 
 #endif /* INTERRUPTS_H_ */

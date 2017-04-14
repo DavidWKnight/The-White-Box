@@ -9,23 +9,26 @@
 #define MENU_H_
 
 #include <msp430.h>
-#include <string.h>
-#include "misc.h"
-#include "lcd.h"
+#include "menu_support.h"
 
-unsigned int user_input_decode();
-unsigned int port1_statemachine(unsigned int);
-unsigned int port2_statemachine(unsigned int, unsigned char);
-void wait_for_input();
-void menu_effect_select_setup();
-void menu_settings_setup();
+#define launchpad
+#define flash_delay_max 3
+#define flash_delay_short 3
+#define flash_delay_reset 0
 
-extern unsigned char port1_state;
-extern unsigned char port2_state;
-volatile bool port1_interrupt;
-volatile bool port2_interrupt;
-extern unsigned char port1_mask;
-extern unsigned char port2_mask;
-volatile bool new_user_input;
+/*prototypes for functions in menu.c*/
+char menu_effect_select();
+char menu_effect_edit();
+void menu_settings();
+void menu_effect_name_edit();
+
+unsigned char effects[max_effect_param];
+
+/*external variables*/
+extern char menu_settings_values[number_of_settings];
+extern struct effect_data all_effect_data;
+extern unsigned int current_preset;
+extern unsigned int active_preset;
+extern volatile bool RTC_interrupt;
 
 #endif /* MENU_H_ */

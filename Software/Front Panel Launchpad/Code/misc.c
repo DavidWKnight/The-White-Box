@@ -19,6 +19,7 @@ void init_ports(){
 	P1OUT = 0xFF; //Pull up resistors
 	P1IE  = 0xFF; //Interrupts on all ports
 	P1IES = 0xFF; //Interrupt on high to low transition
+	P1IFG = 0x00;
 
 	/*Port 2*/
 	P2DIR = 0x00;
@@ -27,6 +28,7 @@ void init_ports(){
 	P2OUT = 0xFF; //Pull up resistors
 	P2IE  = 0xFF; //Interrupts on all ports
 	P2IES = 0xFF; //Interrupt on high to low transition
+	P2IFG = 0x00;
 
 	/*Port 3*/
 	P3DIR = 0xFF;
@@ -65,12 +67,19 @@ void init_misc(){
 	volatile bool port1_interrupt = false;
 	volatile bool port2_interrupt = false;
 	volatile bool new_user_input = false;
+	volatile bool RTC_interrupt = false;
 
 	/*init other variables*/
 	port1_state = 0x00;
 	port2_state = 0x00;
 	port1_mask = 0xFF;
 	port2_mask = 0xFF;
+	current_preset = 0;
+	active_preset = 0;
+
+	/*FRAM write protection*/
+	SYSCFG0 &= ~DFWP;
+	SYSCFG0 &= ~PFWP;
 
 	/*Port 1 debounce routine timer*/
 	TA0R = 0x00;//start counter at 0
@@ -84,6 +93,13 @@ void init_misc(){
 	TA1CCTL0 |= CCIE;
 	//SMCLK might be 1MHz not 16MHz
 	TA1CTL |= TASSEL_2|ID_0|MC_0;//SMCLK, divide clock by 1, stop mode
+
+	/*RTC counter*/
+	RTCIV;
+	RTCCTL &= ~RTCIE;
+	RTCCTL |= (RTCSS_2);
+	RTCMOD = 0x1000;
+	RTCCTL |= RTCSR;
 }
 
 /*debounces pushbutton interrupts on port 1*/
@@ -95,7 +111,9 @@ void port1_debounce(){
 	i++;
 	if (i >= P1_max_checks){
 		i = 0;
+#ifdef launchpad
 		P1_check &= 0xFE;//This is because pin 1 is always low in the launchpad; change on prototype board
+#endif
 		if (P1_check > 0){
 			port1_state |= P1_check;
 			new_user_input = true;
@@ -125,36 +143,14 @@ void port2_debounce(){
 	}
 }
 
-/*writes a number onto the bottom row of the LCD screen in the pattern < FX1|FX2|FX3|FX4> */
-void lcd_write_effects(unsigned int effect_num){
-	LCD_cursor_pos(LCD_line_count,(effect_num*(LCD_line_length/4)) + 1);
-	unsigned int temp = effects[effect_num];
-	unsigned int temp2 = 0;
-	const unsigned int remove_zeros[(LCD_line_length/4) - 2] = {999,99,9};
-	const unsigned int power_ten[LCD_line_length/4-1] = {1000,100,10,1};
-	unsigned int i = 0;
-
-	/*remove leading zeros*/
-	for (temp2 = remove_zeros[i]; i < 3; temp2 = remove_zeros[i]){
-		if (temp > temp2){
-			break;
-		}
-		else {
-			LCD_write_data(' ');
-			i++;
-		}
-	}
-
-	for (temp2 = 0; i < (LCD_line_length/4) - 1; i++){
-		temp2 = temp / power_ten[i];
-		LCD_write_data(temp2+48);
-		temp -= temp2 * power_ten[i];
-	}
-
-}
-
 void delay_ms(unsigned int delay){
 	for (; delay > 0; delay--){
 		__delay_cycles(1000);
+	}
+}
+
+void delay_us(unsigned int delay){
+	for (; delay > 0; delay--){
+		__delay_cycles(1);
 	}
 }

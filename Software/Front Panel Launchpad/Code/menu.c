@@ -9,203 +9,523 @@
 #include "menu.h"
 
 
-unsigned int encoder_state = 0x00;
-unsigned char encoder_state_decoder[13][4] = {
-		{0x00,0x01,0x08,0x00},//0x00
-		//CCW
-		{0x00,0x01,0x00,0x03},//0x01
-		{0x0F,0x00,0x02,0x03},//0x02
-		{0x00,0x01,0x02,0x03},//0x03
-		//CW
-		{0xF0,0x04,0x00,0x0C},/*0x04*/  /*unused*/{0x00,0x00,0x00,0x00},{0x00,0x00,0x00,0x00},{0x00,0x00,0x00,0x00},
-		{0x00,0x00,0x08,0x0C},/*0x08*/  /*unused*/{0x00,0x00,0x00,0x00},{0x00,0x00,0x00,0x00},{0x00,0x00,0x00,0x00},
-		{0x00,0x04,0x08,0x0C} /*0x0C*/
-};
 
-const char menu_effect_select_header[2][20] = {" Effect Select Menu ","   Effect Select    "};
-const char menu_settings_header[1][20] = {"   Settings Menu    "};
-const char effects_available[8][20] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
-		"     Drive/Fuzz     ", "       Flange       ", "    Pitch Shift     ", "       Delay        ", "    Trem/Vibrato    "};
+char menu_effect_select(){
+	/*setup menu*/
+	effect_select_setup();
+	effect_select_write_effects();
 
-struct current_effect{
-	int preset_number;
-	char name[20];
-	int effect_value[8][4];
-};
-
-/*takes debounced inputs and runs them through state machines*/
-unsigned int user_input_decode(){
-	if (port1_state > 0){
-		/*port 1*/
-		switch (port1_state){
-			case 0x0001:
-				return port1_statemachine(0x0001);
-			case 0x02:
-				return port1_statemachine(0x0002);
-			case 0x04:
-				return port1_statemachine(0x0004);
-			case 0x08:
-				return port1_statemachine(0x0008);
-			case 0x10:
-				return port1_statemachine(0x0010);
-			case 0x20:
-				return port1_statemachine(0x0020);
-			case 0x40:
-				return port1_statemachine(0x0040);
-			case 0x80:
-				return port1_statemachine(0x0080);
-			default:
-				port1_state = 0x00;
-				break;
-		}
-	}
-	else if (port2_state > 0){
-		/*port 2*/
-		switch (port2_state){
-			case 0x01:
-				return port2_statemachine(0x01, 0x00);
-			case 0x02:
-				return port2_statemachine(0x02, 0x00);
-			case 0x04:
-				return port2_statemachine(0x04, 0x04);
-			case 0x08:
-				return port2_statemachine(0x08, 0x04);
-			case 0x10:
-				return port2_statemachine(0x10, 0x08);
-			case 0x20:
-				return port2_statemachine(0x20, 0x08);
-			case 0x40:
-				return port2_statemachine(0x40, 0x0C);
-			case 0x80:
-				return port2_statemachine(0x80, 0x0C);
-			default:
-				port2_state = 0x00;
-				break;
-		}
-	}
-
-	return 0;
-}
-
-/*state machine for pushbutton*/
-unsigned int port1_statemachine(unsigned int pin){
-	__disable_interrupt();
-	port1_state &= ~pin;
-	if ((port1_mask & pin) == pin){
-		port1_mask &= ~pin;
-		P1IES &= ~pin;
-	}
-	else if((port1_mask & pin) == 0x00){
-		port1_mask |= pin;
-		P1IES |= pin;
-		P1IFG &= ~pin;
-		__enable_interrupt();
-		return pin;
-	}
-	else{
-		port1_mask |= pin;
-		P1IES |= pin;
-	}
-	P1IFG &= ~pin;
-	__enable_interrupt();
-	return 0;
-}
-
-/*This function is untested for encoders 2,3 and 4 because I don't have access to them on the MSP430FR4133 Launchpad*/
-unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_shift){
-	__disable_interrupt();
-	port2_state &= ~pin;
-
-	unsigned char encoder_number2 = (encoder_shift >> 1);//encoder number multiplied by 2
-	unsigned int encoder_state_last = (encoder_state  >> encoder_shift) & 0x000F;//previous state for encoder being processed
-	unsigned int encoder_state_new = 0x00;
-
-	/*calculate new encoder state*/
-	if (encoder_state_last > 3){//right adjust encoder_state_new
-		encoder_state_new = encoder_state_last >> 2;
-	}
-	else{
-		encoder_state_new = encoder_state_last;
-	}
-	encoder_state_new ^= (pin >> encoder_number2);
-
-	unsigned int encoder_state_temp = encoder_state_decoder[encoder_state_last][encoder_state_new];//process new state
-
-	if(encoder_state_temp == 0x00){//invalid state/reset: reset encoder, return 0
-		encoder_state &= ~(0x000F << encoder_shift);
-		port2_mask |= (0x03 << encoder_number2);
-		P2IES |= (0x03 << encoder_number2);
-		P2IFG &= ~(0x03 << encoder_number2);
-		__enable_interrupt();
-		return 0x0000;
-	}
-
-	else if(encoder_state_temp == 0xF0 || encoder_state_temp == 0x0F){//successful rotation: reset encoder, return pin
-		encoder_state &= ~(0x000F << encoder_shift);
-		port2_mask |= (0x03 << encoder_number2);
-		P2IES |= (0x03 << encoder_number2);
-		P2IFG &= ~(0x03 << encoder_number2);
-		__enable_interrupt();
-		return (pin << 8);
-	}
-
-	//between states: save updated encoder state, toggle mask and edge select, return 0
-	encoder_state = (encoder_state_temp << encoder_shift);
-	port2_mask ^= pin;
-	P2IES ^= pin;
-	P2IFG &= ~pin;
-	__enable_interrupt();
-	return 0x0000;
-}
-
-/*waits for user input on port 1 or port 2; goes into low power mode if there is no input*/
-void wait_for_input(){
-	bool waiting = true;
+	/*in menu actions*/
 	while(1){
-		waiting = true;
-		if(port1_interrupt){
-			waiting = false;
-			TA0CTL |= MC_1;//start timer for debouncing
-			port1_interrupt = false;
-		}
-		if (port2_interrupt){
-			waiting = false;
-			TA1CTL |= MC_1;//start timer for debouncing
-			port2_interrupt = false;
-		}
-		if(new_user_input){
-			waiting = false;
-			new_user_input = false;
-			return;
-		}
+		wait_for_input(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
+		/*send input to state machines*/
+		switch(user_input_decode()){
+			/*port 1*/
+			case 0x0001:/*enc1 sw*/
+				if (current_preset > 0){
+					current_preset--;
+					effect_select_write_effects();
+				}
+				break;
+			case 0x0002:/*enc2 sw*/
+				if (current_preset < max_effect_presets-1){
+					current_preset++;
+					effect_select_write_effects();
+				}
+				break;
+			case 0x0004:/*enc3 sw*/
+				if (current_preset != 0){ /*Preset 0 is reserved*/
+					active_preset = current_preset;
+					return 2;/*enter menu effect edit*/
+				}
+			case 0x0008:/*enc4 sw*/
+#ifdef launchpad
+				if (current_preset != 0){ /*Preset 0 is reserved*/
+					active_preset = current_preset;
+					return 2;/*enter menu effect edit*/
+				}
+#endif
+				/*do nothing*/
+				break;
 
-
-		if (waiting){
-			//go into sleep mode
-			_BIS_SR(LPM4_bits + GIE);
-		}
+			case 0x0010:/*sw left*/
+				if (current_preset > 0){
+					current_preset--;
+					effect_select_write_effects();
+				}
+				break;
+			case 0x0020:/*sw right*/
+				if (current_preset < max_effect_presets-1){
+					current_preset++;
+					effect_select_write_effects();
+				}
+				break;
+			case 0x0040:/*sw select*/
+				active_preset = current_preset;
+				full_update_DSP();
+				update_LED();
+				effect_select_update_active();
+				break;
+			case 0x0080:/*sw settings*/
+				menu_settings();/*enter settings menu*/
+				effect_select_setup();
+				effect_select_write_effects();
+				break;
+			/*port 2*/
+			case 0x0100:
+				if (current_preset > 0){
+					current_preset--;
+					effect_select_write_effects();
+				}
+				break;
+			case 0x0200:
+				if (current_preset < max_effect_presets-1){
+					current_preset++;
+					effect_select_write_effects();
+				}
+				break;
+			case 0x0400:
+				break;
+			case 0x0800:
+				break;
+			case 0x1000:
+				break;
+			case 0x2000:
+				break;
+			case 0x4000:
+				break;
+			case 0x8000:
+				break;
+			/*no action*/
+			default:
+				break;
+			}
 	}
 }
 
-void menu_effect_select_setup(){
-	unsigned int i;
-	unsigned int j;
-	for (i = 0, j = 2; j > 0; j--){
-		LCD_cursor_pos(j,1);
-		for (i = 0; i < LCD_line_length; i++){
-			LCD_write_data(menu_effect_select_header[j-1][i]);
+char menu_effect_edit(){
+	unsigned int temp = 0;
+	unsigned int i = 0;
+	unsigned char active_effect = 0;/*effect currently being edited*/
+
+	/*setup menu*/
+	effect_edit_load_params(active_effect);
+	full_update_DSP();
+	update_LED();
+	effect_edit_setup(active_effect);
+
+	/*in menu actions*/
+	while(1){
+		wait_for_input();
+
+		switch(user_input_decode()){
+			/*port 1*/
+			case 0x0001:/*enc1 sw*/
+				if (active_effect > 0){
+					effect_edit_save_params(active_effect);
+					active_effect--;
+					effect_edit_load_params(active_effect);
+					effect_edit_setup(active_effect);
+				}
+				break;
+
+			case 0x0002:/*enc2 sw*/
+				if (active_effect < max_effect_types){
+					effect_edit_save_params(active_effect);
+					active_effect++;
+					effect_edit_load_params(active_effect);
+					effect_edit_setup(active_effect);
+				}
+				break;
+
+			case 0x0004:/*enc3 sw*/
+				effect_edit_save_params(active_effect);
+				return 1;
+
+			case 0x0008:/*enc4 sw*/
+#ifdef launchpad
+				effect_edit_save_params(active_effect);
+				return 1;
+#endif
+				break;
+
+			case 0x0010:/*sw left*/
+				if (active_effect > 0){
+					effect_edit_save_params(active_effect);
+					active_effect--;
+					effect_edit_load_params(active_effect);
+					effect_edit_setup(active_effect);
+				}
+				break;
+
+			case 0x0020:/*sw right*/
+				if (active_effect < max_effect_types){
+					effect_edit_save_params(active_effect);
+					active_effect++;
+					effect_edit_load_params(active_effect);
+					effect_edit_setup(active_effect);
+				}
+				break;
+
+			case 0x0040:/*sw select*/
+				return 1;/*go back to effect menu select*/
+
+			case 0x0080:/*sw settings*/
+				menu_effect_name_edit();/*edit name of effect*/
+				effect_edit_setup(active_effect);
+				break;
+
+			/*port 2*/
+			case 0x0100:
+				if (effects[0] > 0){
+					effects[0]--;
+					effect_edit_write_FX(0);
+					update_DSP(active_effect, 0);
+				}
+				break;
+
+			case 0x0200:
+				if (effects[0] < 100){
+					effects[0]++;
+					effect_edit_write_FX(0);
+					update_DSP(active_effect, 0);
+				}
+				break;
+
+			case 0x0400:
+				if (effects[1] > 0){
+					effects[1]--;
+					effect_edit_write_FX(1);
+					update_DSP(active_effect, 1);
+				}
+				break;
+
+			case 0x0800:
+				if (effects[1] < 100){
+					effects[1]++;
+					effect_edit_write_FX(1);
+					update_DSP(active_effect, 1);
+				}
+				break;
+
+			case 0x1000:
+				if (effects[2] > 0){
+					effects[2]--;
+					effect_edit_write_FX(2);
+					update_DSP(active_effect, 2);
+				}
+				break;
+
+			case 0x2000:
+				if (effects[2] < 100){
+					effects[2]++;
+					effect_edit_write_FX(2);
+					update_DSP(active_effect, 2);
+				}
+				break;
+
+			case 0x4000:
+				if (effects[3] > 0){
+					effects[3]--;
+					effect_edit_write_FX(3);
+					update_DSP(active_effect, 3);
+				}
+				break;
+
+			case 0x8000:
+				if (effects[3] > 0){
+					effects[3]--;
+					effect_edit_write_FX(3);
+					update_DSP(active_effect, 3);
+				}
+				break;
+
+			/*no action*/
+			default:
+				break;
+			}
+		/*update leds*/
+		for (i = 0; i < max_effect_param; i++){
+			temp += effects[i];
 		}
+		if (temp > 0){
+			POUT_LED |= (1 << active_effect);
+		}
+		else {
+			POUT_LED &= ~(1 << active_effect);
+		}
+
 	}
 
-	return;
 }
 
-void menu_settings_setup(){
-	unsigned int i;
-	LCD_cursor_pos(1,1);
-	for (i = 0; i < LCD_line_length; i++){
-		LCD_write_data(menu_settings_header[0][i]);
-	}
+void menu_settings(){
+	/*setup menu*/
+	settings_setup(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
+	unsigned char current_setting = 0;/*current effect being edited*/
 
-	return;
+	/*in menu actions*/
+	while(1){
+		wait_for_input();
+		switch(user_input_decode()){
+			/*port 1*/
+			case 0x0001:/*enc1 sw*/
+				if (current_setting > 0){
+					current_setting++;
+					/*write new setting page*/
+				}
+				break;
+
+			case 0x0002:/*enc2 sw*/
+				if (current_setting < number_of_settings){
+					current_setting--;
+					/*write new setting page*/
+				}
+				break;
+
+			case 0x0004:/*enc3 sw*/
+				if (current_setting < non_bool_settings){/*effects that aren't toggled will be less than compared number*/
+					menu_settings_values[current_setting] ^= 0x01;
+				}
+				break;
+
+			case 0x0008:/*enc4 sw*/
+				return;/*go back to previous menu*/
+
+			case 0x0010:/*sw left*/
+				if (current_setting > 0){
+					current_setting++;
+					/*write new setting page*/
+				}
+				break;
+
+			case 0x0020:/*sw right*/
+				if (current_setting < number_of_settings){
+					current_setting--;
+					/*write new setting page*/
+				}
+				break;
+
+			case 0x0040:/*sw select*/
+				if (current_setting < non_bool_settings){/*effects that aren't toggled will be less than compared number*/
+					menu_settings_values[current_setting] ^= 0x01;
+				}
+				break;
+
+			case 0x0080:/*sw settings*/
+				return;/*go back to previous menu*/
+
+			/*port 2*/
+			case 0x0100:
+				if (current_setting > 0){
+					current_setting++;
+					/*write new setting page*/
+				}
+				break;
+
+			case 0x0200:
+				if (current_setting < number_of_settings){
+					current_setting--;
+					/*write new setting page*/
+				}
+				break;
+
+			case 0x0400:
+				if (current_setting >= non_bool_settings){/*effects that are toggled will be bigger than compared number*/
+					if(menu_settings_values[current_setting] < setting_max_value){
+						menu_settings_values[current_setting]++;
+						/*write new setting page*/
+					}
+				}
+				break;
+
+			case 0x0800:
+				if (current_setting >= non_bool_settings){/*effects that are toggled will be bigger than compared number*/
+					if (menu_settings_values[current_setting] > 0){
+						menu_settings_values[current_setting]--;
+						/*write new setting page*/
+					}
+				}
+				break;
+
+			case 0x1000:
+				break;
+
+			case 0x2000:
+				break;
+
+			case 0x4000:
+				break;
+
+			case 0x8000:
+				break;
+
+			/*no action*/
+			default:
+				break;
+			}
+
+	}
+}
+
+void menu_effect_name_edit(){
+	unsigned char current_char = 0;/*current letter being changed*/
+	unsigned char current_name = 0;/*0 for name_temp, 1 for name_short_temp*/
+	unsigned char flashing = 0;
+	int flash_delay = flash_delay_short;/*number of times to skip flash*/
+
+	/*setup menu*/
+	struct effect_data *current_effect_ptr;
+
+	current_effect_ptr = &all_effect_data + current_preset;
+
+	char name_temp[2][LCD_line_length] = {"                    ","                    "};/*0 is name, 1 is name_short*/
+	char name_temp_length[2] = {LCD_line_length-1,max_length_name_short-1};
+
+	memcpy(name_temp[0], current_effect_ptr->name, LCD_line_length);
+	memcpy(name_temp[1], current_effect_ptr->name_short, max_length_name_short);
+
+	effect_edit_name_setup(name_temp);
+
+	RTCIV;
+	RTCCTL |= RTCIE;
+
+	/*in menu actions*/
+	while(1){
+		wait_for_input(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
+		switch(user_input_decode()){
+			/*port 1*/
+			case 0x0001:/*enc1 sw*/
+				/*move cursor left*/
+				if (current_char > 0){
+					flash_delay = flash_delay_short;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
+					current_char--;
+				}
+				break;
+
+			case 0x0002:/*enc2 sw*/
+				/*move cursor right*/
+				if (current_char < name_temp_length[current_name]){
+					flash_delay = flash_delay_short;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
+					current_char++;
+				}
+				break;
+
+			case 0x0004:/*enc3 sw*/
+				/*toggle selected name*/
+				flash_delay = flash_delay_short;
+				LCD_cursor_pos(2*current_name+2,current_char+1);
+				LCD_write_data(name_temp[current_name][current_char]);
+				current_char = 0;
+				current_name ^= 0x01;
+				break;
+
+			case 0x0008:/*enc4 sw*/
+				/*toggle selected name*/
+				flash_delay = flash_delay_short;
+				LCD_cursor_pos(2*current_name+2,current_char+1);
+				LCD_write_data(name_temp[current_name][current_char]);
+				current_char = 0;
+				current_name ^= 0x01;
+				break;
+
+			case 0x0010:/*sw left*/
+				break;
+
+			case 0x0020:/*sw right*/
+				break;
+
+			case 0x0040:/*sw select*/
+				/*save new effect name*/
+				RTCCTL &= ~RTCIE;
+				memcpy(current_effect_ptr->name, name_temp[0], LCD_line_length);
+				memcpy(current_effect_ptr->name_short, name_temp[1], max_length_name_short);
+				return;
+
+			case 0x0080:/*sw settings*/
+				/*dont save new effect name*/
+				RTCCTL &= ~RTCIE;
+				return;
+
+			/*port 2*/
+			case 0x0100:
+				/*move cursor left*/
+				if (current_char > 0){
+					flash_delay = flash_delay_short;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
+					current_char--;
+				}
+				break;
+
+			case 0x0200:
+				/*move cursor right*/
+				if (current_char < name_temp_length[current_name]){
+					flash_delay = flash_delay_short;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
+					current_char++;
+				}
+				break;
+
+			case 0x0400:
+				if (name_temp[current_name][current_char] > 0x20){
+					/*decrement selected character*/
+					flash_delay = flash_delay_reset;
+					name_temp[current_name][current_char]--;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
+				}
+				break;
+
+			case 0x0800:
+				/*increment selected character*/
+				if (name_temp[current_name][current_char] < 0x7F){
+					flash_delay = flash_delay_reset;
+					name_temp[current_name][current_char]++;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(name_temp[current_name][current_char]);
+				}
+				break;
+			case 0x1000:
+				break;
+
+			case 0x2000:
+				break;
+
+			case 0x4000:
+				break;
+
+			case 0x8000:
+				break;
+
+			/*no action*/
+			default:
+				break;
+		}
+		if (RTC_interrupt){
+			if (flashing == 0x00){
+				if (flash_delay > flash_delay_max) {
+					flash_delay = flash_delay_short;
+					LCD_cursor_pos(2*current_name+2,current_char+1);
+					LCD_write_data(0xFF);
+					flashing ^= 0xFF;
+				}
+				else{
+					flash_delay++;
+				}
+			}
+			else {
+				LCD_cursor_pos(2*current_name+2,current_char+1);
+				LCD_write_data(name_temp[current_name][current_char]);
+				flashing ^= 0xFF;
+			}
+			RTC_interrupt = false;
+		}
+
+	}
 }
