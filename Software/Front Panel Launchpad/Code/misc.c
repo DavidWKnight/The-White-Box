@@ -97,7 +97,7 @@ void init_misc(){
 	/*RTC counter*/
 	RTCIV;
 	RTCCTL &= ~RTCIE;
-	RTCCTL |= (RTCSS_2);
+	RTCCTL |= (RTCSS_3);
 	RTCMOD = 0x1000;
 	RTCCTL |= RTCSR;
 }
