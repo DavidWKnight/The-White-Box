@@ -34,7 +34,6 @@ struct effect_data all_effect_data[max_effect_presets] = {
 		{.preset_number = 7, .name = "      Preset 7      ", .name_short = "Pr 7  "},
 		{.preset_number = 8, .name = "      Preset 8      ", .name_short = "Pr 8  "},
 		{.preset_number = 9, .name = "      Preset 9      ", .name_short = "Pr 9  "}
-		/*use memcpy to change name in program*/
 };
 
 /*settings menu*/
@@ -47,7 +46,7 @@ unsigned int user_input_decode(){
 	if (port1_state > 0){
 		/*port 1*/
 		switch (port1_state){
-			case 0x0001:
+			case 0x01:
 				return port1_statemachine(0x0001);
 			case 0x02:
 				return port1_statemachine(0x0002);
@@ -120,7 +119,7 @@ unsigned int port1_statemachine(unsigned int pin){
 	return 0;
 }
 
-/*This function is untested for encoders 2,3 and 4 because I don't have access to them on the MSP430FR4133 Launchpad*/
+/*This function is untested for encoder 4 because I don't have access to it on the MSP430FR4133 Launchpad*/
 unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_shift){
 	__disable_interrupt();
 	port2_state &= ~pin;
@@ -167,7 +166,7 @@ unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_shift){
 	return 0x0000;
 }
 
-/*waits for user input on port 1 or port 2; goes into low power mode if there is no input*/
+/*waits for user input on port 1, port 2, or an interrupt from a peripheral; goes into low power mode if there is no input*/
 void wait_for_input(){
 	bool waiting = true;
 	while(1){

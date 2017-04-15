@@ -261,12 +261,12 @@ char menu_effect_edit(){
 
 void menu_settings(){
 	/*setup menu*/
-	settings_setup(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
-	unsigned char current_setting = 0;/*current effect being edited*/
+	settings_setup(); 
+	unsigned char current_setting = 0;/*current setting being edited*/
 
 	/*in menu actions*/
 	while(1){
-		wait_for_input();
+		wait_for_input();/*triggered by interrupts on P1 and P2 (buttons and encoders)*/
 		switch(user_input_decode()){
 			/*port 1*/
 			case 0x0001:/*enc1 sw*/
@@ -380,19 +380,20 @@ void menu_effect_name_edit(){
 	current_effect_ptr = &all_effect_data + current_preset;
 
 	char name_temp[2][LCD_line_length] = {"                    ","                    "};/*0 is name, 1 is name_short*/
-	char name_temp_length[2] = {LCD_line_length-1,max_length_name_short-1};
+	char name_temp_length[2] = {LCD_line_length-1,max_length_name_short-1};/*the last 14 characters of name_temp[0] are unused*/
 
 	memcpy(name_temp[0], current_effect_ptr->name, LCD_line_length);
 	memcpy(name_temp[1], current_effect_ptr->name_short, max_length_name_short);
 
 	effect_edit_name_setup(name_temp);
-
+	
+	/*enabled RTC interrupt to cause cursor to flash onscreen*/
 	RTCIV;
 	RTCCTL |= RTCIE;
 
 	/*in menu actions*/
 	while(1){
-		wait_for_input(); /*triggered by interrupts on P1 and P2 (buttons and encoders)*/
+		wait_for_input();/*triggered by interrupts on P1 and P2 (buttons and encoders)*/
 		switch(user_input_decode()){
 			/*port 1*/
 			case 0x0001:/*enc1 sw*/
