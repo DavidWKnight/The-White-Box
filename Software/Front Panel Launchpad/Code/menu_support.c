@@ -25,15 +25,15 @@ const unsigned char encoder_state_decoder[13][4] = {
 #pragma PERSISTENT(all_effect_data)
 struct effect_data all_effect_data[max_effect_presets] = {
 		{.name = "      No Effect     ", .name_short = "No FX "},/*Preset 0 is reserved as the default no effect preset*/
-		{.name = "      Preset    1   ", .name_short = "PR   1"},
-		{.name = "      Preset    2   ", .name_short = "PR   2"},
-		{.name = "      Preset    3   ", .name_short = "PR   3"},
-		{.name = "      Preset    4   ", .name_short = "PR   4"},
-		{.name = "      Preset    5   ", .name_short = "PR   5"},
-		{.name = "      Preset    6   ", .name_short = "PR   6"},
-		{.name = "      Preset    7   ", .name_short = "PR   7"},
-		{.name = "      Preset    8   ", .name_short = "PR   8"},
-		{.name = "      Preset    9   ", .name_short = "PR   9"},
+		{.name = "      Preset    1   ", .name_short = "PR   1", .effect_value[0][0] = 1},
+		{.name = "      Preset    2   ", .name_short = "PR   2", .effect_value[1][0] = 1},
+		{.name = "      Preset    3   ", .name_short = "PR   3", .effect_value[2][0] = 1},
+		{.name = "      Preset    4   ", .name_short = "PR   4", .effect_value[3][0] = 1},
+		{.name = "      Preset    5   ", .name_short = "PR   5", .effect_value[4][0] = 1},
+		{.name = "      Preset    6   ", .name_short = "PR   6", .effect_value[5][0] = 1},
+		{.name = "      Preset    7   ", .name_short = "PR   7", .effect_value[6][0] = 1},
+		{.name = "      Preset    8   ", .name_short = "PR   8", .effect_value[7][0] = 1},
+		{.name = "      Preset    9   ", .name_short = "PR   9", .effect_value[7][0] = 1, .effect_value[7][0] = 1, .effect_value[6][0] = 1, .effect_value[5][0] = 1, .effect_value[4][0] = 1, .effect_value[3][0] = 1, .effect_value[2][0] = 1, .effect_value[1][0] = 1, .effect_value[0][0] = 1},
 		};
 
 /*settings menu*/
