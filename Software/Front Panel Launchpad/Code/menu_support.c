@@ -24,17 +24,17 @@ const unsigned char encoder_state_decoder[13][4] = {
 
 #pragma PERSISTENT(all_effect_data)
 struct effect_data all_effect_data[max_effect_presets] = {
-		{.preset_number = 0, .name = "      No Effect     ", .name_short = "No FX "},/*Preset 0 is reserved as the default no effect preset*/
-		{.preset_number = 1, .name = "      Preset 1      ", .name_short = "Pr 1  "},
-		{.preset_number = 2, .name = "      Preset 2      ", .name_short = "Pr 2  "},
-		{.preset_number = 3, .name = "      Preset 3      ", .name_short = "Pr 3  "},
-		{.preset_number = 4, .name = "      Preset 4      ", .name_short = "Pr 4  "},
-		{.preset_number = 5, .name = "      Preset 5      ", .name_short = "Pr 5  "},
-		{.preset_number = 6, .name = "      Preset 6      ", .name_short = "Pr 6  "},
-		{.preset_number = 7, .name = "      Preset 7      ", .name_short = "Pr 7  "},
-		{.preset_number = 8, .name = "      Preset 8      ", .name_short = "Pr 8  "},
-		{.preset_number = 9, .name = "      Preset 9      ", .name_short = "Pr 9  "}
-};
+		{.name = "      No Effect     ", .name_short = "No FX "},/*Preset 0 is reserved as the default no effect preset*/
+		{.name = "      Preset    1   ", .name_short = "PR   1"},
+		{.name = "      Preset    2   ", .name_short = "PR   2"},
+		{.name = "      Preset    3   ", .name_short = "PR   3"},
+		{.name = "      Preset    4   ", .name_short = "PR   4"},
+		{.name = "      Preset    5   ", .name_short = "PR   5"},
+		{.name = "      Preset    6   ", .name_short = "PR   6"},
+		{.name = "      Preset    7   ", .name_short = "PR   7"},
+		{.name = "      Preset    8   ", .name_short = "PR   8"},
+		{.name = "      Preset    9   ", .name_short = "PR   9"},
+		};
 
 /*settings menu*/
 const char menu_settings_header[1][LCD_line_length] = {"   Settings Menu    "};

@@ -51,7 +51,6 @@ void effect_edit_name_setup(char name[2][LCD_line_length]);
 
 /*declarations for variables defined in menu.c*/
 struct effect_data{
-	const int preset_number;
 	char name[LCD_line_length];
 	char name_short[max_length_name_short];
 	int effect_value[max_effect_types][max_effect_param];

@@ -56,7 +56,7 @@ void init_ports(){
 	P7OUT = 0x00;
 
 	/*Port 8*/
-	P8OUT = 0xF;
+	P8DIR = 0xF;
 	P8SEL0 = 0x0;
 	P8OUT = 0x0;
 }

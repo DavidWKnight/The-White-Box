@@ -44,10 +44,10 @@ char menu_effect_select(){
 					active_preset = current_preset;
 					return 2;/*enter menu effect edit*/
 				}
-#endif
+#else
 				/*do nothing*/
 				break;
-
+#endif
 			case 0x0010:/*sw left*/
 				if (current_preset > 0){
 					current_preset--;
@@ -146,9 +146,9 @@ char menu_effect_edit(){
 #ifdef launchpad
 				effect_edit_save_params(active_effect);
 				return 1;
-#endif
+#else
 				break;
-
+#endif
 			case 0x0010:/*sw left*/
 				if (active_effect > 0){
 					effect_edit_save_params(active_effect);
