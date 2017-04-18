@@ -91,7 +91,6 @@ void init_misc(){
 	TA1R = 0x00;//start counter at 0
 	TA1CCR0 = 0x1F4;//trigger interrupt every
 	TA1CCTL0 |= CCIE;
-	//SMCLK might be 1MHz not 16MHz
 	TA1CTL |= TASSEL_2|ID_0|MC_0;//SMCLK, divide clock by 1, stop mode
 
 	/*RTC counter*/

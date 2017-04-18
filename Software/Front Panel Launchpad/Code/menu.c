@@ -130,7 +130,7 @@ char menu_effect_edit(){
 				break;
 
 			case 0x0002:/*enc2 sw*/
-				if (active_effect < max_effect_types){
+				if (active_effect < max_effect_types-1){
 					effect_edit_save_params(active_effect);
 					active_effect++;
 					effect_edit_load_params(active_effect);
@@ -159,7 +159,7 @@ char menu_effect_edit(){
 				break;
 
 			case 0x0020:/*sw right*/
-				if (active_effect < max_effect_types){
+				if (active_effect < max_effect_types-1){
 					effect_edit_save_params(active_effect);
 					active_effect++;
 					effect_edit_load_params(active_effect);
@@ -245,6 +245,11 @@ char menu_effect_edit(){
 				break;
 			}
 		/*update leds*/
+		/*
+		 * doesn't disable the led's when moving to another effect
+		 *
+		 *
+		 */
 		for (i = 0; i < max_effect_param; i++){
 			temp += effects[i];
 		}
