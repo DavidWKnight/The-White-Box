@@ -13,6 +13,7 @@
 
 #include <msp430.h>
 
+#define laumchpad
 /*my .h files*/
 #include "misc.h"
 #include "menu.h"

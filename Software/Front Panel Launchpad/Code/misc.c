@@ -110,9 +110,11 @@ void port1_debounce(){
 	i++;
 	if (i >= P1_max_checks){
 		i = 0;
-#ifdef launchpad
+
+
 		P1_check &= 0xFE;//This is because pin 1 is always low in the launchpad; change on prototype board
-#endif
+
+
 		if (P1_check > 0){
 			port1_state |= P1_check;
 			new_user_input = true;
