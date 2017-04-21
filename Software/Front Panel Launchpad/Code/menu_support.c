@@ -36,6 +36,9 @@ struct effect_data all_effect_data[max_effect_presets] = {
 		{.name = "      Preset    9   ", .name_short = "PR   9", .effect_value[7][0] = 1, .effect_value[7][0] = 1, .effect_value[6][0] = 1, .effect_value[5][0] = 1, .effect_value[4][0] = 1, .effect_value[3][0] = 1, .effect_value[2][0] = 1, .effect_value[1][0] = 1, .effect_value[0][0] = 1},
 		};
 
+const char effects_available[max_effect_types][LCD_line_length] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
+        "     Drive/Fuzz     ", "       Flange       ", "    Pitch Shift     ", "       Delay        ", "    Trem/Vibrato    "};
+
 /*settings menu*/
 const char menu_settings_header[1][LCD_line_length] = {"   Settings Menu    "};
 const char menu_settings_names[number_of_settings][14] = {"setting 1", "LED brightness", "LCD Brightness"};
@@ -329,8 +332,6 @@ void effect_select_write_effects(){
 
 /*sets up every line for menu_effect_edit*/
 void effect_edit_setup(unsigned char active_effect){
-	const char effects_available[max_effect_types][LCD_line_length] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
-			"     Drive/Fuzz     ", "       Flange       ", "    Pitch Shift     ", "       Delay        ", "    Trem/Vibrato    "};
 	const char line_3[LCD_line_length] = "  FX1| FX2| FX3| FX4";
 	unsigned int i;
 
@@ -364,9 +365,6 @@ void effect_edit_setup(unsigned char active_effect){
 }
 
 /*saves the data currently in effects[]*/
-/*
- * IT REMEMBERS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- */
 void effect_edit_save_params(unsigned char active_effect){
 	unsigned int i = 0;
 	for (i = 0; i < max_effect_param; i++){
@@ -409,9 +407,73 @@ void effect_edit_write_FX(unsigned int effect_param){
 		LCD_write_data(temp2+48);
 		temp -= temp2 * power_ten[i];
 	}
-
 }
 
+/*update screen for new effect info*/
+void effect_edit_update_FX(unsigned char *active_effect, unsigned char increment){
+	unsigned int i, temp;
+
+	effect_edit_save_params(*active_effect);
+
+	/*update current LED*/
+	for (i = 0, temp = 0; i < max_effect_param; i++){
+		temp += effects[i];
+	}
+	if (temp > 0){
+		POUT_LED |= (1 << (*active_effect) );
+	}
+	else {
+		POUT_LED &= ~(1 << (*active_effect) );
+	}
+
+	/*increment/decrement active effect*/
+	if(increment == 1){
+		(*active_effect)++;
+	}
+	else{
+		(*active_effect)--;
+	}
+
+	effect_edit_load_params(*active_effect);
+
+	/*update new LED*/
+	for (i = 0, temp = 0; i < max_effect_param; i++){
+		temp += effects[i];
+	}
+	if (temp > 0){
+		POUT_LED |= (1 << (*active_effect) );
+	}
+	else {
+		POUT_LED &= ~(1 << (*active_effect) );
+	}
+
+	/*update LCD line 2*/
+	LCD_cursor_pos(2,1);
+	for (i = 0; i < LCD_line_length; i++){
+	    LCD_write_data(effects_available[*active_effect][i]);
+	}
+	/*line 4*/
+	for (i = 0; i < max_effect_param; i++){
+        effect_edit_write_FX(i);
+    }
+
+	return;
+}
+
+void effect_edit_update_leds(unsigned char active_effect){
+    unsigned int i, temp;
+
+    for (i = 0, temp = 0; i < max_effect_param; i++){
+        temp += effects[i];
+    }
+    if (temp > 0){
+        POUT_LED |= (1 << active_effect);
+    }
+    else {
+        POUT_LED &= ~(1 << active_effect);
+    }
+    return;
+}
 void settings_setup(){
 	unsigned int i;
 

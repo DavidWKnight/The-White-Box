@@ -42,6 +42,8 @@ void effect_edit_setup(unsigned char);
 void effect_edit_save_params(unsigned char);
 void effect_edit_load_params(unsigned char);
 void effect_edit_write_FX(unsigned int);
+void effect_edit_update_FX(unsigned char *, unsigned char);
+void effect_edit_update_leds(unsigned char);
 
 /*settings functions*/
 void settings_setup();

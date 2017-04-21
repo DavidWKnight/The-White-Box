@@ -104,8 +104,6 @@ char menu_effect_select(){
 }
 
 char menu_effect_edit(){
-	unsigned int temp = 0;
-	unsigned int i = 0;
 	unsigned char active_effect = 0;/*effect currently being edited*/
 
 	/*setup menu*/
@@ -122,19 +120,13 @@ char menu_effect_edit(){
 			/*port 1*/
 			case 0x0001:/*enc1 sw*/
 				if (active_effect > 0){
-					effect_edit_save_params(active_effect);
-					active_effect--;
-					effect_edit_load_params(active_effect);
-					effect_edit_setup(active_effect);
+				    effect_edit_update_FX(&active_effect, 0x00);
 				}
 				break;
 
 			case 0x0002:/*enc2 sw*/
 				if (active_effect < max_effect_types-1){
-					effect_edit_save_params(active_effect);
-					active_effect++;
-					effect_edit_load_params(active_effect);
-					effect_edit_setup(active_effect);
+				    effect_edit_update_FX(&active_effect, 0x01);
 				}
 				break;
 
@@ -151,19 +143,13 @@ char menu_effect_edit(){
 #endif
 			case 0x0010:/*sw left*/
 				if (active_effect > 0){
-					effect_edit_save_params(active_effect);
-					active_effect--;
-					effect_edit_load_params(active_effect);
-					effect_edit_setup(active_effect);
+				    effect_edit_update_FX(&active_effect, 0x00);
 				}
 				break;
 
 			case 0x0020:/*sw right*/
 				if (active_effect < max_effect_types-1){
-					effect_edit_save_params(active_effect);
-					active_effect++;
-					effect_edit_load_params(active_effect);
-					effect_edit_setup(active_effect);
+				    effect_edit_update_FX(&active_effect, 0x01);
 				}
 				break;
 
@@ -181,6 +167,7 @@ char menu_effect_edit(){
 					effects[0]--;
 					effect_edit_write_FX(0);
 					update_DSP(active_effect, 0);
+					effect_edit_update_leds(active_effect);
 				}
 				break;
 
@@ -189,6 +176,7 @@ char menu_effect_edit(){
 					effects[0]++;
 					effect_edit_write_FX(0);
 					update_DSP(active_effect, 0);
+					effect_edit_update_leds(active_effect);
 				}
 				break;
 
@@ -197,6 +185,7 @@ char menu_effect_edit(){
 					effects[1]--;
 					effect_edit_write_FX(1);
 					update_DSP(active_effect, 1);
+					effect_edit_update_leds(active_effect);
 				}
 				break;
 
@@ -205,6 +194,7 @@ char menu_effect_edit(){
 					effects[1]++;
 					effect_edit_write_FX(1);
 					update_DSP(active_effect, 1);
+					effect_edit_update_leds(active_effect);
 				}
 				break;
 
@@ -213,6 +203,7 @@ char menu_effect_edit(){
 					effects[2]--;
 					effect_edit_write_FX(2);
 					update_DSP(active_effect, 2);
+					effect_edit_update_leds(active_effect);
 				}
 				break;
 
@@ -221,6 +212,7 @@ char menu_effect_edit(){
 					effects[2]++;
 					effect_edit_write_FX(2);
 					update_DSP(active_effect, 2);
+					effect_edit_update_leds(active_effect);
 				}
 				break;
 
@@ -229,6 +221,7 @@ char menu_effect_edit(){
 					effects[3]--;
 					effect_edit_write_FX(3);
 					update_DSP(active_effect, 3);
+					effect_edit_update_leds(active_effect);
 				}
 				break;
 
@@ -237,6 +230,7 @@ char menu_effect_edit(){
 					effects[3]--;
 					effect_edit_write_FX(3);
 					update_DSP(active_effect, 3);
+					effect_edit_update_leds(active_effect);
 				}
 				break;
 
@@ -244,22 +238,6 @@ char menu_effect_edit(){
 			default:
 				break;
 			}
-		/*update leds*/
-		/*
-		 * doesn't disable the led's when moving to another effect
-		 *
-		 *
-		 */
-		for (i = 0; i < max_effect_param; i++){
-			temp += effects[i];
-		}
-		if (temp > 0){
-			POUT_LED |= (1 << active_effect);
-		}
-		else {
-			POUT_LED &= ~(1 << active_effect);
-		}
-
 	}
 
 }
