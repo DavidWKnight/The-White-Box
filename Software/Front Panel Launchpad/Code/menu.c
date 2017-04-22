@@ -491,6 +491,7 @@ void menu_effect_name_edit(){
 			default:
 				break;
 		}
+		/*flashing black rectangle to display cursor location*/
 		if (RTC_interrupt){
 			if (flashing == 0x00){
 				if (flash_delay > flash_delay_max) {
