@@ -67,6 +67,7 @@ unsigned int user_input_decode(){
 				return port1_statemachine(0x0080);
 			default:
 				port1_state = 0x00;
+				/*This should reset all of port 1, IES mask .. everything*/
 				break;
 		}
 	}
@@ -169,7 +170,7 @@ unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_shift){
 	return 0x0000;
 }
 
-/*waits for user input on port 1, port 2, or an interrupt from a peripheral; goes into low power mode if there is no input*/
+/*waits for user input or an interrupt from a peripheral; goes into low power mode if there is no input*/
 void wait_for_input(){
 	while(1){
 		bool waiting = true;
@@ -246,7 +247,6 @@ void update_LED(){
 	return;
 }
 
-/*write the parts of menu_effect_select that don't change*/
 void effect_select_setup(){
 	const char menu_effect_select_header[LCD_line_length] = {" Effect Select Menu "};
 	unsigned int i;
@@ -328,7 +328,6 @@ void effect_select_write_effects(){
 	return;
 }
 
-/*sets up every line for menu_effect_edit*/
 void effect_edit_setup(unsigned char active_effect){
 	const char line_3[LCD_line_length] = "  FX1| FX2| FX3| FX4";
 	unsigned int i;
@@ -458,6 +457,7 @@ void effect_edit_update_FX(unsigned char *active_effect, unsigned char increment
 	return;
 }
 
+/*update LEDs after effect parameter change*/
 void effect_edit_update_leds(unsigned char active_effect){
     unsigned int i, temp;
 
@@ -472,6 +472,7 @@ void effect_edit_update_leds(unsigned char active_effect){
     }
     return;
 }
+
 void settings_setup(){
 	unsigned int i;
 
@@ -509,3 +510,24 @@ void effect_edit_name_setup(char name[2][LCD_line_length]){
 	return;
 }
 
+void effect_edit_name_cursor(unsigned int *flash_delay, char cursor_char){
+    static unsigned char flashing = 0;
+
+    if (flashing == 0x00){
+        if ((*flash_delay) > flash_delay_max) {
+            (*flash_delay) = flash_delay_short;
+            LCD_write_data(0xFF);
+            flashing ^= 0xFF;
+        }
+        else{
+            (*flash_delay)++;
+        }
+    }
+    else {
+        LCD_write_data(cursor_char);
+        flashing ^= 0xFF;
+    }
+    RTC_interrupt = false;
+
+    return;
+}

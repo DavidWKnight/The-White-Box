@@ -16,7 +16,6 @@
 #define P2_max_checks 3	/*how many times to check port 2 during debounce*/
 #define POUT_LED P3OUT
 
-/*prototypes for functions in misc.c*/
 void init_ports();
 void init_misc();
 void port1_debounce();

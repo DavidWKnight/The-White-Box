@@ -19,7 +19,6 @@
 #define LCD_cmd_out P5OUT
 #define LCD_data_out P3OUT
 
-/*prototypes for functions in lcd.c*/
 void init_LCD();
 void LCD_write_data(char);
 void LCD_write_cmd(char);

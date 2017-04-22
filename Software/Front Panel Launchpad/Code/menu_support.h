@@ -21,7 +21,9 @@
 #define number_of_settings 3 /*number of settings in settings menu*/
 #define non_bool_settings 1 /*point in settings menu where settings are not boolean values*/
 
-/*prototypes for functions in menu_support.c*/
+#define flash_delay_max 3
+#define flash_delay_short 3
+#define flash_delay_reset 0
 
 /*generic menu functions*/
 unsigned int user_input_decode();
@@ -50,8 +52,8 @@ void settings_setup();
 
 /*effect name edit functions*/
 void effect_edit_name_setup(char name[2][LCD_line_length]);
+void effect_edit_name_cursor(unsigned int *, char);
 
-/*declarations for variables defined in menu.c*/
 struct effect_data{
 	char name[LCD_line_length];
 	char name_short[max_length_name_short];
@@ -63,7 +65,6 @@ volatile bool port2_interrupt;
 volatile bool RTC_interrupt;
 volatile bool new_user_input;
 
-/*external varaibles*/
 extern unsigned char port1_state;
 extern unsigned char port2_state;
 extern unsigned char port1_mask;
