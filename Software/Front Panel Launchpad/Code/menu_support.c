@@ -171,9 +171,8 @@ unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_shift){
 
 /*waits for user input on port 1, port 2, or an interrupt from a peripheral; goes into low power mode if there is no input*/
 void wait_for_input(){
-	bool waiting = true;
 	while(1){
-		waiting = true;
+		bool waiting = true;
 		if(port1_interrupt){
 			waiting = false;
 			TA0CTL |= MC_1;//start timer for debouncing
@@ -232,10 +231,9 @@ void update_DSP(unsigned int effect, unsigned int param){
 /*does a full update of the LED's*/
 void update_LED(){
 	unsigned int i, j;
-	unsigned int temp;
 	unsigned char leds = 0x00;
 	for (i = 0; i < max_effect_types; i++){
-		temp = 0x00;
+		unsigned int temp = 0x00;
 		for (j = 0; j < max_effect_param; j++){
 			temp |= all_effect_data[current_preset].effect_value[i][j];
 		}
