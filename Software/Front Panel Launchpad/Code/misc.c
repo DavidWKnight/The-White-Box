@@ -145,10 +145,6 @@ void port2_debounce(){
 }
 
 /*write the given number to the row and column given, only writes the number of digits given by length*/
-
-/*
- * Breaks when number = 0
- */
 void LCD_write_integer(int row, int column, int number,unsigned int length){
 
     /*
