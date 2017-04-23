@@ -246,8 +246,9 @@ char menu_effect_edit(){
 
 void menu_settings(){
 	/*setup menu*/
-	settings_setup(); 
-	unsigned char current_setting = 0;/*current setting being edited*/
+    static unsigned char current_setting = 1;/*current setting being edited*/
+	settings_setup();
+	settings_next_setting(current_setting);
 
 	/*in menu actions*/
 	while(1){
@@ -258,15 +259,15 @@ void menu_settings(){
 		/*port 1*/
 		case 0x0001:/*enc1 sw*/
             if (current_setting > 0){
-                current_setting++;
-                /*write new setting page*/
+                current_setting--;
+                settings_next_setting(current_setting);
             }
             break;
 
         case 0x0002:/*enc2 sw*/
-            if (current_setting < number_of_settings){
-                current_setting--;
-                /*write new setting page*/
+            if (current_setting < number_of_settings-1){
+                current_setting++;
+                settings_next_setting(current_setting);
             }
             break;
 
@@ -281,21 +282,22 @@ void menu_settings(){
 
         case 0x0010:/*sw left*/
             if (current_setting > 0){
-                current_setting++;
-                /*write new setting page*/
+                current_setting--;
+                settings_next_setting(current_setting);
             }
             break;
 
         case 0x0020:/*sw right*/
-            if (current_setting < number_of_settings){
-                current_setting--;
-                /*write new setting page*/
+            if (current_setting < number_of_settings-1){
+                current_setting++;
+                settings_next_setting(current_setting);
             }
             break;
 
         case 0x0040:/*sw select*/
             if (current_setting < non_bool_settings){/*effects that aren't toggled will be less than compared number*/
                 menu_settings_values[current_setting] ^= 0x01;
+                LCD_write_integer(3, 16, menu_settings_values[current_setting], 5);
             }
             break;
 
@@ -305,32 +307,32 @@ void menu_settings(){
         /*port 2*/
         case 0x0100:
             if (current_setting > 0){
-                current_setting++;
-                /*write new setting page*/
+                current_setting--;
+                settings_next_setting(current_setting);
             }
             break;
 
         case 0x0200:
-            if (current_setting < number_of_settings){
-                current_setting--;
-                /*write new setting page*/
+            if (current_setting < number_of_settings-1){
+                current_setting++;
+                settings_next_setting(current_setting);
             }
             break;
 
         case 0x0400:
             if (current_setting >= non_bool_settings){/*effects that are toggled will be bigger than compared number*/
-                if(menu_settings_values[current_setting] < setting_max_value){
-                    menu_settings_values[current_setting]++;
-                    /*write new setting page*/
+                if (menu_settings_values[current_setting] > 0){
+                    menu_settings_values[current_setting]--;
+                    LCD_write_integer(3, 16, menu_settings_values[current_setting], 5);
                 }
             }
             break;
 
         case 0x0800:
             if (current_setting >= non_bool_settings){/*effects that are toggled will be bigger than compared number*/
-                if (menu_settings_values[current_setting] > 0){
-                    menu_settings_values[current_setting]--;
-                    /*write new setting page*/
+                if(menu_settings_values[current_setting] < setting_max_value){
+                    menu_settings_values[current_setting]++;
+                    LCD_write_integer(3, 16, menu_settings_values[current_setting], 5);
                 }
             }
             break;

@@ -18,8 +18,9 @@
 #define max_effect_types 8 /*number of effect types available to user*/
 #define max_effect_param 4 /*The max number of parameters an effect can have*/
 #define setting_max_value 100 /*highest value a setting can have*/
-#define number_of_settings 3 /*number of settings in settings menu*/
-#define non_bool_settings 1 /*point in settings menu where settings are not boolean values*/
+#define setting_name_length 14 /*longest length of a setting name*/
+#define number_of_settings 5 /*number of settings in settings menu*/
+#define non_bool_settings 3 /*point in settings menu where settings are not boolean values*/
 
 #define flash_delay_max 3
 #define flash_delay_short 3
@@ -49,6 +50,7 @@ void effect_edit_update_leds(unsigned char);
 
 /*settings functions*/
 void settings_setup();
+void settings_next_setting(unsigned char);
 
 /*effect name edit functions*/
 void effect_edit_name_setup(char name[2][LCD_line_length]);

@@ -33,7 +33,7 @@
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.DEFINE.790653870" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.DEFINE" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__MSP430FR4133__"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.ADVICE__HW_CONFIG.106673605" name="Check hardware configuration settings for device. (--advice:hw_config)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.ADVICE__HW_CONFIG" value="all" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.ADVICE__HW_CONFIG.106673605" name="Check hardware configuration settings for device. (--advice:hw_config)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.ADVICE__HW_CONFIG" value="&quot;all&quot;" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.USE_HW_MPY.1899480389" name="Inline hardware multiply version of RTS mpy routine (--use_hw_mpy)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.USE_HW_MPY" value="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.USE_HW_MPY.none" valueType="enumerated"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.SILICON_ERRATA.CPU21.1482223287" name="Workaround specified silicon errata (--silicon_errata) [CPU21]" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.SILICON_ERRATA.CPU21" value="true" valueType="boolean"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.SILICON_ERRATA.CPU22.97421656" name="Workaround specified silicon errata (--silicon_errata) [CPU22]" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.SILICON_ERRATA.CPU22" value="true" valueType="boolean"/>
@@ -41,7 +41,7 @@
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.SILICON_VERSION.1431928321" name="Silicon version (--silicon_version, -v)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.SILICON_VERSION" value="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.SILICON_VERSION.mspx" valueType="enumerated"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.PRINTF_SUPPORT.2119770599" name="Level of printf/scanf support required (--printf_support)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.PRINTF_SUPPORT" value="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.PRINTF_SUPPORT.minimal" valueType="enumerated"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.DEBUGGING_MODEL.1666623548" name="Debugging model" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.DEBUGGING_MODEL" value="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.DEBUGGING_MODEL.SYMDEBUG__DWARF" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.ADVICE__POWER.599802693" name="Enable checking of ULP power rules (--advice:power)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.ADVICE__POWER" value="all" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.ADVICE__POWER.599802693" name="Enable checking of ULP power rules (--advice:power)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.ADVICE__POWER" value="&quot;1,2,3,4,5,6,7,8,9,10,11,12,14,15&quot;" valueType="string"/>
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.DIAG_WARNING.724568722" name="Treat diagnostic &lt;id&gt; as warning (--diag_warning, -pdsw)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.DIAG_WARNING" valueType="stringList">
 									<listOptionValue builtIn="false" value="225"/>
 								</option>
@@ -51,6 +51,7 @@
 									<listOptionValue builtIn="false" value="&quot;${CCS_BASE_ROOT}/msp430/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>
 								</option>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.ADVICE__HW_CONFIG_SEVERITY.1189762308" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.ADVICE__HW_CONFIG_SEVERITY" value="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compilerID.ADVICE__HW_CONFIG_SEVERITY._none" valueType="enumerated"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compiler.inputType__C_SRCS.2127395432" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compiler.inputType__C_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compiler.inputType__CPP_SRCS.1048436915" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compiler.inputType__CPP_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compiler.inputType__ASM_SRCS.1811211604" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_15.12.compiler.inputType__ASM_SRCS"/>

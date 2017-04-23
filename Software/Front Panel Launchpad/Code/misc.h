@@ -20,6 +20,7 @@ void init_ports();
 void init_misc();
 void port1_debounce();
 void port2_debounce();
+void LCD_write_integer(int, int, int,unsigned int);
 void delay_ms(unsigned int);
 void delay_us(unsigned int);
 

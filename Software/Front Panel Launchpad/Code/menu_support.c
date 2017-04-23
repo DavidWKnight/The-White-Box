@@ -41,8 +41,9 @@ const char effects_available[max_effect_types][LCD_line_length] = {"        Wah 
 
 /*settings menu*/
 const char menu_settings_header[1][LCD_line_length] = {"   Settings Menu    "};
-const char menu_settings_names[number_of_settings][14] = {"setting 1", "LED brightness", "LCD Brightness"};
-char menu_settings_values[number_of_settings] = {0,0,0};
+const char menu_settings_names[number_of_settings][setting_name_length] = {"setting 1     ", "setting 2     ", "setting 3     ", "LED brightness", "LCD Brightness"};
+#pragma PERSISTENT(menu_settings_values)
+unsigned char menu_settings_values[number_of_settings] = {1,1,1,20,20};
 
 /*takes debounced inputs and runs them through state machines*/
 unsigned int user_input_decode(){
@@ -485,6 +486,30 @@ void settings_setup(){
 
 	return;
 }
+
+void settings_next_setting(unsigned char current_setting){
+    unsigned int j, row;
+    int i;
+
+    for(i = current_setting - 1, row = 2; i < (current_setting + 2); i++, row++){
+        LCD_cursor_pos(row, 1);
+        if( (i < 0) || (i > number_of_settings-1) ){
+            for(j = 0; j < LCD_line_length; j++){
+                LCD_write_data(' ');
+            }
+            continue;
+        }
+
+        for(j = 0; j < setting_name_length; j++){
+            LCD_write_data(menu_settings_names[i][j]);
+        }
+        LCD_write_integer(row, 16, menu_settings_values[i], 5);
+    }
+
+
+    return;
+}
+
 
 void effect_edit_name_setup(char name[2][LCD_line_length]){
 	const char edit_name_header[2][LCD_line_length] = {"Edit Effect Name:   ", "Effect Nickname:    "};
