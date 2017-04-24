@@ -246,9 +246,11 @@ char menu_effect_edit(){
 
 void menu_settings(){
 	/*setup menu*/
-    static unsigned char current_setting = 1;/*current setting being edited*/
+    static unsigned char current_setting = 4;/*current setting being edited*/
 	settings_setup();
 	settings_next_setting(current_setting);
+
+
 
 	/*in menu actions*/
 	while(1){
@@ -297,7 +299,7 @@ void menu_settings(){
         case 0x0040:/*sw select*/
             if (current_setting < non_bool_settings){/*effects that aren't toggled will be less than compared number*/
                 menu_settings_values[current_setting] ^= 0x01;
-                LCD_write_integer(3, 16, menu_settings_values[current_setting], 5);
+                LCD_write_integer(3, 16, menu_settings_values[current_setting], 4);
             }
             break;
 
@@ -323,7 +325,7 @@ void menu_settings(){
             if (current_setting >= non_bool_settings){/*effects that are toggled will be bigger than compared number*/
                 if (menu_settings_values[current_setting] > 0){
                     menu_settings_values[current_setting]--;
-                    LCD_write_integer(3, 16, menu_settings_values[current_setting], 5);
+                    LCD_write_integer(3, 16, menu_settings_values[current_setting], 4);
                 }
             }
             break;
@@ -332,7 +334,7 @@ void menu_settings(){
             if (current_setting >= non_bool_settings){/*effects that are toggled will be bigger than compared number*/
                 if(menu_settings_values[current_setting] < setting_max_value){
                     menu_settings_values[current_setting]++;
-                    LCD_write_integer(3, 16, menu_settings_values[current_setting], 5);
+                    LCD_write_integer(3, 16, menu_settings_values[current_setting], 4);
                 }
             }
             break;
@@ -505,7 +507,7 @@ void menu_effect_name_edit(){
 		/*flashing black rectangle to display cursor location*/
 	    if (RTC_interrupt){
 	        LCD_cursor_pos(2*current_name+2,current_char+1);
-	        effect_edit_name_cursor(&flash_delay, name_temp[current_name][current_char]);
+	        flash_cursor(&flash_delay, name_temp[current_name][current_char], 0xFF);
 	    }
 
 	}

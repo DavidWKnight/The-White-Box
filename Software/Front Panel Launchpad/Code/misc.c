@@ -146,18 +146,10 @@ void port2_debounce(){
 
 /*write the given number to the row and column given, only writes the number of digits given by length*/
 void LCD_write_integer(int row, int column, int number,unsigned int length){
-
-    /*
-    if( (length < 1) || (length > 5) ){
-        //assert
-    }
-    else if(number < -9999){
-        //assert
-    }
-    */
-
     const unsigned int powers_of_ten[5] = {10000, 1000, 100, 10, 1};
-    int i = 5 - length, num_temp = number;
+    static const unsigned int max_length = 5;
+    unsigned int i = max_length - length;
+    int num_temp = number;
     char temp = 0;
 
     LCD_cursor_pos(row, column);
@@ -168,15 +160,17 @@ void LCD_write_integer(int row, int column, int number,unsigned int length){
         num_temp *= -1;
     }
 
-    for(; (num_temp < powers_of_ten[i]) && (i < length - 1); i++){
+    for(; (num_temp < powers_of_ten[i]) && (i < (max_length - 1) ); i++){
         LCD_write_data(' ');
     }
 
-    for(; i < length; i++){
+    for(; i < (max_length - 1); i++){
         temp = num_temp / powers_of_ten[i];
         LCD_write_data(temp + 48);
         num_temp -= temp * powers_of_ten[i];
     }
+
+    LCD_write_data(num_temp + 48);
 
     return;
 }

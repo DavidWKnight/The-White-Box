@@ -34,6 +34,7 @@ void wait_for_input();
 void full_update_DSP();
 void update_DSP(unsigned int, unsigned int);
 void update_LED();
+void flash_cursor(unsigned int *, char, char);
 
 /*effect select functions*/
 void effect_select_setup();
@@ -54,7 +55,7 @@ void settings_next_setting(unsigned char);
 
 /*effect name edit functions*/
 void effect_edit_name_setup(char name[2][LCD_line_length]);
-void effect_edit_name_cursor(unsigned int *, char);
+
 
 struct effect_data{
 	char name[LCD_line_length];

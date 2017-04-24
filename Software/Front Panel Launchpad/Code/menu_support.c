@@ -248,6 +248,28 @@ void update_LED(){
 	return;
 }
 
+void flash_cursor(unsigned int *flash_delay, char cursor_char, char flash_char){
+    static unsigned char flashing = 0;
+
+    if (flashing == 0x00){
+        if ((*flash_delay) > flash_delay_max) {
+            (*flash_delay) = flash_delay_short;
+            LCD_write_data(flash_char);
+            flashing ^= 0xFF;
+        }
+        else{
+            (*flash_delay)++;
+        }
+    }
+    else {
+        LCD_write_data(cursor_char);
+        flashing ^= 0xFF;
+    }
+    RTC_interrupt = false;
+
+    return;
+}
+
 void effect_select_setup(){
 	const char menu_effect_select_header[LCD_line_length] = {" Effect Select Menu "};
 	unsigned int i;
@@ -382,30 +404,9 @@ void effect_edit_load_params(unsigned char active_effect){
 
 /*writes the value of a give parameter of the current active effect onto the bottom row of the LCD*/
 void effect_edit_write_FX(unsigned int effect_param){
-	LCD_cursor_pos(LCD_line_count,(effect_param*(LCD_line_length/4)) + 2);
-	unsigned int temp = effects[effect_param];
-	unsigned int temp2 = 0;
-	const unsigned int remove_zeros[(LCD_line_length/4) - 2] = {999,99,9};
-	const unsigned int power_ten[LCD_line_length/4-1] = {1000,100,10,1};
-	unsigned int i = 0;
-
-	/*remove leading zeros*/
-	for (temp2 = remove_zeros[i]; i < 3; temp2 = remove_zeros[i]){
-		if (temp > temp2){
-			break;
-		}
-		else {
-			LCD_write_data(' ');
-			i++;
-		}
-	}
-
-	for (temp2 = 0; i < (LCD_line_length/4) - 1; i++){
-		temp2 = temp / power_ten[i];
-		LCD_write_data(temp2+48);
-		temp -= temp2 * power_ten[i];
-	}
+	LCD_write_integer(4, ( (effect_param * (LCD_line_length / 4)) + 2), effects[effect_param], 4);
 }
+
 
 /*update screen for new effect info*/
 void effect_edit_update_FX(unsigned char *active_effect, unsigned char increment){
@@ -503,7 +504,7 @@ void settings_next_setting(unsigned char current_setting){
         for(j = 0; j < setting_name_length; j++){
             LCD_write_data(menu_settings_names[i][j]);
         }
-        LCD_write_integer(row, 16, menu_settings_values[i], 5);
+        LCD_write_integer(row, 16, menu_settings_values[i], 4);
     }
 
 
@@ -535,24 +536,3 @@ void effect_edit_name_setup(char name[2][LCD_line_length]){
 	return;
 }
 
-void effect_edit_name_cursor(unsigned int *flash_delay, char cursor_char){
-    static unsigned char flashing = 0;
-
-    if (flashing == 0x00){
-        if ((*flash_delay) > flash_delay_max) {
-            (*flash_delay) = flash_delay_short;
-            LCD_write_data(0xFF);
-            flashing ^= 0xFF;
-        }
-        else{
-            (*flash_delay)++;
-        }
-    }
-    else {
-        LCD_write_data(cursor_char);
-        flashing ^= 0xFF;
-    }
-    RTC_interrupt = false;
-
-    return;
-}
