@@ -250,7 +250,10 @@ void menu_settings(){
 	settings_setup();
 	settings_next_setting(current_setting);
 
-
+    /*enabled RTC interrupt to cause cursor to flash onscreen*/
+	unsigned int flash_delay = flash_delay_short;/*number of times to skip flash*/
+    RTCIV;
+    RTCCTL |= RTCIE;
 
 	/*in menu actions*/
 	while(1){
@@ -261,6 +264,7 @@ void menu_settings(){
 		/*port 1*/
 		case 0x0001:/*enc1 sw*/
             if (current_setting > 0){
+                flash_delay = flash_delay_short;
                 current_setting--;
                 settings_next_setting(current_setting);
             }
@@ -268,6 +272,7 @@ void menu_settings(){
 
         case 0x0002:/*enc2 sw*/
             if (current_setting < number_of_settings-1){
+                flash_delay = flash_delay_short;
                 current_setting++;
                 settings_next_setting(current_setting);
             }
@@ -275,6 +280,7 @@ void menu_settings(){
 
         case 0x0004:/*enc3 sw*/
             if (current_setting < non_bool_settings){/*effects that aren't toggled will be less than compared number*/
+                flash_delay = flash_delay_reset;
                 menu_settings_values[current_setting] ^= 0x01;
             }
             break;
@@ -284,6 +290,7 @@ void menu_settings(){
 
         case 0x0010:/*sw left*/
             if (current_setting > 0){
+                flash_delay = flash_delay_short;
                 current_setting--;
                 settings_next_setting(current_setting);
             }
@@ -291,6 +298,7 @@ void menu_settings(){
 
         case 0x0020:/*sw right*/
             if (current_setting < number_of_settings-1){
+                flash_delay = flash_delay_short;
                 current_setting++;
                 settings_next_setting(current_setting);
             }
@@ -304,11 +312,13 @@ void menu_settings(){
             break;
 
         case 0x0080:/*sw settings*/
+            RTCCTL &= ~RTCIE;
             return;/*go back to previous menu*/
 
         /*port 2*/
         case 0x0100:
             if (current_setting > 0){
+                flash_delay = flash_delay_short;
                 current_setting--;
                 settings_next_setting(current_setting);
             }
@@ -316,6 +326,7 @@ void menu_settings(){
 
         case 0x0200:
             if (current_setting < number_of_settings-1){
+                flash_delay = flash_delay_short;
                 current_setting++;
                 settings_next_setting(current_setting);
             }
@@ -355,6 +366,11 @@ void menu_settings(){
         default:
             break;
         }
+		/*flashing black rectangle to display cursor location*/
+        if (RTC_interrupt){
+            LCD_cursor_pos(3,20);
+            flash_cursor(&flash_delay, ' ', '<');
+        }
 
 	}
 }
@@ -362,8 +378,6 @@ void menu_settings(){
 void menu_effect_name_edit(){
 	unsigned char current_char = 0;/*current letter being changed*/
 	unsigned char current_name = 0;/*0 for name_temp, 1 for name_short_temp*/
-	unsigned int flash_delay = flash_delay_short;/*number of times to skip flash*/
-
 	/*setup menu*/
 
 
@@ -382,8 +396,9 @@ void menu_effect_name_edit(){
 	effect_edit_name_setup(name_temp);
 	
 	/*enabled RTC interrupt to cause cursor to flash onscreen*/
-	RTCIV;
-	RTCCTL |= RTCIE;
+	unsigned int flash_delay = flash_delay_short;/*number of times to skip flash*/
+    RTCIV;
+    RTCCTL |= RTCIE;
 
 	/*in menu actions*/
 	while(1){
