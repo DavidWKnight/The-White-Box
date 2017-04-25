@@ -8,8 +8,6 @@
 
 #include "menu.h"
 
-
-
 char menu_effect_select(){
 	/*setup menu*/
 	effect_select_setup();
@@ -274,6 +272,7 @@ void menu_settings(){
 
         case 0x0080:/*sw settings*/
             RTCCTL &= ~RTCIE;
+            RTC_interrupt != RTC_interrupt;
             return;/*go back to previous menu*/
 
         /*port 2*/
@@ -415,6 +414,7 @@ void menu_effect_name_edit(){
         case 0x0040:/*sw select*/
             /*save new effect name*/
             RTCCTL &= ~RTCIE;
+            RTC_interrupt != RTC_interrupt;
             memcpy(current_effect_ptr->name, name_temp[0], LCD_line_length);
             memcpy(current_effect_ptr->name_short, name_temp[1], max_length_name_short);
             return;
@@ -422,6 +422,7 @@ void menu_effect_name_edit(){
         case 0x0080:/*sw settings*/
             /*dont save new effect name*/
             RTCCTL &= ~RTCIE;
+            RTC_interrupt != RTC_interrupt;
             return;
 
         /*port 2*/
