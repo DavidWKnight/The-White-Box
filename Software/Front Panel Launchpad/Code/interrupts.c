@@ -39,6 +39,7 @@ __interrupt void TIMER1_A0_ISR(void){
 	TA1CTL &= ~TAIFG;
 }
 
+/*LCD cursor flash interrupt*/
 #pragma vector=RTC_VECTOR
 __interrupt void RTC_ISR(void){
 	_BIC_SR(LPM4_EXIT);

@@ -46,6 +46,7 @@ static const int effect_min_max_val[max_effect_types][max_effect_param*2] = {
         {0,0,0,0,100,100,100,100},
         {0,0,0,0,100,100,100,100},
         {0,0,0,0,100,100,100,100},
+        {0,0,0,0,100,100,100,100},
         {0,0,0,0,100,100,100,100}
 };
 
@@ -258,6 +259,7 @@ void update_LED(){
 	return;
 }
 
+/*alternates between cursor_char and flash_char being displayed on screen*/
 void flash_cursor(unsigned int *flash_delay, char cursor_char, char flash_char){
     static unsigned char flashing = 0;
 
@@ -417,7 +419,6 @@ void effect_edit_write_FX(unsigned int effect_param){
 	LCD_write_integer(4, ( (effect_param * (LCD_line_length / 4)) + 2), effects[effect_param], 4);
 }
 
-
 /*update screen for new effect info*/
 void effect_edit_update_FX(unsigned char *active_effect, unsigned char increment){
 	unsigned int i, temp;
@@ -469,8 +470,8 @@ void effect_edit_update_FX(unsigned char *active_effect, unsigned char increment
 	return;
 }
 
+/*increment or decrement active_effect parameter*/
 void effect_edit_change_param(unsigned char active_effect, unsigned char param, unsigned char increment){
-
     if(increment == 1){
         if(effects[param] < effect_min_max_val[active_effect][param+4]){
             effects[param]++;
@@ -491,7 +492,6 @@ void effect_edit_change_param(unsigned char active_effect, unsigned char param, 
         //error
         return;
     }
-
     return;
 }
 
@@ -511,6 +511,7 @@ void effect_edit_update_leds(unsigned char active_effect){
     return;
 }
 
+
 void settings_setup(){
 	unsigned int i;
 
@@ -524,7 +525,9 @@ void settings_setup(){
 	return;
 }
 
-void settings_next_setting(unsigned char current_setting){
+
+/*Writes the setting currently being edited to the LCD*/
+void settings_write_settings(unsigned char current_setting){
     unsigned int j, row;
     int i;
 
@@ -546,6 +549,7 @@ void settings_next_setting(unsigned char current_setting){
 
     return;
 }
+
 
 void effect_name_edit_setup(char name[2][LCD_line_length]){
 	const char edit_name_header[2][LCD_line_length] = {"Edit Effect Name:   ", "Effect Nickname:    "};

@@ -156,7 +156,7 @@ char menu_effect_edit(){
             break;
 
         case 0x0040:/*sw select*/
-            POUT_LED &= ~(1 << active_effect);
+            POUT_LED ^= (1 << active_effect);
             return 1;/*go back to effect menu select*/
 
         case 0x0080:/*sw settings*/
@@ -209,7 +209,7 @@ void menu_settings(){
 	/*setup menu*/
     static unsigned char current_setting = 4;/*current setting being edited*/
 	settings_setup();
-	settings_next_setting(current_setting);
+	settings_write_settings(current_setting);
 
     /*enabled RTC interrupt to cause cursor to flash onscreen*/
 	unsigned int flash_delay = flash_delay_short;/*number of times to skip flash*/
@@ -227,7 +227,7 @@ void menu_settings(){
             if (current_setting > 0){
                 flash_delay = flash_delay_short;
                 current_setting--;
-                settings_next_setting(current_setting);
+                settings_write_settings(current_setting);
             }
             break;
 
@@ -235,7 +235,7 @@ void menu_settings(){
             if (current_setting < number_of_settings-1){
                 flash_delay = flash_delay_short;
                 current_setting++;
-                settings_next_setting(current_setting);
+                settings_write_settings(current_setting);
             }
             break;
 
@@ -253,7 +253,7 @@ void menu_settings(){
             if (current_setting > 0){
                 flash_delay = flash_delay_short;
                 current_setting--;
-                settings_next_setting(current_setting);
+                settings_write_settings(current_setting);
             }
             break;
 
@@ -261,7 +261,7 @@ void menu_settings(){
             if (current_setting < number_of_settings-1){
                 flash_delay = flash_delay_short;
                 current_setting++;
-                settings_next_setting(current_setting);
+                settings_write_settings(current_setting);
             }
             break;
 
@@ -281,7 +281,7 @@ void menu_settings(){
             if (current_setting > 0){
                 flash_delay = flash_delay_short;
                 current_setting--;
-                settings_next_setting(current_setting);
+                settings_write_settings(current_setting);
             }
             break;
 
@@ -289,7 +289,7 @@ void menu_settings(){
             if (current_setting < number_of_settings-1){
                 flash_delay = flash_delay_short;
                 current_setting++;
-                settings_next_setting(current_setting);
+                settings_write_settings(current_setting);
             }
             break;
 

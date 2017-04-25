@@ -52,7 +52,7 @@ void effect_edit_change_param(unsigned char, unsigned char, unsigned char);
 
 /*settings functions*/
 void settings_setup();
-void settings_next_setting(unsigned char);
+void settings_write_settings(unsigned char);
 
 /*effect name edit functions*/
 void effect_name_edit_setup(char name[2][LCD_line_length]);
