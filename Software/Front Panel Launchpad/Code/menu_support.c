@@ -39,6 +39,16 @@ struct effect_data all_effect_data[max_effect_presets] = {
 const char effects_available[max_effect_types][LCD_line_length] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
         "     Drive/Fuzz     ", "       Flange       ", "    Pitch Shift     ", "       Delay        ", "    Trem/Vibrato    "};
 
+static const int effect_min_max_val[max_effect_types][max_effect_param*2] = {
+        {0,0,0,0,100,100,100,100},
+        {0,0,0,0,100,100,100,100},
+        {0,0,0,0,100,100,100,100},
+        {0,0,0,0,100,100,100,100},
+        {0,0,0,0,100,100,100,100},
+        {0,0,0,0,100,100,100,100},
+        {0,0,0,0,100,100,100,100}
+};
+
 /*settings menu*/
 const char menu_settings_header[1][LCD_line_length] = {"   Settings Menu    "};
 const char menu_settings_names[number_of_settings][setting_name_length] = {"setting 1     ", "setting 2     ", "setting 3     ", "LED brightness", "LCD Brightness"};
@@ -459,6 +469,32 @@ void effect_edit_update_FX(unsigned char *active_effect, unsigned char increment
 	return;
 }
 
+void effect_edit_change_param(unsigned char active_effect, unsigned char param, unsigned char increment){
+
+    if(increment == 1){
+        if(effects[param] < effect_min_max_val[active_effect][param+4]){
+            effects[param]++;
+            effect_edit_write_FX(param);
+            update_DSP(active_effect, param);
+            effect_edit_update_leds(active_effect);
+        }
+    }
+    else if(increment == 0){
+        if(effects[param] > effect_min_max_val[active_effect][param]){
+            effects[param]--;
+            effect_edit_write_FX(param);
+            update_DSP(active_effect, param);
+            effect_edit_update_leds(active_effect);
+        }
+    }
+    else{
+        //error
+        return;
+    }
+
+    return;
+}
+
 /*update LEDs after effect parameter change*/
 void effect_edit_update_leds(unsigned char active_effect){
     unsigned int i, temp;
@@ -511,8 +547,7 @@ void settings_next_setting(unsigned char current_setting){
     return;
 }
 
-
-void effect_edit_name_setup(char name[2][LCD_line_length]){
+void effect_name_edit_setup(char name[2][LCD_line_length]){
 	const char edit_name_header[2][LCD_line_length] = {"Edit Effect Name:   ", "Effect Nickname:    "};
 	unsigned int i,j;
 

@@ -156,6 +156,7 @@ char menu_effect_edit(){
             break;
 
         case 0x0040:/*sw select*/
+            POUT_LED &= ~(1 << active_effect);
             return 1;/*go back to effect menu select*/
 
         case 0x0080:/*sw settings*/
@@ -165,75 +166,35 @@ char menu_effect_edit(){
 
         /*port 2*/
         case 0x0100:
-            if (effects[0] > 0){
-                effects[0]--;
-                effect_edit_write_FX(0);
-                update_DSP(active_effect, 0);
-                effect_edit_update_leds(active_effect);
-            }
+            effect_edit_change_param(active_effect, 0, 0);
             break;
 
         case 0x0200:
-            if (effects[0] < 100){
-                effects[0]++;
-                effect_edit_write_FX(0);
-                update_DSP(active_effect, 0);
-                effect_edit_update_leds(active_effect);
-            }
+            effect_edit_change_param(active_effect, 0, 1);
             break;
 
         case 0x0400:
-            if (effects[1] > 0){
-                effects[1]--;
-                effect_edit_write_FX(1);
-                update_DSP(active_effect, 1);
-                effect_edit_update_leds(active_effect);
-            }
+            effect_edit_change_param(active_effect, 1, 0);
             break;
 
         case 0x0800:
-            if (effects[1] < 100){
-                effects[1]++;
-                effect_edit_write_FX(1);
-                update_DSP(active_effect, 1);
-                effect_edit_update_leds(active_effect);
-            }
+            effect_edit_change_param(active_effect, 1, 1);
             break;
 
         case 0x1000:
-            if (effects[2] > 0){
-                effects[2]--;
-                effect_edit_write_FX(2);
-                update_DSP(active_effect, 2);
-                effect_edit_update_leds(active_effect);
-            }
+            effect_edit_change_param(active_effect, 2, 0);
             break;
 
         case 0x2000:
-            if (effects[2] < 100){
-                effects[2]++;
-                effect_edit_write_FX(2);
-                update_DSP(active_effect, 2);
-                effect_edit_update_leds(active_effect);
-            }
+            effect_edit_change_param(active_effect, 2, 1);
             break;
 
         case 0x4000:
-            if (effects[3] > 0){
-                effects[3]--;
-                effect_edit_write_FX(3);
-                update_DSP(active_effect, 3);
-                effect_edit_update_leds(active_effect);
-            }
+            effect_edit_change_param(active_effect, 3, 0);
             break;
 
         case 0x8000:
-            if (effects[3] > 0){
-                effects[3]--;
-                effect_edit_write_FX(3);
-                update_DSP(active_effect, 3);
-                effect_edit_update_leds(active_effect);
-            }
+            effect_edit_change_param(active_effect, 3, 1);
             break;
 
         /*no action*/
@@ -393,7 +354,7 @@ void menu_effect_name_edit(){
 
 
 
-	effect_edit_name_setup(name_temp);
+	effect_name_edit_setup(name_temp);
 	
 	/*enabled RTC interrupt to cause cursor to flash onscreen*/
 	unsigned int flash_delay = flash_delay_short;/*number of times to skip flash*/

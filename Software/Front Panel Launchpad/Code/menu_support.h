@@ -48,13 +48,14 @@ void effect_edit_load_params(unsigned char);
 void effect_edit_write_FX(unsigned int);
 void effect_edit_update_FX(unsigned char *, unsigned char);
 void effect_edit_update_leds(unsigned char);
+void effect_edit_change_param(unsigned char, unsigned char, unsigned char);
 
 /*settings functions*/
 void settings_setup();
 void settings_next_setting(unsigned char);
 
 /*effect name edit functions*/
-void effect_edit_name_setup(char name[2][LCD_line_length]);
+void effect_name_edit_setup(char name[2][LCD_line_length]);
 
 
 struct effect_data{
