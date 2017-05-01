@@ -186,15 +186,10 @@ unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_shift){
 void wait_for_input(){
 	while(1){
 		bool waiting = true;
-		if(port1_interrupt){
+		if(debounce){
 			waiting = false;
-			TA0CTL |= MC_1;//start timer for debouncing
-			port1_interrupt = false;
-		}
-		if (port2_interrupt){
-			waiting = false;
-			TA1CTL |= MC_1;//start timer for debouncing
-			port2_interrupt = false;
+			TA0CCTL0 |= CCIE;
+			debounce = false;
 		}
 		if(new_user_input){
 			waiting = false;
@@ -207,7 +202,6 @@ void wait_for_input(){
 			return;
 		}
 		if (waiting){
-			//go into sleep mode
 			_BIS_SR(LPM4_bits + GIE);
 		}
 	}

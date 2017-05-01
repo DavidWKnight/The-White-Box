@@ -21,6 +21,7 @@
 #define setting_name_length 14 /*longest length of a setting name*/
 #define number_of_settings 5 /*number of settings in settings menu*/
 #define non_bool_settings 3 /*point in settings menu where settings are not boolean values*/
+#define setting_LED_brightness 3
 
 #define flash_delay_max 3
 #define flash_delay_short 3
@@ -66,6 +67,7 @@ struct effect_data{
 
 volatile bool port1_interrupt;
 volatile bool port2_interrupt;
+volatile bool debounce;
 volatile bool RTC_interrupt;
 volatile bool new_user_input;
 

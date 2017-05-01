@@ -37,7 +37,7 @@ void init_ports(){
 
 	/*Port 4*/
 	P4DIR = 0xFF;
-	P4SEL0 = 0x00;
+	P4SEL0 = 0x01;
 	P4OUT = 0x00;
 
 	/*Port 5*/
@@ -57,17 +57,18 @@ void init_ports(){
 
 	/*Port 8*/
 	P8DIR = 0xF;
-	P8SEL0 = 0x0;
+	P8SEL0 = 0xF;
 	P8OUT = 0x0;
 }
 
 
 void init_misc(){
 	/*init flags*/
-	volatile bool port1_interrupt = false;
-	volatile bool port2_interrupt = false;
-	volatile bool new_user_input = false;
-	volatile bool RTC_interrupt = false;
+	port1_interrupt = false;
+	port2_interrupt = false;
+	debounce = false;
+	new_user_input = false;
+	RTC_interrupt = false;
 
 	/*init other variables*/
 	port1_state = 0x00;
@@ -81,17 +82,19 @@ void init_misc(){
 	SYSCFG0 &= ~DFWP;
 	SYSCFG0 &= ~PFWP;
 
-	/*Port 1 debounce routine timer*/
-	TA0R = 0x00;//start counter at 0
-	TA0CCR0 = 0x3E8;//trigger interrupt every .5ms
-	TA0CCTL0 |= CCIE;
-	TA0CTL |= TASSEL_2|ID_3|MC_0;//SMCLK, divide clock by 8, stop mode
+	/*Debounce timer, TA0*/
+	TA0R = 0x00;
+	TA0CCR0 = 0xFA;
+	TA0CCTL0 &= !CCIE;
+	TA0CTL |= (TASSEL_2 + ID_1 + MC_1);
 
-	/*Port 2 debounce routine timer*/
-	TA1R = 0x00;//start counter at 0
-	TA1CCR0 = 0x1F4;//trigger interrupt every
-	TA1CCTL0 |= CCIE;
-	TA1CTL |= TASSEL_2|ID_0|MC_0;//SMCLK, divide clock by 1, stop mode
+	/*Brightness control, TA1*/
+    TA1CCR0 = 1000;
+    TA1CCTL2 |= (OUTMOD_7);
+    TA1CCR2 = 200;
+    TA1CTL |= (TASSEL_2 + ID_2 + MC_1);
+    TA1CTL |= TACLR;
+
 
 	/*RTC counter*/
 	RTCIV;
@@ -111,17 +114,15 @@ void port1_debounce(){
 	if (i >= P1_max_checks){
 		i = 0;
 
-
 		P1_check &= 0xFE;//This is because pin 1 is always low in the launchpad; change on prototype board
-
 
 		if (P1_check > 0){
 			port1_state |= P1_check;
 			new_user_input = true;
 		}
-
 		P1_check = 0xFF;
-		TA0CTL &= 0xFFCF;
+		port1_interrupt = false;
+		TA0CCTL0 &= ~CCIE;
 	}
 }
 
@@ -140,7 +141,8 @@ void port2_debounce(){
 		}
 
 		P2_check = 0xFF;
-		TA1CTL &= 0xFFCF;
+		port2_interrupt = false;
+		TA0CCTL0 &= ~CCIE;
 	}
 }
 

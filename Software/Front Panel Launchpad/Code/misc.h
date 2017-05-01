@@ -31,6 +31,10 @@ unsigned char port2_mask;
 unsigned int current_preset;
 unsigned int active_preset;
 
+extern volatile bool port1_interrupt;
+extern volatile bool port2_interrupt;
+extern volatile bool debounce;
+extern volatile bool RTC_interrupt;
 extern volatile bool new_user_input;
 
 #endif /* MISC_H_ */

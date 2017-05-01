@@ -331,7 +331,8 @@ void menu_settings(){
             LCD_cursor_pos(3,20);
             flash_cursor(&flash_delay, ' ', '<');
         }
-
+        /*implement current setting values*/
+        TA1CCR2 = 10*menu_settings_values[setting_LED_brightness];
 	}
 }
 
