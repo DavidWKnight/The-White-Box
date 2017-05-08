@@ -6,6 +6,7 @@
  */
 
 #include "lcd.h"
+#include "misc.h"
 
 void init_LCD(){
 	LCD_cmd_out = 0x00;

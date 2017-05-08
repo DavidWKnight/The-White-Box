@@ -8,11 +8,8 @@
 #ifndef MENU_H_
 #define MENU_H_
 
-#include <msp430.h>
+#include <stdbool.h>
 #include "menu_support.h"
-
-#define launchpad
-
 
 char menu_effect_select();
 char menu_effect_edit();

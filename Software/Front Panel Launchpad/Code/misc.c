@@ -7,6 +7,9 @@
 
 #include "misc.h"
 
+#include <msp430.h>
+#include "lcd.h"
+
 //unsigned int port_state = 0xFFFF;
 unsigned char P1_check = 0xFF;
 unsigned char P2_check = 0xFF;

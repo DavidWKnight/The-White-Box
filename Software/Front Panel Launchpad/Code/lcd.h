@@ -8,7 +8,7 @@
 #ifndef LCD_H_
 #define LCD_H_
 
-#include "misc.h"
+#include <msp430.h>
 
 #define LCD_line_count 4
 #define LCD_line_length 20

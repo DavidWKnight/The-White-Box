@@ -8,13 +8,11 @@
 #ifndef MISC_H_
 #define MISC_H_
 
-#include <msp430.h>
 #include <stdbool.h>
-#include "lcd.h"
 
 #define P1_max_checks 6 /*how many times to check port 1 during debounce*/
 #define P2_max_checks 3	/*how many times to check port 2 during debounce*/
-#define POUT_LED P3OUT
+#define POUT_LED P3OUT /*port that the LED's are on*/
 
 void init_ports();
 void init_misc();

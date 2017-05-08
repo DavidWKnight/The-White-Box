@@ -5,9 +5,10 @@
  *      Author: bigbird42
  */
 
-
 #include "menu_support.h"
 
+#include <msp430.h>
+#include "misc.h"
 
 unsigned int encoder_state = 0x00;
 const unsigned char encoder_state_decoder[13][4] = {

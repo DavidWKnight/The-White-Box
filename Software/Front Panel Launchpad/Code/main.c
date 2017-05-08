@@ -10,11 +10,10 @@
  *
  */
 
-
 #include <msp430.h>
 
-#define laumchpad
-/*my .h files*/
+#define launchpad
+
 #include "misc.h"
 #include "menu.h"
 #include "lcd.h"

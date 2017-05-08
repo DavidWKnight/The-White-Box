@@ -8,9 +8,7 @@
 #ifndef MENU_SUPPORT_H_
 #define MENU_SUPPORT_H_
 
-#include <msp430.h>
 #include <stdbool.h>
-#include "misc.h"
 #include "lcd.h"
 
 #define max_length_name_short 6 /*max length name_short can be*/

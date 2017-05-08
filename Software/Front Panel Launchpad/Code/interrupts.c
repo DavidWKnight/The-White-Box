@@ -6,7 +6,8 @@
  */
 
 #include "interrupts.h"
-
+#include <msp430.h>
+#include "misc.h"
 
 /*pushbutton interrupt*/
 #pragma vector=PORT1_VECTOR

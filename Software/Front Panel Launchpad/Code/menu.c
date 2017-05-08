@@ -5,8 +5,9 @@
  *      Author: bigbird42
  */
 
-
 #include "menu.h"
+#include <msp430.h>
+#include "misc.h"
 
 char menu_effect_select(){
 	/*setup menu*/
