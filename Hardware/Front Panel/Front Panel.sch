@@ -517,21 +517,21 @@ Text Label 1850 3850 2    60   ~ 0
 ENC2_SW
 Text Label 1850 3950 2    60   ~ 0
 ENC1_SW
-Text Label 4750 1800 0    60   ~ 0
-ENC1A
-Text Label 4750 1900 0    60   ~ 0
-ENC1B
-Text Label 4750 2000 0    60   ~ 0
-ENC2A
-Text Label 4750 2100 0    60   ~ 0
-ENC2B
-Text Label 4750 2200 0    60   ~ 0
-ENC3A
-Text Label 4750 2300 0    60   ~ 0
-ENC3B
-Text Label 4750 2400 0    60   ~ 0
-ENC4A
 Text Label 4750 2500 0    60   ~ 0
+ENC1A
+Text Label 4750 2400 0    60   ~ 0
+ENC1B
+Text Label 4750 2300 0    60   ~ 0
+ENC2A
+Text Label 4750 2200 0    60   ~ 0
+ENC2B
+Text Label 4750 2100 0    60   ~ 0
+ENC3A
+Text Label 4750 2000 0    60   ~ 0
+ENC3B
+Text Label 4750 1900 0    60   ~ 0
+ENC4A
+Text Label 4750 1800 0    60   ~ 0
 ENC4B
 Text Label 4750 3800 0    60   ~ 0
 LCD_D4
