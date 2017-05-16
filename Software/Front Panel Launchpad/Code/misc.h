@@ -9,6 +9,7 @@
 #define MISC_H_
 
 #include <stdbool.h>
+#include "menu_support.h"
 
 #define P1_max_checks 6 /*how many times to check port 1 during debounce*/
 #define P2_max_checks 3	/*how many times to check port 2 during debounce*/
@@ -34,5 +35,6 @@ extern volatile bool port2_interrupt;
 extern volatile bool debounce;
 extern volatile bool RTC_interrupt;
 extern volatile bool new_user_input;
+extern unsigned char menu_settings_values[number_of_settings];
 
 #endif /* MISC_H_ */

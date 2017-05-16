@@ -20,6 +20,7 @@
 #define number_of_settings 5 /*number of settings in settings menu*/
 #define non_bool_settings 3 /*point in settings menu where settings are not boolean values*/
 #define setting_LED_brightness 3
+#define setting_LCD_brightness 4
 
 #define flash_delay_max 3
 #define flash_delay_short 3

@@ -56,7 +56,7 @@ void LCD_write_cmd(char buffer){
 		delay_us(300);
 	}
 	else{
-	delay_ms(2);
+	    delay_ms(2);
 	}
 	LCD_cmd_out &= ~LCD_E;
 	POUT_LED = temp;

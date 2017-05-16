@@ -334,6 +334,7 @@ void menu_settings(){
         }
         /*implement current setting values*/
         TA1CCR2 = 10*menu_settings_values[setting_LED_brightness];
+        TA1CCR1 = 10*menu_settings_values[setting_LCD_brightness];
 	}
 }
 
