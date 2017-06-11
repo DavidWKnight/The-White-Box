@@ -1,4 +1,12 @@
 /*
+ * main.c
+ *
+ *  Created on: Jun 11, 2017
+ *      Author: bigbird42
+ */
+
+
+/*
  * Cant use following pins on msp430fr4133 launchpad:
  * P1 bit 0 output
  * P8 bit 0,1,2 outputs
@@ -11,13 +19,11 @@
  */
 
 #include <msp430.h>
+#include "menu_effect_select.h"
+#include "menu_effect_edit.h"
+#include "interrupts.h"
 
 #define launchpad
-
-#include "misc.h"
-#include "menu.h"
-#include "lcd.h"
-#include "interrupts.h"
 
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
@@ -42,4 +48,3 @@ int main(void) {
 		}
 	}
 }
-

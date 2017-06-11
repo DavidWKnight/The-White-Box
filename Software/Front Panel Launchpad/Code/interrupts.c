@@ -1,13 +1,11 @@
 /*
  * interrupts.c
  *
- *  Created on: Dec 28, 2016
+ *  Created on: Jun 11, 2017
  *      Author: bigbird42
  */
 
 #include "interrupts.h"
-#include <msp430.h>
-#include "misc.h"
 
 /*pushbutton interrupt*/
 #pragma vector=PORT1_VECTOR
@@ -47,3 +45,4 @@ __interrupt void RTC_ISR(void){
 	RTC_interrupt = true;
 	RTCIV;
 }
+

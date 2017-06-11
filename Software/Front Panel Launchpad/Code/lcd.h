@@ -1,7 +1,7 @@
 /*
  * lcd.h
  *
- *  Created on: Dec 27, 2016
+ *  Created on: Jun 11, 2017
  *      Author: bigbird42
  */
 
@@ -9,9 +9,7 @@
 #define LCD_H_
 
 #include <msp430.h>
-
-#define LCD_line_count 4
-#define LCD_line_length 20
+#include "peripherals.h"
 
 #define LCD_RS BIT7
 #define LCD_RW BIT6
@@ -23,5 +21,6 @@ void init_LCD();
 void LCD_write_data(char);
 void LCD_write_cmd(char);
 void LCD_cursor_pos(int, int);
+void LCD_write_integer(int, int, int,unsigned int);
 
 #endif /* LCD_H_ */

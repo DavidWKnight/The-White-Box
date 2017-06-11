@@ -1,12 +1,11 @@
 /*
  * lcd.c
  *
- *  Created on: Dec 27, 2016
+ *  Created on: Jun 11, 2017
  *      Author: bigbird42
  */
 
 #include "lcd.h"
-#include "misc.h"
 
 void init_LCD(){
 	LCD_cmd_out = 0x00;
@@ -85,4 +84,35 @@ void LCD_cursor_pos(int row, int column){
 
 	LCD_write_cmd(pos);//write DDRAM address
 	return;
+}
+
+/*write the given number to the row and column given, only writes the number of digits given by length*/
+void LCD_write_integer(int row, int column, int number,unsigned int length){
+    const unsigned int powers_of_ten[5] = {10000, 1000, 100, 10, 1};
+    static const unsigned int max_length = 5;
+    unsigned int i = max_length - length;
+    int num_temp = number;
+    char temp = 0;
+
+    LCD_cursor_pos(row, column);
+
+    if(num_temp < 0){
+        LCD_write_data('-');
+        i++;
+        num_temp *= -1;
+    }
+
+    for(; (num_temp < powers_of_ten[i]) && (i < (max_length - 1) ); i++){
+        LCD_write_data(' ');
+    }
+
+    for(; i < (max_length - 1); i++){
+        temp = num_temp / powers_of_ten[i];
+        LCD_write_data(temp + 48);
+        num_temp -= temp * powers_of_ten[i];
+    }
+
+    LCD_write_data(num_temp + 48);
+
+    return;
 }
