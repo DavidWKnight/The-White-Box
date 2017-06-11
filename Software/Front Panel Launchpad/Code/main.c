@@ -19,11 +19,12 @@
  */
 
 #include <msp430.h>
+#define launchpad
 #include "menu_effect_select.h"
 #include "menu_effect_edit.h"
 #include "interrupts.h"
 
-#define launchpad
+
 
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer

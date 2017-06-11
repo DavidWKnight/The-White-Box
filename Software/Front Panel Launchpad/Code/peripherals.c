@@ -21,16 +21,12 @@ struct effect_data all_effect_data[max_effect_presets] = {
     {.name = "      Preset    9   ", .name_short = "PR   9", .effect_value[7][0] = 1, .effect_value[7][0] = 1, .effect_value[6][0] = 1, .effect_value[5][0] = 1, .effect_value[4][0] = 1, .effect_value[3][0] = 1, .effect_value[2][0] = 1, .effect_value[1][0] = 1, .effect_value[0][0] = 1},
     };
 
-//unsigned int port_state = 0xFFFF;
-unsigned char P1_check = 0xFF;
-unsigned char P2_check = 0xFF;
-unsigned char port1_state = 0x00;
-unsigned char port2_state = 0x00;
-unsigned char port1_mask = 0xFF;
-unsigned char port2_mask = 0xFF;
-volatile bool new_user_input = false;
+static unsigned char port1_state = 0x00;
+static unsigned char port2_state = 0x00;
+static unsigned char port1_mask = 0xFF;
+static unsigned char port2_mask = 0xFF;
+static volatile bool new_user_input = false;
 
-unsigned int encoder_state = 0x00;
 const unsigned char encoder_state_decoder[13][4] = {
 		{0x00,0x01,0x08,0x00},//0x00
 		//CCW
@@ -139,6 +135,7 @@ void init_misc(){
 /*debounces pushbutton interrupts on port 1*/
 void port1_debounce(){
 	static int i = 0;
+	static unsigned char P1_check = 0xFF;
 	char temp = P1IN;
 	temp ^= port1_mask;
 	P1_check = (P1_check & temp);
@@ -161,6 +158,7 @@ void port1_debounce(){
 /*debounces rotary encoder interrupts on port 2*/
 void port2_debounce(){
 	static int i = 0;
+	static unsigned char P2_check = 0xFF;
 	char temp = P2IN;
 	temp ^= port2_mask;
 	P2_check = (P2_check & temp);
@@ -260,6 +258,7 @@ unsigned int port1_statemachine(unsigned int pin){
 /*This function is untested for encoder 4 because I don't have access to it on the MSP430FR4133 Launchpad*/
 unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_shift){
 	__disable_interrupt();
+	static unsigned int encoder_state = 0x00;
 	port2_state &= ~pin;
 
 	unsigned char encoder_number2 = (encoder_shift >> 1);//encoder number multiplied by 2

@@ -43,15 +43,15 @@ char menu_effect_select(){
                 return 2;/*enter menu effect edit*/
             }
         case 0x0008:/*enc4 sw*/
-#ifdef launchpad
+
             if (current_preset != 0){ /*Preset 0 is reserved*/
                 active_preset = current_preset;
                 return 2;/*enter menu effect edit*/
             }
-#else
+
             /*do nothing*/
             break;
-#endif
+
         case 0x0010:/*sw left*/
             if (current_preset > 0){
                 current_preset--;
