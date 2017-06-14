@@ -5,6 +5,7 @@
 #include "registers.h"
 #include "peripherals.h"
 #include "aic3204.h"
+#include "effects.h"
 #define SAMPLES_PER_SECOND 48000
 
 void main(void) {
@@ -18,9 +19,8 @@ void main(void) {
 
 	asm(" bclr XF");
 
-	unsigned long int i;
-	int left_input, right_input, left_output, right_output;
-	for (i = 0; i < SAMPLES_PER_SECOND*600L; i++){
+	static int left_input, right_input, left_output, right_output;
+	while(1){
 		aic3204_read(&left_input, &right_input);
 
 		left_output = left_input;
@@ -28,10 +28,6 @@ void main(void) {
 
 		aic3204_write(left_output, right_output);
 	}
-	aic3204_disable();
 
 	return;
 }
-
-
-

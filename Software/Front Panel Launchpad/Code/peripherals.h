@@ -55,7 +55,7 @@ struct effect_data{
     int effect_value[max_effect_types][max_effect_param];
 };
 
-extern struct effect_data all_effect_data[max_effect_presets];
+
 volatile bool port1_interrupt;
 volatile bool port2_interrupt;
 volatile bool debounce;

@@ -9,7 +9,9 @@
 #define PERIPHERALS_H_
 
 #include "registers.h"
+
 #define i2c_timeout 0x7fff
+#define ClOCKS_PER_SAMPLE 2000
 
 int PLL_init();
 int I2C_init();

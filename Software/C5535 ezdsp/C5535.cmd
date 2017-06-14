@@ -19,7 +19,7 @@ MEMORY
     DARAM0:  o = 0x0000C0  l = 0x001F40  /* 8kB Dual Access RAM 0 */
     DARAM1:  o = 0x002000  l = 0x002000  /* 8kB Dual Access RAM 1 */
     DARAM2:  o = 0x004000  l = 0x002000  /* 8kB Dual Access RAM 2 */
-    DARAM3:  o = 0x006000  l = 0x002000  /* 8kB Dual Access RAM 3 */  
+    DARAM3:  o = 0x006000  l = 0x002000  /* 8kB Dual Access RAM 3 */
     DARAM4:  o = 0x008000  l = 0x002000  /* 8kB Dual Access RAM 4 */
     DARAM5:  o = 0x00A000  l = 0x002000  /* 8kB Dual Access RAM 5 */
     DARAM6:  o = 0x00C000  l = 0x002000  /* 8kB Dual Access RAM 6 */
