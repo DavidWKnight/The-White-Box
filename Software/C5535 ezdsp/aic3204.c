@@ -87,7 +87,7 @@ void aic3204_read(int *left_input, int *right_input){
     volatile int dummy;
     unsigned int counter1;
 
-    while(!(I2S2INTFL & RCVSTFL)){
+    while(!(I2S2INTFL & (1<<RCVSTFL))){
         counter1++;
     }
     *left_input = I2S2RXLT1;
@@ -99,7 +99,7 @@ void aic3204_read(int *left_input, int *right_input){
 void aic3204_write(int left_input, int right_input){
     unsigned int counter2;
 
-    while(!(I2S2INTFL & XMITSTFL)){
+    while(!(I2S2INTFL & (1<<XMITSTFL))){
         counter2++;
     }
     I2S2TXLT1 = left_input;
