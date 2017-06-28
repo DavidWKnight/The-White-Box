@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "menu_effect_select.c": "cpp",
+        "peripherals.c": "cpp"
+    }
+}

@@ -85,7 +85,7 @@ int aic3204_rset(unsigned int regnum, unsigned int regval){
 
 void aic3204_read(int *left_input, int *right_input){
     volatile int dummy;
-    unsigned int counter1;
+    unsigned int counter1 = 0;
 
     while(!(I2S2INTFL & (1<<RCVSTFL))){
         counter1++;
@@ -97,7 +97,7 @@ void aic3204_read(int *left_input, int *right_input){
 }
 
 void aic3204_write(int left_input, int right_input){
-    unsigned int counter2;
+    unsigned int counter2 = 0;
 
     while(!(I2S2INTFL & (1<<XMITSTFL))){
         counter2++;
