@@ -2,7 +2,7 @@
  * peripherals.c
  *
  *  Created on: Jun 10, 2017
- *      Author: bigbird42
+ *      Author: David Knight
  */
 
 #include "peripherals.h"

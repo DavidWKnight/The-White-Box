@@ -1,5 +1,6 @@
 /*
  * main.c
+ * Author: David Knight
  */
 
 #include "registers.h"

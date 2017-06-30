@@ -2,7 +2,7 @@
  * aic3204.c
  *
  *  Created on: Jun 10, 2017
- *      Author: bigbird42
+ *      Author: David Knight
  */
 
 #include "aic3204.h"

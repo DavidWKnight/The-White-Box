@@ -2,7 +2,7 @@
  * menu_effect_select.h
  *
  *  Created on: Jun 11, 2017
- *      Author: bigbird42
+ *      Author: David Knight
  */
 
 #ifndef MENU_EFFECT_SELECT_H_

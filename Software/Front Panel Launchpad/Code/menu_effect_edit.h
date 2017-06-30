@@ -2,7 +2,7 @@
  * menu_effect_edit.h
  *
  *  Created on: Jun 11, 2017
- *      Author: bigbird42
+ *      Author: David Knight
  */
 
 #ifndef MENU_EFFECT_EDIT_H_
