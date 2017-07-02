@@ -1,6 +1,11 @@
 {
     "files.associations": {
         "menu_effect_select.c": "cpp",
-        "peripherals.c": "cpp"
+        "peripherals.c": "cpp",
+        "effects.h": "c",
+        "cmath": "c",
+        "stdlib.h": "c",
+        "xkeycheck.h": "c",
+        "effects.cpp": "c"
     }
 }

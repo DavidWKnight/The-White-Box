@@ -7,6 +7,8 @@
 
 #include "effects.h"
 
+#define TMS320C5535
+
 static int circ_buffer_sig[circ_buffer_size];
 static unsigned long buffer_sig_it = circ_buffer_size - 1;
 static const float __PI__ = 3.14159;
@@ -21,37 +23,43 @@ int effects_init(){
 }
 
 void delay_sample(int sample){
-    circ_buffer_sig[buffer_sig_it] = sample;
     if(buffer_sig_it == 0){
         buffer_sig_it = circ_buffer_size - 1;
     }
     else{
         buffer_sig_it--;
     }
+    circ_buffer_sig[buffer_sig_it] = sample;
 }
+
 
 int delay(int sample, unsigned long frames){
     unsigned long delay_ref = buffer_sig_it + frames;
-    if(delay_ref >= circ_buffer_size){
+    if (delay_ref >= circ_buffer_size){
         delay_ref -= circ_buffer_size;
     }
+
     return (sample + circ_buffer_sig[delay_ref])/2;
 }
 
-int flange(int sample, float speed, float depth){
-    static float ref = 0;
-    float time_delay;
-    ref += 1/(float)SAMPLES_PER_SECOND;
-    //time_delay = SAMPLES_PER_SECOND*depth*abs(sin(__PI__*ref*speed)) + SAMPLES_PER_SECOND/500;
+int flange(int sample, float speed, unsigned int depth){
+    static unsigned long ref = 0;
+    unsigned long time_delay = SAMPLES_PER_SECOND/200;
+    float omega, t, A, temp, delay_wo_depth;
 
-    time_delay = (sin(__PI__*ref*speed));
-    if(time_delay < 0){
-        time_delay *= -1;
+    omega = (2*__PI__*speed);
+    t = ((float)ref/SAMPLES_PER_SECOND);
+    A = depth*6;
+    delay_wo_depth = sin(omega*t);
+    temp = abs(A*delay_wo_depth);
+
+    //unsigned float temp = depth*3*sin( (2*__PI__*speed) * ((float)ref/SAMPLES_PER_SECOND) );
+    time_delay += (unsigned long)temp;
+    ref++;
+    if(ref > (SAMPLES_PER_SECOND/4)/speed){
+        ref = 1;
     }
-    time_delay *= SAMPLES_PER_SECOND*depth;
-    time_delay += SAMPLES_PER_SECOND/500;
-
-    return delay(sample, (unsigned long)time_delay);
+    return delay(sample, time_delay);
 }
 
 int tanh_OD(int sample_in, float gain, float mix){
@@ -62,5 +70,5 @@ int tanh_OD(int sample_in, float gain, float mix){
     sample *= 1-mix;
     sample += clean_sample*mix;
 
-    return (int)(sample*max_sample_size*.2);
+    return (int)(sample*max_sample_size*.05);
 }
