@@ -4,3 +4,4 @@ Using effects.sh runs both the c++ program and writes the data to a wav file.
 
 # Resources used
 [Dave Marshall, Cardiff University](https://users.cs.cf.ac.uk/Dave.Marshall/CM0268/PDF/10_CM0268_Audio_FX.pdf)
+[Sophocles J. Orfanidis, Introduction to Signal Processing] (http://www.ece.rutgers.edu/~orfanidi/intro2sp/)
