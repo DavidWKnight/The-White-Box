@@ -2,7 +2,7 @@
  * peripherals.h
  *
  *  Created on: Jun 10, 2017
- *      Author: bigbird42
+ *      Author: David Knight
  */
 
 #ifndef PERIPHERALS_H_

@@ -33,5 +33,10 @@ Release/
 # For audio files used by the Python DSP code for testing
 *.wav
 
+<<<<<<< HEAD
 # Visual Studio Code
 .vs/
+=======
+# c++ files
+*.exe
+>>>>>>> 60b63e8c96e566d1cb518add12dfe54f00cfac72

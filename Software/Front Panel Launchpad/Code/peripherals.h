@@ -2,7 +2,7 @@
  * peripherals.h
  *
  *  Created on: Jun 11, 2017
- *      Author: bigbird42
+ *      Author: David Knight
  */
 
 #ifndef PERIPHERALS_H_
@@ -39,8 +39,8 @@ void init_misc();
 void port1_debounce();
 void port2_debounce();
 unsigned int user_input_decode();
-unsigned int port1_statemachine(unsigned int);
-unsigned int port2_statemachine(unsigned int, unsigned char);
+static unsigned int port1_statemachine(unsigned int);
+static unsigned int port2_statemachine(unsigned int, unsigned char);
 void wait_for_input();
 void full_update_DSP();
 void update_DSP(unsigned int, unsigned int);

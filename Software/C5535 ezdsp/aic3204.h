@@ -2,7 +2,7 @@
  * aic3204.h
  *
  *  Created on: Jun 10, 2017
- *      Author: bigbird42
+ *      Author: David Knight
  */
 
 #ifndef AIC3204_H_

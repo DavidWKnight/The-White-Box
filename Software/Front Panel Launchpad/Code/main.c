@@ -2,7 +2,7 @@
  * main.c
  *
  *  Created on: Jun 11, 2017
- *      Author: bigbird42
+ *      Author: David Knight
  */
 
 
@@ -34,7 +34,6 @@ int main(void) {
 	init_ports();
 	init_misc();
 	init_LCD();
-
 	__enable_interrupt();
 	char menu_select = 1;
 	while (1){
