@@ -32,3 +32,6 @@ Release/
 
 # For audio files used by the Python DSP code for testing
 *.wav
+
+# Visual Studio Code
+.vs/
