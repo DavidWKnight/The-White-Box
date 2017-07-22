@@ -37,7 +37,7 @@ Release/
 *.exe
 
 # Visual Studio Code
-.vs/
+.vscode/
 
 
 
