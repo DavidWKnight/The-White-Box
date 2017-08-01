@@ -18,12 +18,12 @@ MEMORY
     MMR:     o = 0x000000  l = 0x0000c0  /* 192B Memory Mapped Registers */
     DARAM0:  o = 0x0000C0  l = 0x001F40  /* 8kB Dual Access RAM 0 */
     DARAM1:  o = 0x002000  l = 0x002000  /* 8kB Dual Access RAM 1 */
-    DARAM2:  o = 0x004000  l = 0x002000  /* 8kB Dual Access RAM 2 */
-    DARAM3:  o = 0x006000  l = 0x002000  /* 8kB Dual Access RAM 3 */
-    DARAM4:  o = 0x008000  l = 0x002000  /* 8kB Dual Access RAM 4 */
-    DARAM5:  o = 0x00A000  l = 0x002000  /* 8kB Dual Access RAM 5 */
-    DARAM6:  o = 0x00C000  l = 0x002000  /* 8kB Dual Access RAM 6 */
-    DARAM7:  o = 0x00E000  l = 0x002000  /* 8kB Dual Access RAM 7 */
+    DARAM2:  o = 0x004000  l = 0x003000  /* 8kB Dual Access RAM 2 */
+    DARAM3:  o = 0x007000  l = 0x002000  /* 8kB Dual Access RAM 3 */
+    DARAM4:  o = 0x009000  l = 0x002000  /* 8kB Dual Access RAM 4 */
+    DARAM5:  o = 0x00B000  l = 0x002000  /* 8kB Dual Access RAM 5 */
+    DARAM6:  o = 0x00D000  l = 0x002000  /* 8kB Dual Access RAM 6 */
+    DARAM7:  o = 0x00F000  l = 0x001000  /* 8kB Dual Access RAM 7 */
   
   	SARAM:   o = 0x010000  l = 0x040000
                     
@@ -35,11 +35,11 @@ SECTIONS
 {                   
     vectors (NOLOAD) >  VECS  /* If MPNMC = 1, remove the NOLOAD directive */
     .cinit         >  DARAM0
-    .text          >  DARAM1
+    .text          >  DARAM2
     .stack         >  DARAM0
     .sysstack      >  DARAM0
-    .sysmem        >  DARAM4
-    .data          >  DARAM4
+    .sysmem        >  DARAM1
+    .data          >  DARAM1
     .cio           >  DARAM0
     .bss           >  SARAM
     .const         >  DARAM0
