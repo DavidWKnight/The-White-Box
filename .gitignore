@@ -35,3 +35,9 @@ Release/
 
 # c++ files
 *.exe
+
+# Visual Studio Code
+.vscode/
+
+
+
