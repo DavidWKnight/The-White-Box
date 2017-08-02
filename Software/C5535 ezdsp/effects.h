@@ -9,7 +9,6 @@
 #define EFFECTS_H_
 
 #include <stdlib.h>
-#include "my_math.h"
 #include "FIR_filters_asm.h"
 
 #define circ_buffer_size 39500 //memory corrupted at 39630-39830

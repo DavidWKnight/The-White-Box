@@ -7,7 +7,7 @@
 
 #include "menu_effect_edit.h"
 
- const char effects_available[max_effect_types][LCD_line_length] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
+const char effects_available[max_effect_types][LCD_line_length] = {"        Wah         ", "      Ring Mod      ", "       Phaser       ",
         "     Drive/Fuzz     ", "       Flange       ", "    Pitch Shift     ", "       Delay        ", "    Trem/Vibrato    "};
 
 static const int effect_min_max_val[max_effect_types][max_effect_param*2] = {
