@@ -44,44 +44,36 @@ void delay_sample(int sample){
     circ_buffer_sig[buffer_sig_it] = sample;
 }
 
-int delay_old(int sample, unsigned long frames){
-    unsigned long delay_ref = buffer_sig_it + frames;
-    if (delay_ref >= circ_buffer_size){
-        delay_ref -= circ_buffer_size;
-    }
-
-    return (sample + circ_buffer_sig[delay_ref])/2;
-}
-
-int delay(int sample_in, unsigned long frames, unsigned int repeats, float decay){
-    float sample = sample_in;
-    float decay_ref = 1;
-    float divisor = (repeats+1);
+int delay(int sample_in, unsigned long frames, unsigned int repeats){
     unsigned long delay_ref = buffer_sig_it;
+    unsigned int i;
+    int sample_temp;
 
-    if(decay > 1){
-        return 0;
+    if(repeats > 10){
+        repeats = 10;
     }
 
-    while(repeats > 0){
+    for (i = 0; i < repeats; i++){
         delay_ref += frames;
-        decay_ref *= decay;
-
         if(delay_ref >= circ_buffer_size){
             delay_ref -= circ_buffer_size;
         }
 
-        sample += ((float)(circ_buffer_sig[delay_ref]) * decay_ref);
-
-        repeats--;
-
-        if(decay_ref > .5){
-            divisor += 1;
+        sample_temp = circ_buffer_sig[delay_ref];
+        if(sample_temp % 10 > 5){// takes a long time, might remove later
+            sample_temp = (sample_temp/10) + 1;
+        }
+        else{
+            sample_temp = (sample_temp/10);
         }
 
-    }
+        sample_temp *= 10-i;
+        sample_in += sample_temp;
 
-    return (int)((sample)/divisor);
+        sample_in /= 2;// Reduce volume, could use some work
+
+    }
+    return sample_in;
 }
 
 int flange(int sample, float speed, unsigned int depth){
@@ -97,7 +89,7 @@ int flange(int sample, float speed, unsigned int depth){
         index_add = 1;
     }
     index += index_add;
-    return delay(sample, time_delay, 1, 1);
+    return delay(sample, time_delay, 1);
 }
 
 int vibrato(int sample, float speed, unsigned int depth){
@@ -114,14 +106,14 @@ int vibrato(int sample, float speed, unsigned int depth){
     }
     index += index_add;
 
-    return delay(0, time_delay, 1, 1);
+    return delay(0, time_delay, 1);
 }
 
 int chorus(int sample){
     unsigned long time_delay = (rand() % (SAMPLES_PER_SECOND/720)) + (SAMPLES_PER_SECOND/100);
     float amp = chorus_amp_range[rand() % 10];
 
-    return delay(sample, time_delay, 2, amp);
+    return delay(sample, time_delay, 2);
 }
 
 int tanh_OD(int sample_in, float gain, float mix){

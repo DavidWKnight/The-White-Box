@@ -10,6 +10,7 @@
 #include "peripherals.h"
 #include "aic3204.h"
 
+
 void main(void) {
     PCGCR1 = 0x0000;
     PCGCR2 = 0x0000;
@@ -31,9 +32,10 @@ void main(void) {
         left_output = left_input;
         right_output = right_input;
 
+        left_output = delay(left_output, SAMPLES_PER_SECOND/2, 1);
         //left_output = delay_old(left_output, SAMPLES_PER_SECOND/2);
         //left_output = .5*tanh_OD(left_output, 50, .5);
-        left_output = delay(left_output, SAMPLES_PER_SECOND/2, 1, .6);
+
         //left_output = flange(left_output, .4, 75);
         //left_output = vibrato(left_output, 6, 60);
         //left_output = chorus(left_output);
@@ -42,7 +44,7 @@ void main(void) {
         //left_output = low_pass(left_output);
 
 
-        aic3204_write(left_output*.5, right_output*.5);
+        aic3204_write(left_output/4, right_output/4);
     }
 
 }
