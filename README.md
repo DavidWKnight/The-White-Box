@@ -1,5 +1,2 @@
-# The-White-Box
-Digital effects pedal for Guitar and Bass using the MSP430FR5969 to run the user interface and the TMS320C5535 for the effects processing.
-
-# Progress
-I have finished the code for the MSP430 launchpad, the code to communicate with the DSP will not be written until I have a prototype made. I'm currently writing the effects processing functions for the C5535 DSP.
+# The White Box
+The White Box is a digital effect pedal for guitar and bass. It does standard effects processing such as distortion, delays, and other time based effects. Most of these effects are currently implemented in individual effect pedals, this project is attempting to put merge all these effects into a single multi effects pedal. Documentation how the design works can be found in /Documentation, The schematics for the PCB's can be found in /Hardware, and code for the processors can be found in /Software.
