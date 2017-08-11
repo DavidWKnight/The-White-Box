@@ -116,6 +116,9 @@ int chorus(int sample){
     return delay(sample, time_delay, 2);
 }
 
+// Quad_OD gain*sqrt(10*x/gain)
+// if sample > 500{ sample = 500; };
+
 int tanh_OD(int sample_in, float gain, float mix){
 
 	float sample = ((float)(sample_in)/max_sample_size);
