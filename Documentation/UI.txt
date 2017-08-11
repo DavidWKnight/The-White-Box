@@ -1,0 +1,62 @@
+LCD display
+-----------
+The display's UI has multiple menu's which can be seen below. The character range is listed on page 9 of the LCD datasheet 
+(http://www.newhavendisplay.com/specs/NHD-0420H1Z-FL-GBW-33V3.pdf).
+
+
+Effect Select Menu
+------------------
+The effect select menu is the default menu loaded upon starting. ENC_1 or SW_left and SW_right move through the presets. 
+SW_select enables a new effect preset(Pre 2 in the case) and disables the previous one. The settings button moves to the 
+settings menu. ENC4_SW enters the effect edit menu for the effect in the middle preset(Pre 2 in the case) and enables it.
+========================
+|| Effect Select Menu ||  Name of menu
+||       Sch 1        ||  Current enabled effect preset
+||Pre 1| Pre 2  |Pre 3||  Preset number
+||Sch 1|Schism 2|46&2 ||  Preset nickname
+========================
+
+
+Settings Menu
+-------------
+The settings menu allows the user to change settings such as the brightness of the LED's. A flashing < on the right side of 
+the screen denotes the setting currently being changed. ENC1 moves up/down through the current setting being edited when 
+rotated clockwise/counter-clockwise(CW/CCW). SW_LEFT and SW_RIGHT move up/down through the current setting being edited. 
+ENC2 increments/decrements the current setting when rotated CW/CCW, does nothing to boolean settings. SW_select toggles 
+the boolean setting being edited. SW_settings returns to the Effect Select Menu.
+========================
+||   Settings Menu    ||  Name of menu
+||setting 1         1 ||  Setting
+||LED brightness   10<||  Setting
+||LCD brightness  100 ||  Setting
+========================
+
+
+Effect Edit Menu
+----------------
+The effect edit menu allows the user to change effect parameters for a preset. Each encoder ENCx increments/decrements 
+the corresponding effect parameter Px when rotated CW/CCW. SW_left and SW_right or ENC1_SW and ENC2_SW  move to the next 
+effect type. The settings button opens the effect name edit menu. The effect select button returns back to the effect select menu.
+========================
+||      Schism  1     ||  Name of effect preset
+||        Wah         ||  Name of effect being edited
+||   P1|  P2|  P3|  P4||  Effect parameters
+||    7|   4|   0|   0||  Effect values usually on range 0-100
+========================
+
+
+Effect name edit menu
+---------------------
+The effect name edit menu allows the user to change the name and nickname for a preset. A flashing cursor denotes the 
+character currently being changed, the flashing character is ascii 255 on page 9 of the datasheet linked above. ENC1 moves 
+the cursor left/right when turned CW/CCW. ENC2 moves up/down through ascii characters when turned CW/CCW, the range is from 
+ascii 32-127 see page 9 of the datasheet linked above. The SW_select button saves the preset name and returns to the effect 
+edit menu, the settings button returns but without saving. The Effect Nickname is only used in the effect select menu, 
+it's 8 characters long when it's in the middle section of the menu but the 2 rightmost characters are removed when it's on 
+either the left or right side.
+========================
+||Edit Effect Name:   ||  
+||      Schism  1     ||  Name of effect preset
+||Effect Nickname:    ||  
+||Sch 1   |           ||  Shortened name for the preset
+========================
