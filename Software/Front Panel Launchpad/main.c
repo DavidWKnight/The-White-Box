@@ -24,8 +24,6 @@
 #include "menu_effect_edit.h"
 #include "interrupts.h"
 
-
-
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
 	PM5CTL0 &= ~LOCKLPM5;

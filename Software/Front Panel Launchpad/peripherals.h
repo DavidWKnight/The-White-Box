@@ -64,6 +64,6 @@ volatile bool RTC_interrupt;
 unsigned int current_preset;
 unsigned int active_preset;
 
-extern unsigned char menu_settings_values[number_of_settings];
+extern unsigned char settings_values[number_of_settings];
 
 #endif /* PERIPHERALS_H_ */

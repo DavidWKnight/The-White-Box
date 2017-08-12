@@ -96,12 +96,14 @@ void LCD_write_integer(int row, int column, int number,unsigned int length){
 
     LCD_cursor_pos(row, column);
 
-    if(num_temp < 0){
+	// Add a - for negative numbers
+    if(num_temp < 0){ 
         LCD_write_data('-');
         i++;
         num_temp *= -1;
     }
 
+	// Remove leading zeros
     for(; (num_temp < powers_of_ten[i]) && (i < (max_length - 1) ); i++){
         LCD_write_data(' ');
     }

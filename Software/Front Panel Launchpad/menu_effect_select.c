@@ -8,10 +8,15 @@
 #include "menu_effect_select.h"
 
 /*settings menu*/
-const char menu_settings_header[1][LCD_line_length] = {"   Settings Menu    "};
-const char menu_settings_names[number_of_settings][setting_name_length] = {"setting 1     ", "setting 2     ", "setting 3     ", "LED brightness", "LCD Brightness"};
-#pragma PERSISTENT(menu_settings_values)
-unsigned char menu_settings_values[number_of_settings] = {1,1,1,20,20};
+const char settings_names[number_of_settings][setting_name_length] = {
+    "setting 1     ", 
+    "setting 2     ", 
+    "setting 3     ", 
+    "LED brightness", 
+    "LCD Brightness"
+};
+#pragma PERSISTENT(settings_values)
+unsigned char settings_values[number_of_settings] = {1,1,1,20,20};
 
 char menu_effect_select(){
 	/*setup menu*/
@@ -108,7 +113,7 @@ char menu_effect_select(){
 }
 
 void effect_select_setup(){
-	const char menu_effect_select_header[LCD_line_length] = {" Effect Select Menu "};
+	const char effect_select_header[LCD_line_length] = {" Effect Select Menu "};
 	unsigned int i;
 
 	LCD_write_cmd(0x01);//clear display
@@ -116,7 +121,7 @@ void effect_select_setup(){
 	/*line 1*/
 	LCD_cursor_pos(1,1);
 	for (i = 0; i < LCD_line_length; i++){
-		LCD_write_data(menu_effect_select_header[i]);
+		LCD_write_data(effect_select_header[i]);
 	}
 	/*line 2*/
 	effect_select_update_active();
@@ -225,7 +230,7 @@ void menu_settings(){
         case 0x0004:/*enc3 sw*/
             if (current_setting < non_bool_settings){/*effects that aren't toggled will be less than compared number*/
                 flash_delay = flash_delay_reset;
-                menu_settings_values[current_setting] ^= 0x01;
+                settings_values[current_setting] ^= 0x01;
             }
             break;
 
@@ -250,8 +255,8 @@ void menu_settings(){
 
         case 0x0040:/*sw select*/
             if (current_setting < non_bool_settings){/*effects that aren't toggled will be less than compared number*/
-                menu_settings_values[current_setting] ^= 0x01;
-                LCD_write_integer(3, 16, menu_settings_values[current_setting], 4);
+                settings_values[current_setting] ^= 0x01;
+                LCD_write_integer(3, 16, settings_values[current_setting], 4);
             }
             break;
 
@@ -279,18 +284,18 @@ void menu_settings(){
 
         case 0x0400:
             if (current_setting >= non_bool_settings){/*effects that are toggled will be bigger than compared number*/
-                if (menu_settings_values[current_setting] > 0){
-                    menu_settings_values[current_setting]--;
-                    LCD_write_integer(3, 16, menu_settings_values[current_setting], 4);
+                if (settings_values[current_setting] > 0){
+                    settings_values[current_setting]--;
+                    LCD_write_integer(3, 16, settings_values[current_setting], 4);
                 }
             }
             break;
 
         case 0x0800:
             if (current_setting >= non_bool_settings){/*effects that are toggled will be bigger than compared number*/
-                if(menu_settings_values[current_setting] < setting_max_value){
-                    menu_settings_values[current_setting]++;
-                    LCD_write_integer(3, 16, menu_settings_values[current_setting], 4);
+                if(settings_values[current_setting] < setting_max_value){
+                    settings_values[current_setting]++;
+                    LCD_write_integer(3, 16, settings_values[current_setting], 4);
                 }
             }
             break;
@@ -317,12 +322,13 @@ void menu_settings(){
             flash_cursor(&flash_delay, ' ', '<');
         }
         /*implement current setting values*/
-        TA1CCR2 = 10*menu_settings_values[setting_LED_brightness];
-        TA1CCR1 = 10*menu_settings_values[setting_LCD_brightness];
+        TA1CCR2 = 10*settings_values[setting_LED_brightness];
+        TA1CCR1 = 10*settings_values[setting_LCD_brightness];
 	}
 }
 
 void settings_setup(){
+    const char menu_settings_header[1][LCD_line_length] = {"   Settings Menu    "};
 	unsigned int i;
 
 	LCD_write_cmd(0x01);//clear display
@@ -350,9 +356,9 @@ void settings_write_settings(unsigned char current_setting){
         }
 
         for(j = 0; j < setting_name_length; j++){
-            LCD_write_data(menu_settings_names[i][j]);
+            LCD_write_data(settings_names[i][j]);
         }
-        LCD_write_integer(row, 16, menu_settings_values[i], 4);
+        LCD_write_integer(row, 16, settings_values[i], 4);
     }
 
 

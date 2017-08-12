@@ -116,10 +116,10 @@ void init_misc(){
     TA1CCR0 = 1000;
     //LED Brightness
     TA1CCTL2 |= (OUTMOD_7);
-    TA1CCR2 = menu_settings_values[setting_LED_brightness] * 10;
+    TA1CCR2 = settings_values[setting_LED_brightness] * 10;
     //LCD Brightness
     TA1CCTL1 |= (OUTMOD_7);
-    TA1CCR1 = menu_settings_values[setting_LCD_brightness] * 10;
+    TA1CCR1 = settings_values[setting_LCD_brightness] * 10;
 
     TA1CTL |= (TASSEL_2 + ID_2 + MC_1);
     TA1CTL |= TACLR;
