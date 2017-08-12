@@ -1,0 +1,47 @@
+Software
+--------
+This section contains general information on the control flow of the program. For detailed information on each menu look at the "UI.txt" 
+file in this folder. The program begins in main and runs some initialization functions and then enters the main loop of the program. 
+Each of the menus called from here returns a character denoting the next menu that should be called. The menu's are implemented as 
+infinite loops with switch statements to determine what to do after a particular user input. If there is some definition or function
+you can't find it's most likely in "peripherals.h", it contains most things that I couldn't find a better place to put.
+
+How user inputs are processed
+-----------------------------
+The program normally is in low power mode (LPM), this is enabled by the wait_for_input loop located in peripherals.c until an interrupt 
+it triggered. When a a button is pressed or a rotary encoder is turned an interrupt is called from "interrupts.c", port1_ISR or 
+port2_ISR respectively. They enable counter timer 0 which triggers interrupt TIMER0_A0_ISR. From this interrupt function portx_debounce,
+located in peripherals.c, repeatedly checks the value on the port pin to determine which button/encoder triggered the interrupt and 
+whether or not it was a valid interupt. portx_state tells which pin caused the interrupt and portx_mask denotes whether the pin was 
+previously logic high or logic low. From here the program gets out of the wait_for_input loop. The menu functions then move into 
+user_input_decode function. This function uses the portx_state variable to call state machines that determine if the interrupt puts the 
+button/encoder into a valid state, for example the encoders have 2 pins each that move through the states 11 <-> 10 <-> 00 <-> 01 <-> 11 
+from left to right or right to left depending on the direction the encoder turned. The encoder can never go from 11 -> 00, if it does 
+something went wrong during debounce so the state machine resets. Each state machine returns an integer corresponding to the action the 
+user took, user_input_decode passes this integer to the menu funtion that called it. 
+The integer corresponds to the following actions:
+0x0000 no action
+0x0001 enc1 sw
+0x0002 enc2 sw
+0x0004 enc3 sw
+0x0008 enc4 sw
+0x0010 sw left
+0x0020 sw right
+0x0040 sw select
+0x0080 sw settings
+0x0100 enc1 CCW rotation
+0x0200 enc1 CW rotation
+0x0400 enc2 CCW rotation
+0x0800 enc2 CW rotation
+0x1000 enc3 CCW rotation
+0x2000 enc3 CW rotation
+0x4000 enc4 CCW rotation
+0x8000 enc4 CW rotation
+
+Hardware
+--------
+The front panel is the user interface portion of the pedal. The front panel consists of a 4x20 character LCD, 8 LED's, 4 rotary encoders
+with switches, 3 footswitches, and 1 settings switch. Power is supplied for this board by the main board over a 2x7 connector labeled
+at the bottom of the schematic. The details of the LCD display are located in the "UI.txt" file in this folder. Each of the 8 LED's 
+denotes when a particular effect is enabled, these effects currently include wah, ring mod, phaser, drive/fuzz, flange,pitch shift, 
+delay, and tremolo/vibrato.
