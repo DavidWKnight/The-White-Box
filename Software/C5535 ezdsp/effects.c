@@ -11,7 +11,6 @@
 
 static int circ_buffer_sig[circ_buffer_size];
 static unsigned long buffer_sig_it = circ_buffer_size - 1;
-static const float __PI__ = 3.14159;
 static const float max_sample_size = 32767;
 static const float chorus_amp_range[10] = {.8, .82, .84, .86, .88, .9, .92, .94, .96, .98};
 
@@ -26,12 +25,10 @@ const int blackman_high_pass_filter_800Hz[52] = {
 };
 
 int effects_init(){
-
     unsigned long i;
     for(i = 0; i < circ_buffer_size; i++){
         circ_buffer_sig[i] = 0;
     }
-
     return 0;
 }
 
@@ -43,38 +40,6 @@ void delay_sample(int sample){
         buffer_sig_it--;
     }
     circ_buffer_sig[buffer_sig_it] = sample;
-}
-
-int delay(int sample_in, unsigned long frames, unsigned int repeats){
-    unsigned long delay_ref = buffer_sig_it;
-    unsigned int i;
-    int sample_temp;
-
-    if(repeats > 10){
-        repeats = 10;
-    }
-
-    for (i = 0; i < repeats; i++){
-        delay_ref += frames;
-        if(delay_ref >= circ_buffer_size){
-            delay_ref -= circ_buffer_size;
-        }
-
-        sample_temp = circ_buffer_sig[delay_ref];
-        if(sample_temp % 10 > 5){// takes a long time, might remove later
-            sample_temp = (sample_temp/10) + 1;
-        }
-        else{
-            sample_temp = (sample_temp/10);
-        }
-
-        sample_temp *= 10-i;
-        sample_in += sample_temp;
-
-        sample_in /= 2;// Reduce volume, could use some work
-
-    }
-    return sample_in;
 }
 
 fixed fixdelay(fixed sample, unsigned long frames, unsigned int repeats){
@@ -90,22 +55,6 @@ fixed fixdelay(fixed sample, unsigned long frames, unsigned int repeats){
         sample /= 2;
     }
     return sample;
-}
-
-int flange(int sample, float speed, unsigned int depth){
-    static unsigned long index = 0;
-    unsigned long time_delay = 0;
-    time_delay += (depth/2)*(1 - cos(2*__PI__*speed*( (float)index/SAMPLES_PER_SECOND) ) );
-
-    static long index_add = 1;
-    if(index > ((float)SAMPLES_PER_SECOND/2/speed)){
-        index_add = -1;
-    }
-    else if (index == 0){
-        index_add = 1;
-    }
-    index += index_add;
-    return delay(sample, time_delay, 1);
 }
 
 fixed fixflange(fixed sample, fixed speed, unsigned int depth){
@@ -128,6 +77,7 @@ fixed fixflange(fixed sample, fixed speed, unsigned int depth){
     return fixdelay(sample, time_delay, 1);
 }
 
+/* Need to re-implement in fixed point
 int vibrato(int sample, float speed, unsigned int depth){
     static unsigned long index = 0;
     unsigned long time_delay = 0;
@@ -151,6 +101,8 @@ int chorus(int sample){
 
     return delay(sample, time_delay, 2);
 }
+*/
+
 
 // Quad_OD gain*sqrt(10*x/gain)
 // if sample > 500{ sample = 500; };
@@ -170,6 +122,7 @@ int tanh_OD(int sample_in, float gain, float mix){
     return (int)(sample*max_sample_size*.05);
 }
 
+/* Need to re-implement in fixed point
 int tremolo(int sample, float speed, float depth){
     static unsigned long index = 0;
     depth /= 200;
@@ -186,6 +139,7 @@ int tremolo(int sample, float speed, float depth){
     float sample_out = sample;
     return (int)(sample_out*temp);
 }
+*/
 
 int low_pass(int sample){
     return FIR_filter_asm(&low_pass_coef[0], sample);
