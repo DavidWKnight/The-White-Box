@@ -18,11 +18,11 @@ MEMORY
     MMR:     o = 0x000000  l = 0x0000c0  /* 192B Memory Mapped Registers */
     DARAM0:  o = 0x0000C0  l = 0x001F40  /* 8kB Dual Access RAM 0 */
     DARAM1:  o = 0x002000  l = 0x002000  /* 8kB Dual Access RAM 1 */
-    DARAM2:  o = 0x004000  l = 0x003000  /* 8kB Dual Access RAM 2 */
-    DARAM3:  o = 0x007000  l = 0x002000  /* 8kB Dual Access RAM 3 */
-    DARAM4:  o = 0x009000  l = 0x002000  /* 8kB Dual Access RAM 4 */
-    DARAM5:  o = 0x00B000  l = 0x002000  /* 8kB Dual Access RAM 5 */
-    DARAM6:  o = 0x00D000  l = 0x002000  /* 8kB Dual Access RAM 6 */
+    DARAM2:  o = 0x004000  l = 0x007000  /* 8kB Dual Access RAM 2 */
+    DARAM3:  o = 0x00B000  l = 0x001000  /* 8kB Dual Access RAM 3 */
+    DARAM4:  o = 0x00C000  l = 0x001000  /* 8kB Dual Access RAM 4 */
+    DARAM5:  o = 0x00D000  l = 0x001000  /* 8kB Dual Access RAM 5 */
+    DARAM6:  o = 0x00E000  l = 0x001000  /* 8kB Dual Access RAM 6 */
     DARAM7:  o = 0x00F000  l = 0x001000  /* 8kB Dual Access RAM 7 */
   
   	SARAM:   o = 0x010000  l = 0x040000

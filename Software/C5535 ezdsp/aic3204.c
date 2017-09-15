@@ -90,6 +90,7 @@ void aic3204_read(int *left_input, int *right_input){
     while(!(I2S2INTFL & (1<<RCVSTFL))){
         counter1++;
     }
+
     *left_input = I2S2RXLT1;
     dummy = I2S2RXLT0;
     *right_input = I2S2RXRT1;
@@ -102,6 +103,7 @@ void aic3204_write(int left_input, int right_input){
     while(!(I2S2INTFL & (1<<XMITSTFL))){
         counter2++;
     }
+
     I2S2TXLT1 = left_input;
     I2S2TXLT0 = 0;
     I2S2TXRT1 = right_input;

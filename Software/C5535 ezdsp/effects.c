@@ -26,6 +26,7 @@ const int blackman_high_pass_filter_800Hz[52] = {
 };
 
 int effects_init(){
+
     unsigned long i;
     for(i = 0; i < circ_buffer_size; i++){
         circ_buffer_sig[i] = 0;
@@ -76,6 +77,21 @@ int delay(int sample_in, unsigned long frames, unsigned int repeats){
     return sample_in;
 }
 
+fixed fixdelay(fixed sample, unsigned long frames, unsigned int repeats){
+    unsigned long delay_ref = buffer_sig_it;
+    unsigned int i;
+
+    for (i = 0; i < repeats; i++){
+        delay_ref += frames;
+        if(delay_ref >= circ_buffer_size){
+            delay_ref -= circ_buffer_size;
+        }
+        sample += iTofix(circ_buffer_sig[delay_ref]);
+        sample /= 2;
+    }
+    return sample;
+}
+
 int flange(int sample, float speed, unsigned int depth){
     static unsigned long index = 0;
     unsigned long time_delay = 0;
@@ -90,6 +106,26 @@ int flange(int sample, float speed, unsigned int depth){
     }
     index += index_add;
     return delay(sample, time_delay, 1);
+}
+
+fixed fixflange(fixed sample, fixed speed, unsigned int depth){
+    static ufixed index = 0;
+    unsigned long time_delay = 0;
+
+    fixed temp = ((((0x3243F<<1)>>8)*(speed>>8))*((index/0xBB80)>>4))>>12;
+    time_delay = (depth>>1)*(0x10000 - fixcos(temp));
+
+    time_delay = fixToi(time_delay);
+
+    static fixed index_add = 0x10000;
+    if(index > (((0xBB800000>>1)/speed)<<16) ){
+        index_add = 0x10000 * -1;
+    }
+    else if (index == 0){
+        index_add = 0x10000;
+    }
+    index += index_add;
+    return fixdelay(sample, time_delay, 1);
 }
 
 int vibrato(int sample, float speed, unsigned int depth){
