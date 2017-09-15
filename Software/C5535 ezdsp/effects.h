@@ -10,6 +10,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include "fixed.h"
 #include "FIR_filters_asm.h"
 
 #define circ_buffer_size 39500 //memory corrupted at 39630-39830
@@ -18,7 +19,9 @@
 int effects_init();
 void delay_sample(int);
 int delay(int, unsigned long, unsigned int);
+fixed fixdelay(fixed, unsigned long, unsigned int);
 int flange(int, float, unsigned int);
+fixed fixflange(fixed, fixed, unsigned int);
 int vibrato(int, float, unsigned int);
 int chorus(int);
 int tanh_OD(int, float, float);
