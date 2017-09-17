@@ -15,8 +15,7 @@
 #define LCD_line_count 4
 #define LCD_line_length 20
 
-#define P1_max_checks 6 /*how many times to check port 1 during debounce*/
-#define P2_max_checks 3	/*how many times to check port 2 during debounce*/
+#define debounce_interval 0x3E8 //0x3E8 - 0x1388, 1000 - 5000
 #define POUT_LED P3OUT /*port that the LED's are on*/
 
 #define max_length_name_short 6 /*max length name_short can be*/
@@ -36,12 +35,11 @@
 
 void init_ports();
 void init_misc();
-void port1_debounce();
-void port2_debounce();
-unsigned int user_input_decode();
-static unsigned int port1_statemachine(unsigned int);
-static unsigned int port2_statemachine(unsigned int, unsigned char);
-void wait_for_input();
+int wait_for_input();
+static int state_machine();
+static int button_state_machine();
+static int encoder_state_machine();
+static int encoder_decode(int *, char, char);
 void full_update_DSP();
 void update_DSP(unsigned int, unsigned int);
 void update_LED();
@@ -55,10 +53,9 @@ struct effect_data{
     int effect_value[max_effect_types][max_effect_param];
 };
 
-
-volatile bool port1_interrupt;
-volatile bool port2_interrupt;
-volatile bool debounce;
+extern volatile char button_value;
+extern volatile char encoder_value;
+extern volatile char port_change;
 volatile bool RTC_interrupt;
 
 unsigned int current_preset;

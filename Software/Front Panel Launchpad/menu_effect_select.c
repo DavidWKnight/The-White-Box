@@ -25,10 +25,8 @@ char menu_effect_select(){
 
 	/*in menu actions*/
 	while(1){
-		wait_for_input();/*triggered by interrupts on P1 and P2 (buttons and encoders)*/
-
-		/*send input to state machines*/
-		switch(user_input_decode()){
+		
+		switch(wait_for_input()){
         /*port 1*/
         case 0x0001:/*enc1 sw*/
             if (current_preset > 0){
@@ -206,10 +204,8 @@ void menu_settings(){
 
 	/*in menu actions*/
 	while(1){
-		wait_for_input();/*triggered by interrupts on P1 and P2 (buttons and encoders)*/
-
-		/*send input to state machines*/
-		switch(user_input_decode()){
+        
+		switch(wait_for_input()){
 		/*port 1*/
 		case 0x0001:/*enc1 sw*/
             if (current_setting > 0){

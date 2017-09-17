@@ -21,8 +21,6 @@ static const int effect_min_max_val[max_effect_types][max_effect_param*2] = {
         {0,0,0,0,100,100,100,100}
 };
 
-
-
 char menu_effect_edit(){
 	unsigned char active_effect = 0;/*effect currently being edited*/
 
@@ -34,10 +32,8 @@ char menu_effect_edit(){
 
 	/*in menu actions*/
 	while(1){
-		wait_for_input();/*triggered by interrupts on P1 and P2 (buttons and encoders)*/
 
-		/*send input to state machines*/
-		switch(user_input_decode()){
+		switch(wait_for_input()){
         /*port 1*/
         case 0x0001:/*enc1 sw*/
             if (active_effect > 0){
@@ -298,10 +294,8 @@ void menu_effect_name_edit(){
 
 	/*in menu actions*/
 	while(1){
-		wait_for_input();/*triggered by interrupts on P1 and P2 (buttons and encoders)*/
 
-		/*send input to state machines*/
-		switch(user_input_decode()){
+		switch(wait_for_input()){
         /*port 1*/
         case 0x0001:/*enc1 sw*/
             /*move cursor left*/

@@ -21,12 +21,6 @@ struct effect_data all_effect_data[max_effect_presets] = {
     {.name = "      Preset    9   ", .name_short = "PR   9", .effect_value[7][0] = 1, .effect_value[7][0] = 1, .effect_value[6][0] = 1, .effect_value[5][0] = 1, .effect_value[4][0] = 1, .effect_value[3][0] = 1, .effect_value[2][0] = 1, .effect_value[1][0] = 1, .effect_value[0][0] = 1},
     };
 
-static unsigned char port1_state = 0x00;
-static unsigned char port2_state = 0x00;
-static unsigned char port1_mask = 0xFF;
-static unsigned char port2_mask = 0xFF;
-static volatile bool new_user_input = false;
-
 const unsigned char encoder_state_decoder[13][4] = {
 		{0x00,0x01,0x08,0x00},//0x00
 		//CCW
@@ -45,18 +39,12 @@ void init_ports(){
 	P1REN = 0xFF;
 	P1SEL0 = 0x00;
 	P1OUT = 0xFF; //Pull up resistors
-	P1IE  = 0xFF; //Interrupts on all ports
-	P1IES = 0xFF; //Interrupt on high to low transition
-	P1IFG = 0x00;
-
+	
 	/*Port 2*/
 	P2DIR = 0x00;
 	P2REN = 0xFF;
 	P2SEL0 = 0x00;
 	P2OUT = 0xFF; //Pull up resistors
-	P2IE  = 0xFF; //Interrupts on all ports
-	P2IES = 0xFF; //Interrupt on high to low transition
-	P2IFG = 0x00;
 
 	/*Port 3*/
 	P3DIR = 0xFF;
@@ -92,10 +80,6 @@ void init_ports(){
 
 void init_misc(){
 	/*init flags*/
-	port1_interrupt = false;
-	port2_interrupt = false;
-	debounce = false;
-	new_user_input = false;
 	RTC_interrupt = false;
 
 	/*init other variables*/
@@ -108,9 +92,9 @@ void init_misc(){
 
 	/*Debounce timer, TA0*/
 	TA0R = 0x00;
-	TA0CCR0 = 0xFA;
-	TA0CCTL0 &= !CCIE;
+	TA0CCR0 = debounce_interval;
 	TA0CTL |= (TASSEL_2 + ID_1 + MC_1);
+	TA0CCTL0 |= CCIE;
 
 	/*Brightness control, TA1*/
     TA1CCR0 = 1000;
@@ -132,201 +116,96 @@ void init_misc(){
 	RTCCTL |= RTCSR;
 }
 
-/*debounces pushbutton interrupts on port 1*/
-void port1_debounce(){
-	static int i = 0;
-	static unsigned char P1_check = 0xFF;
-	char temp = P1IN;
-	temp ^= port1_mask;
-	P1_check = (P1_check & temp);
-	i++;
-	if (i >= P1_max_checks){
-		i = 0;
-
-		P1_check &= 0xFE;//This is because pin 1 is always low in the launchpad; change on prototype board
-
-		if (P1_check > 0){
-			port1_state |= P1_check;
-			new_user_input = true;
-		}
-		P1_check = 0xFF;
-		port1_interrupt = false;
-		TA0CCTL0 &= ~CCIE;
-	}
-}
-
-/*debounces rotary encoder interrupts on port 2*/
-void port2_debounce(){
-	static int i = 0;
-	static unsigned char P2_check = 0xFF;
-	char temp = P2IN;
-	temp ^= port2_mask;
-	P2_check = (P2_check & temp);
-	i++;
-	if (i >= P2_max_checks){
-		i = 0;
-		if (P2_check > 0){
-			port2_state |= P2_check;
-			new_user_input = true;
-		}
-
-		P2_check = 0xFF;
-		port2_interrupt = false;
-		TA0CCTL0 &= ~CCIE;
-	}
-}
-
-/*takes debounced inputs and runs them through state machines*/
-unsigned int user_input_decode(){
-	if (port1_state > 0){
-		/*port 1*/
-		switch (port1_state){
-			case 0x01:
-				return port1_statemachine(0x0001);
-			case 0x02:
-				return port1_statemachine(0x0002);
-			case 0x04:
-				return port1_statemachine(0x0004);
-			case 0x08:
-				return port1_statemachine(0x0008);
-			case 0x10:
-				return port1_statemachine(0x0010);
-			case 0x20:
-				return port1_statemachine(0x0020);
-			case 0x40:
-				return port1_statemachine(0x0040);
-			case 0x80:
-				return port1_statemachine(0x0080);
-			default:
-				port1_state = 0x00;
-				/*This should reset all of port 1, IES mask .. everything*/
-				break;
-		}
-	}
-	else if (port2_state > 0){
-		/*port 2*/
-		switch (port2_state){
-			case 0x01:
-				return port2_statemachine(0x01, 0x00);
-			case 0x02:
-				return port2_statemachine(0x02, 0x00);
-			case 0x04:
-				return port2_statemachine(0x04, 0x04);
-			case 0x08:
-				return port2_statemachine(0x08, 0x04);
-			case 0x10:
-				return port2_statemachine(0x10, 0x08);
-			case 0x20:
-				return port2_statemachine(0x20, 0x08);
-			case 0x40:
-				return port2_statemachine(0x40, 0x0C);
-			case 0x80:
-				return port2_statemachine(0x80, 0x0C);
-			default:
-				port2_state = 0x00;
-				break;
-		}
-	}
-
-	return 0;
-}
-
-/*state machine for pushbutton*/
-unsigned int port1_statemachine(unsigned int pin){
-	__disable_interrupt();
-	port1_state &= ~pin;
-	if ((port1_mask & pin) == pin){
-		port1_mask &= ~pin;
-		P1IES &= ~pin;
-	}
-	else if((port1_mask & pin) == 0x00){
-		port1_mask |= pin;
-		P1IES |= pin;
-		P1IFG &= ~pin;
-		__enable_interrupt();
-		return pin;
-	}
-	else{
-		port1_mask |= pin;
-		P1IES |= pin;
-	}
-	P1IFG &= ~pin;
-	__enable_interrupt();
-	return 0;
-}
-
-/*This function is untested for encoder 4 because I don't have access to it on the MSP430FR4133 Launchpad*/
-unsigned int port2_statemachine(unsigned int pin, unsigned char encoder_shift){
-	__disable_interrupt();
-	static unsigned int encoder_state = 0x00;
-	port2_state &= ~pin;
-
-	unsigned char encoder_number2 = (encoder_shift >> 1);//encoder number multiplied by 2
-	unsigned int encoder_state_last = (encoder_state >> encoder_shift) & 0x000F;//previous state for encoder being processed
-	unsigned int encoder_state_new = 0x00;
-
-	/*calculate new encoder state*/
-	if (encoder_state_last > 3){//right adjust encoder_state_new
-		encoder_state_new = encoder_state_last >> 2;
-	}
-	else{
-		encoder_state_new = encoder_state_last;
-	}
-	encoder_state_new ^= (pin >> encoder_number2);
-
-	unsigned int encoder_state_temp = encoder_state_decoder[encoder_state_last][encoder_state_new];//process new state
-
-	if(encoder_state_temp == 0x00){//invalid state/reset: reset encoder, return 0
-		encoder_state &= ~(0x000F << encoder_shift);
-		port2_mask |= (0x03 << encoder_number2);
-		P2IES |= (0x03 << encoder_number2);
-		P2IFG &= ~(0x03 << encoder_number2);
-		__enable_interrupt();
-		return 0x0000;
-	}
-
-	else if(encoder_state_temp == 0xF0 || encoder_state_temp == 0x0F){//successful rotation: reset encoder, return pin
-		encoder_state &= ~(0x000F << encoder_shift);
-		port2_mask |= (0x03 << encoder_number2);
-		P2IES |= (0x03 << encoder_number2);
-		P2IFG &= ~(0x03 << encoder_number2);
-		__enable_interrupt();
-		return (pin << 8);
-	}
-
-	/*between states: save updated encoder state, toggle mask and edge select, return 0*/
-	encoder_state = (encoder_state_temp << encoder_shift);
-	port2_mask ^= pin;
-	P2IES ^= pin;
-	P2IFG &= ~pin;
-	__enable_interrupt();
-	return 0x0000;
-}
 
 /*waits for user input or an interrupt from a peripheral; goes into low power mode if there is no input*/
-void wait_for_input(){
+int wait_for_input(){
 	while(1){
-		bool waiting = true;
-		if(debounce){
-			waiting = false;
-			TA0CCTL0 |= CCIE;
-			debounce = false;
-		}
-		if(new_user_input){
-			waiting = false;
-			new_user_input = false;
-			return;
-		}
-		if(RTC_interrupt){
-			waiting = false;
-			new_user_input = false;
-			return;
+		char waiting = 1;
+		if(port_change){
+			waiting = 0;
+			return state_machine();
 		}
 		if (waiting){
 			_BIS_SR(LPM4_bits + GIE);
 		}
 	}
 }
+
+static int state_machine(){
+	if(port_change == 1){
+	    port_change = 0;
+		return button_state_machine();
+	}
+	else if(port_change == 2){
+	    port_change = 0;
+		return encoder_state_machine();
+	}
+	return 0;
+}
+
+static int button_state_machine(){
+	static char last_state = 0x00;
+	char state_change = button_value ^ last_state;
+	last_state = button_value;
+
+	if(button_value & state_change){
+		// low to high transition
+		return ~state_change;
+	}
+	else{
+		// high to low transition
+		return state_change;
+	}
+	/*
+	last = 11000100
+	bval = 11100000
+	chng = 00100000->low to high
+	return ~0x0020
+	
+	last = 11000100
+	bval = 10000000
+	chng = 01000000->high to low
+	return 0x0020
+	*/
+	
+}
+
+static int encoder_state_machine(){
+	static char last_state = 0x00;
+	static int decoder_state = 0x00;
+	char state_change = encoder_value ^ last_state;
+	last_state = encoder_value;
+
+	if(state_change & 0x03){
+		return encoder_decode(&decoder_state, encoder_value, 0);
+	}
+	else if(state_change & 0x0C){
+		return encoder_decode(&decoder_state, encoder_value, 4);
+	}
+	else if(state_change & 0x30){
+		return encoder_decode(&decoder_state, encoder_value, 8);
+	}
+	else if(state_change & 0xC0){
+		return encoder_decode(&decoder_state, encoder_value, 12);
+	}
+	
+	return 0x00;
+}
+
+static int encoder_decode(int *decoder_state, char new_state, char shift){
+	int temp = encoder_state_decoder[(*decoder_state>>shift) & 0x0F][(new_state>>(shift>>1)) & 0x03];
+
+	*decoder_state = (temp<<shift);
+	if(temp == 0xF0){// CW rotation
+		return 0x100<<(shift>>1);
+	}
+	else if(temp == 0x0F){// CCW rotation
+		return 0x200<<(shift>>1);
+	}
+	
+	return 0x00;
+}
+
 
 /*does a full update of the DSP*/
 void full_update_DSP(){

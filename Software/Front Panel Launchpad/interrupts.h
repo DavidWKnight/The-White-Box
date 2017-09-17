@@ -12,9 +12,13 @@
 #include <msp430.h>
 #include "peripherals.h"
 
-extern volatile bool port1_interrupt;
-extern volatile bool port2_interrupt;
-extern volatile bool debounce;
-extern volatile bool RTC_interrupt;
+#define integrator_max 4
+#define integrator_min 0
+#define buttons_port P1IN
+#define encoder_port P2IN
+
+volatile char button_value;// carries current value of button
+volatile char encoder_value;
+volatile char port_change;
 
 #endif /* INTERRUPTS_H_ */
