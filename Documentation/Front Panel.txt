@@ -9,17 +9,8 @@ you can't find it's most likely in "peripherals.h", it contains most things that
 How user inputs are processed
 -----------------------------
 The program normally is in low power mode (LPM), this is enabled by the wait_for_input loop located in peripherals.c until an interrupt 
-it triggered. When a a button is pressed or a rotary encoder is turned an interrupt is called from "interrupts.c", port1_ISR or 
-port2_ISR respectively. They enable counter timer 0 which triggers interrupt TIMER0_A0_ISR. From this interrupt function portx_debounce,
-located in peripherals.c, repeatedly checks the value on the port pin to determine which button/encoder triggered the interrupt and 
-whether or not it was a valid interupt. portx_state tells which pin caused the interrupt and portx_mask denotes whether the pin was 
-previously logic high or logic low. From here the program gets out of the wait_for_input loop. The menu functions then move into 
-user_input_decode function. This function uses the portx_state variable to call state machines that determine if the interrupt puts the 
-button/encoder into a valid state, for example the encoders have 2 pins each that move through the states 11 <-> 10 <-> 00 <-> 01 <-> 11 
-from left to right or right to left depending on the direction the encoder turned. The encoder can never go from 11 -> 00, if it does 
-something went wrong during debounce so the state machine resets. Each state machine returns an integer corresponding to the action the 
-user took, user_input_decode passes this integer to the menu funtion that called it. 
-The integer corresponds to the following actions:
+it triggered. The only way to get out of this loop is by an interrupt, either the real time clock or the timer interrupt. The timer interrupt happens every 1-5ms and checks for changes to the buttons or rotary encoders. If a change is detected the state machines are called. The button state machine is pretty self explanatory. The encoder state machine uses an array to keep track of where the encoder is in it's rotation.
+The integer returned by wait_for_input correspond to the following actions:
 0x0000 no action
 0x0001 enc1 sw
 0x0002 enc2 sw
@@ -37,6 +28,9 @@ The integer corresponds to the following actions:
 0x2000 enc3 CW rotation
 0x4000 enc4 CCW rotation
 0x8000 enc4 CW rotation
+0xFFFF RTC interrupt
+For integers 0x0001 - 0x0080 their inverse corresponds to the button being push down so for example:
+0xFFFE means enc1 sw is pushed down 0x0001 means enc1 sw is released
 
 Hardware
 --------
