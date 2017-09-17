@@ -25,7 +25,6 @@ char menu_effect_select(){
 
 	/*in menu actions*/
 	while(1){
-		
 		switch(wait_for_input()){
         /*port 1*/
         case 0x0001:/*enc1 sw*/
@@ -204,7 +203,6 @@ void menu_settings(){
 
 	/*in menu actions*/
 	while(1){
-        
 		switch(wait_for_input()){
 		/*port 1*/
 		case 0x0001:/*enc1 sw*/
@@ -306,16 +304,16 @@ void menu_settings(){
             break;
 
         case 0x8000:
-            break;
 
+            break;
+        case 0xFFFF:
+            /*flashing black < to display cursor location*/
+            LCD_cursor_pos(3,20);
+            flash_cursor(&flash_delay, ' ', '<');
+            break;
         /*no action*/
         default:
             break;
-        }
-		/*flashing black rectangle to display cursor location*/
-        if (RTC_interrupt){
-            LCD_cursor_pos(3,20);
-            flash_cursor(&flash_delay, ' ', '<');
         }
         /*implement current setting values*/
         TA1CCR2 = 10*settings_values[setting_LED_brightness];

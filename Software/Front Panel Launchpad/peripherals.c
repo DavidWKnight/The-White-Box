@@ -125,6 +125,11 @@ int wait_for_input(){
 			waiting = 0;
 			return state_machine();
 		}
+		if(RTC_interrupt){
+		    waiting = 0;
+		    RTC_interrupt = 0;
+		    return 0xFFFF;
+		}
 		if (waiting){
 			_BIS_SR(LPM4_bits + GIE);
 		}

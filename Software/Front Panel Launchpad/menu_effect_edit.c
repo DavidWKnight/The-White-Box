@@ -32,7 +32,6 @@ char menu_effect_edit(){
 
 	/*in menu actions*/
 	while(1){
-
 		switch(wait_for_input()){
         /*port 1*/
         case 0x0001:/*enc1 sw*/
@@ -148,8 +147,6 @@ void effect_edit_setup(unsigned char active_effect){
 			LCD_write_data('|');
 		}
 	}
-
-
 	return;
 }
 
@@ -294,7 +291,6 @@ void menu_effect_name_edit(){
 
 	/*in menu actions*/
 	while(1){
-
 		switch(wait_for_input()){
         /*port 1*/
         case 0x0001:/*enc1 sw*/
@@ -406,16 +402,15 @@ void menu_effect_name_edit(){
 
         case 0x8000:
             break;
-
+        case 0xFFFF:
+            /*flashing black rectangle to display cursor location*/
+            LCD_cursor_pos(2*current_name+2,current_char+1);
+            flash_cursor(&flash_delay, name_temp[current_name][current_char], 0xFF);
+            break;
         /*no action*/
         default:
             break;
 		}
-		/*flashing black rectangle to display cursor location*/
-	    if (RTC_interrupt){
-	        LCD_cursor_pos(2*current_name+2,current_char+1);
-	        flash_cursor(&flash_delay, name_temp[current_name][current_char], 0xFF);
-	    }
 
 	}
 }
